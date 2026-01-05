@@ -174,14 +174,61 @@ if (!isset($conn) || !($conn instanceof mysqli)) {
 
 $vendorNameCol = pick_vendor_name_col($conn);
 
+/**
+ * Filter vendors to only PHOTOCOPY (if vendor_type column exists)
+ */
+$whereVendorType = '';
+if (table_has_column($conn, 'tbl_admin_vendors', 'vendor_type')) {
+  $whereVendorType = "WHERE vendor_type = 'PHOTOCOPY'";
+}
+
+// Vendors dropdown
 $vendors = [];
 if ($vendorNameCol) {
-  $qv = $conn->query("SELECT vendor_id, `$vendorNameCol` AS vendor_name FROM tbl_admin_vendors ORDER BY `$vendorNameCol` ASC");
+  $qv = $conn->query("
+    SELECT vendor_id, `$vendorNameCol` AS vendor_name
+    FROM tbl_admin_vendors
+    $whereVendorType
+    ORDER BY `$vendorNameCol` ASC
+  ");
   while($r = $qv->fetch_assoc()) $vendors[] = $r;
 } else {
-  $qv = $conn->query("SELECT vendor_id, vendor_id AS vendor_name FROM tbl_admin_vendors ORDER BY vendor_id ASC");
+  $qv = $conn->query("
+    SELECT vendor_id, vendor_id AS vendor_name
+    FROM tbl_admin_vendors
+    $whereVendorType
+    ORDER BY vendor_id ASC
+  ");
   while($r = $qv->fetch_assoc()) $vendors[] = $r;
 }
+
+// Machines list
+$vendorSelect = $vendorNameCol ? "v.`$vendorNameCol` AS vendor_name" : "NULL AS vendor_name";
+
+/**
+ * OPTIONAL: show only machines linked to PHOTOCOPY vendors
+ * (but still show machines with no vendor_id set)
+ */
+$machinesWhere = '';
+if (table_has_column($conn, 'tbl_admin_vendors', 'vendor_type')) {
+  $machinesWhere = "WHERE (m.vendor_id IS NULL OR m.vendor_id = 0 OR v.vendor_type = 'PHOTOCOPY')";
+}
+
+$sqlList = "
+  SELECT
+    m.machine_id, m.model_name, m.serial_no, m.vendor_id, m.rate_profile_id, m.is_active,
+    m.created_at, m.updated_at,
+    $vendorSelect,
+    rp.copy_rate, rp.sscl_percentage, rp.vat_percentage, rp.model_match
+  FROM tbl_admin_photocopy_machines m
+  LEFT JOIN tbl_admin_vendors v ON v.vendor_id = m.vendor_id
+  LEFT JOIN tbl_admin_photocopy_rate_profiles rp ON rp.rate_profile_id = m.rate_profile_id
+  $machinesWhere
+  ORDER BY m.machine_id DESC
+";
+$resList = $conn->query($sqlList);
+$machines = [];
+while($r = $resList->fetch_assoc()) $machines[] = $r;
 
 // Machines list
 $vendorSelect = $vendorNameCol ? "v.`$vendorNameCol` AS vendor_name" : "NULL AS vendor_name";
