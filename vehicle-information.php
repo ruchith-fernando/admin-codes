@@ -6,7 +6,6 @@ $hris        = $_SESSION['hris'];
 $user_level  = $_SESSION['user_level'];
 ?>
 
-
 <style>
 .select2-container--default .select2-selection--single {
     height:38px!important;padding:6px 12px;border:1px solid #ced4da;border-radius:.375rem
@@ -20,7 +19,6 @@ $user_level  = $_SESSION['user_level'];
   pointer-events: none;
   opacity: 0.6;
 }
-
 </style>
 
 <div class="content font-size" id="contentArea">
@@ -41,7 +39,8 @@ $user_level  = $_SESSION['user_level'];
       <option value="Award Winner">Award Winner</option>
       <option value="Company Vehicles">Company Vehicles</option>
       <option value="Promotion Vehicles">Promotion Vehicles</option>
-    </select><div class="alert alert-danger small-alert"></div>
+    </select>
+    <div class="alert alert-danger small-alert"></div>
   </div>
 
   <div class="col-md-6">
@@ -70,7 +69,8 @@ $user_level  = $_SESSION['user_level'];
       <option value="Hybrid">Hybrid</option>
       <option value="Electric">Electric</option>
       <option value="Fuel">Fuel</option>
-    </select><div class="alert alert-danger small-alert"></div>
+    </select>
+    <div class="alert alert-danger small-alert"></div>
   </div>
 
   <div class="col-md-6">
@@ -81,27 +81,52 @@ $user_level  = $_SESSION['user_level'];
 
   <div class="col-md-6">
     <label>Year of Manufacture</label>
-    <input type="number" name="year_of_manufacture" class="form-control" min="1900" max="2099" required>
+    <input
+      type="text"
+      name="year_of_manufacture"
+      class="form-control"
+      inputmode="numeric"
+      maxlength="4"
+      pattern="^(19\d{2}|20([0-1]\d|2\d))$"
+      title="Enter a valid year between 1900 and 2029"
+      required>
     <div class="alert alert-danger small-alert"></div>
   </div>
 
+  <!-- Purchase Date (your JS expects this) -->
   <div class="col-md-6">
     <label>Purchase Date</label>
     <input type="text" name="purchase_date" id="purchase_date" class="form-control" autocomplete="off" required>
     <div class="alert alert-danger small-alert"></div>
   </div>
 
+  <!-- ✅ ONLY ONE Purchase Value (with checkbox) -->
   <div class="col-md-6">
     <label>Purchase Value</label>
-    <input type="text" name="purchase_value" id="purchaseValue" class="form-control" required>
+    <div class="input-group">
+      <input type="text" name="purchase_value" id="purchaseValue" class="form-control" placeholder="e.g. 1,250,000" required>
+      <span class="input-group-text">
+        <input class="form-check-input mt-0" type="checkbox" id="purchaseValueNA">
+        <span class="ms-2">Not available</span>
+      </span>
+    </div>
     <div class="alert alert-danger small-alert"></div>
   </div>
 
   <div class="col-md-6">
     <label>Original Mileage</label>
-    <input type="text" name="original_mileage" id="originalMileage" class="form-control" required>
+
+    <div class="input-group">
+      <input type="text" name="original_mileage" id="originalMileage" class="form-control" placeholder="e.g. 12500" required>
+      <span class="input-group-text">
+        <input class="form-check-input mt-0" type="checkbox" id="originalMileageNA">
+        <span class="ms-2">Not available</span>
+      </span>
+    </div>
+
     <div class="alert alert-danger small-alert"></div>
   </div>
+
 
   <div class="col-md-6">
     <label>Assigned User</label>
@@ -119,10 +144,12 @@ $user_level  = $_SESSION['user_level'];
       <option value="Bus">Bus</option>
       <option value="Van">Van</option>
       <option value="Lorry">Lorry</option>
-    </select><div class="alert alert-danger small-alert"></div>
+    </select>
+    <div class="alert alert-danger small-alert"></div>
   </div>
 
 </div>
+
 <div class="mt-4 mb-4">
   <button type="submit" class="btn btn-primary">Submit Vehicle</button>
 </div>
@@ -147,6 +174,7 @@ $user_level  = $_SESSION['user_level'];
 </div>
 </div>
 </div>
+
 <!-- ─── Modal ────────────────────────────────────────────── -->
 <div class="modal fade" id="vehicleDetailsModal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -160,16 +188,26 @@ $user_level  = $_SESSION['user_level'];
   </div>
 </div>
 
-
-
 <script>
 $(function(){
+
+  // helper: show alert for a field (works even inside input-group)
+  function showFieldError($field, msg){
+    const $alert = $field.closest('.col-md-6').find('.small-alert').first();
+    $alert.text(msg).show();
+  }
+
   // ─── Auto Uppercase for Vehicle & Chassis Numbers ─────────────
   $('input[name="vehicle_number"], input[name="chassis_number"]').on('input', function() {
     this.value = this.value.toUpperCase();
   });
 
-  // ─── Check for duplicate vehicle number ─────────────
+  // ─── Year of Manufacture (digits only + 4 chars) ─────────────
+  $('input[name="year_of_manufacture"]').on('input', function () {
+    this.value = this.value.replace(/\D/g, '').slice(0, 4);
+  });
+
+  // ─── Check for duplicate vehicle number ──────────────────────
   $('input[name="vehicle_number"]').on('blur', function() {
     const vehicleNumber = $(this).val().trim();
     if (vehicleNumber === '') return;
@@ -180,7 +218,6 @@ $(function(){
       data: { vehicle_number: vehicleNumber },
       dataType: 'json',
       success: function(response) {
-        // Remove old alerts
         $('#vehicleForm .alert-duplicate').remove();
 
         if (response.exists) {
@@ -194,7 +231,6 @@ $(function(){
             </ul>
           `;
 
-          // 🔴 Red alert with basic info
           $('#vehicleForm').before(`
             <div class="alert alert-danger alert-duplicate alert-dismissible fade show mt-3" role="alert">
               <strong>Duplicate Found!</strong> Vehicle number <b>${vehicleNumber}</b> already exists in the system.
@@ -203,7 +239,6 @@ $(function(){
             </div>
           `);
 
-          // 🔒 Disable all form inputs except vehicle_number
           $('#vehicleForm')
             .find(':input')
             .not('[name="vehicle_number"]')
@@ -215,12 +250,10 @@ $(function(){
               }
             });
 
-          // 🔴 Highlight vehicle number and dim the form
           $('input[name="vehicle_number"]').addClass('is-invalid');
           $('#vehicleForm').addClass('disabled');
 
         } else {
-          // ✅ No duplicate → re-enable everything
           $('#vehicleForm').removeClass('disabled');
           $('#vehicleForm').find(':input').prop('disabled', false);
           $('input[name="vehicle_number"]').removeClass('is-invalid');
@@ -232,8 +265,7 @@ $(function(){
     });
   });
 
-
-  // ─── Datepicker ───────────────────────────────
+  // ─── Datepicker ──────────────────────────────────────────────
   $('#purchase_date')
     .datepicker({
       format:'yyyy-mm-dd',
@@ -243,7 +275,7 @@ $(function(){
     })
     .datepicker('setDate', new Date());
 
-  // ─── Fuel Type → Engine Label ─────────────────
+  // ─── Fuel Type → Engine Label ────────────────────────────────
   $('#fuel_type').on('change', function(){
     const val = $(this).val();
     if(val === 'Electric'){
@@ -255,11 +287,54 @@ $(function(){
     }
   });
 
-  // ─── Numeric Input Formatting ─────────────────
+  // ─── Purchase Value formatting + Not Available toggle ─────────
+  function formatMoneyWithCommas(val){
+    let cleaned = val.replace(/,/g, '').replace(/[^\d.]/g, '');
+    const parts = cleaned.split('.');
+    if (parts.length > 2) cleaned = parts[0] + '.' + parts.slice(1).join('');
+    if (cleaned === '') return '';
+
+    const [intPart, decPart] = cleaned.split('.');
+    const intFormatted = Number(intPart || 0).toLocaleString('en-US');
+
+    if (decPart !== undefined) return intFormatted + '.' + decPart.slice(0, 2);
+    return intFormatted;
+  }
+
   $('#purchaseValue').on('input', function(){
-    let v = this.value.replace(/,/g,'');
-    if(!isNaN(v) && v !== ''){
-      this.value = parseFloat(v).toLocaleString('en-US');
+    if ($('#purchaseValueNA').is(':checked')) return;
+    this.value = formatMoneyWithCommas(this.value);
+  });
+
+  $('#purchaseValueNA').on('change', function(){
+    const isNA = $(this).is(':checked');
+    const $pv = $('#purchaseValue');
+    const $alert = $pv.closest('.col-md-6').find('.small-alert').first();
+
+    if (isNA) {
+      $pv.val('NOT_AVAILABLE').prop('readonly', true);
+      $alert.hide();
+    } else {
+      $pv.val('').prop('readonly', false).focus();
+    }
+  });
+
+  // ─── Original Mileage (digits only, NO thousand separators) ───
+  $('#originalMileage').on('input', function(){
+    if ($('#originalMileageNA').is(':checked')) return;
+    this.value = this.value.replace(/\D/g, ''); // digits only, no commas
+  });
+
+  $('#originalMileageNA').on('change', function(){
+    const isNA = $(this).is(':checked');
+    const $m = $('#originalMileage');
+    const $alert = $m.closest('.col-md-6').find('.small-alert').first();
+
+    if (isNA) {
+      $m.val('NOT_AVAILABLE').prop('readonly', true);
+      $alert.hide();
+    } else {
+      $m.val('').prop('readonly', false).focus();
     }
   });
 
@@ -270,30 +345,68 @@ $(function(){
     }, 5000);
   });
 
-  // ─── Form Submission ──────────────────────────
+  // ─── Form Submission ─────────────────────────────────────────
   $('#vehicleForm').on('submit', function(e){
     e.preventDefault();
     $('.small-alert').hide();
     let ok = true;
 
+    // Required checks (works for both normal inputs and input-groups)
     $('#vehicleForm [required]').each(function(){
-      if(!$(this).val()){
+      const $f = $(this);
+      if(!$f.val()){
         ok = false;
-        $(this).next('.small-alert')
-               .text('This field is required')
-               .show();
+        showFieldError($f, 'This field is required');
       }
     });
 
+    // Year range validation 1900–2029
+    const y = $('input[name="year_of_manufacture"]').val().trim();
+    if (!/^(19\d{2}|20([0-1]\d|2\d))$/.test(y)) {
+      ok = false;
+      showFieldError($('input[name="year_of_manufacture"]'), 'Year must be between 1900 and 2029');
+    }
+
+    // Purchase value validation + normalize (remove commas before sending)
+    let pv = $('#purchaseValue').val().trim();
+    if ($('#purchaseValueNA').is(':checked')) {
+      pv = 'NOT_AVAILABLE';
+    } else {
+      pv = pv.replace(/,/g,'');
+      if (pv === '' || isNaN(pv)) {
+        ok = false;
+        showFieldError($('#purchaseValue'), 'Enter a valid number or tick "Not available"');
+      }
+    }
+
+    // Original mileage validation + normalize (digits only, but still clean just in case)
+    let om = $('#originalMileage').val().trim();
+    if ($('#originalMileageNA').is(':checked')) {
+      om = 'NOT_AVAILABLE';
+    } else {
+      om = om.replace(/,/g,'');
+      if (om === '' || isNaN(om)) {
+        ok = false;
+        showFieldError($('#originalMileage'), 'Enter a valid mileage or tick "Not available"');
+      }
+    }
+
     if(!ok) return;
+
+    // Serialize and override purchase_value + original_mileage safely
+    let data = $(this).serializeArray();
+    data = data.map(x => {
+      if (x.name === 'purchase_value') return {name: x.name, value: pv};
+      if (x.name === 'original_mileage') return {name: x.name, value: om};
+      return x;
+    });
 
     $.ajax({
       url: 'submit-vehicle.php',
       type: 'POST',
-      data: $(this).serialize(),
+      data: $.param(data),
       dataType: 'json',
       success: function(r) {
-        // Remove any previous alerts
         $('.alert-msg').remove();
 
         let alertClass = (r.status === 'success') ? 'alert-success' : 'alert-danger';
@@ -301,7 +414,6 @@ $(function(){
           ? `<strong>Success!</strong> Vehicle added successfully. SR: ${r.sr_number}`
           : `<strong>Error!</strong> ${r.message}`;
 
-        // Add Bootstrap alert just above the form
         $('#vehicleForm').before(`
           <div class="alert ${alertClass} alert-msg alert-dismissible fade show mt-3" role="alert">
             ${message}
@@ -311,16 +423,26 @@ $(function(){
 
         if (r.status === 'success') {
           $('#vehicleForm')[0].reset();
+
+          // reset purchase date to today
+          $('#purchase_date').datepicker('setDate', new Date());
+
+          // reset purchase value NA state
+          $('#purchaseValueNA').prop('checked', false);
+          $('#purchaseValue').prop('readonly', false).val('');
+
+          // reset original mileage NA state
+          $('#originalMileageNA').prop('checked', false);
+          $('#originalMileage').prop('readonly', false).val('');
+
           loadVehicles();
-          // Optionally scroll to the top of the alert
           $('html, body').animate({ scrollTop: $('#contentArea').offset().top - 50 }, 400);
         }
       }
     });
-
   });
 
-  // ─── Load & Populate Table ─────────────────────
+  // ─── Load & Populate Table ───────────────────────────────────
   function loadVehicles(){
     $.getJSON('fetch-vehicles.php', function(d){
       populateTable(d);
@@ -354,7 +476,6 @@ $(function(){
       `);
     });
 
-    // Pagination
     const pages = Math.ceil(data.length / per);
     const pg = $('#vehiclePagination').empty();
     for(let i = 1; i <= pages; i++){
@@ -362,16 +483,15 @@ $(function(){
     }
     pg.find('a').on('click', function(e){
       e.preventDefault();
-      populateTable(data, parseInt($(this).text()));
+      populateTable(data, parseInt($(this).text(), 10));
     });
 
-    // Row click → modal
     $('.vehicle-row').on('click', function(){
       viewVehicleDetails($(this).data('id'));
     });
   }
 
-  // ─── Keystroke Search ──────────────────────────
+  // ─── Keystroke Search ────────────────────────────────────────
   $('#searchVehicles').on('keyup', function(){
     const val = $(this).val().toLowerCase();
     $('#vehiclesTable tbody tr').filter(function(){
@@ -379,18 +499,19 @@ $(function(){
     });
   });
 
-  // ─── Modal Details ─────────────────────────────
+  // ─── Modal Details ───────────────────────────────────────────
   function viewVehicleDetails(id){
     $.getJSON('fetch-vehicle-details.php', {id:id}, function(v){
       if(!v) return;
 
       const unit = v.fuel_type === 'Electric' ? 'kW' : 'cc';
       const eng = v.engine_capacity ? (v.engine_capacity + ' ' + unit) : '—';
-      const mil = v.original_mileage ? (v.original_mileage + ' km') : '—';
 
-      // 💰 Format Purchase Value as LKR with commas and 2 decimals
+      // Purchase value display
       let purchaseValue = '—';
-      if(v.purchase_value){
+      if (v.purchase_value === 'NOT_AVAILABLE') {
+        purchaseValue = 'Not available';
+      } else if (v.purchase_value) {
         const numeric = parseFloat(v.purchase_value.toString().replace(/,/g,''));
         if(!isNaN(numeric)){
           purchaseValue = 'LKR ' + numeric.toLocaleString('en-LK', {
@@ -398,6 +519,15 @@ $(function(){
             maximumFractionDigits: 2
           });
         }
+      }
+
+      // Original mileage display (NO commas)
+      let mil = '—';
+      if (v.original_mileage === 'NOT_AVAILABLE') {
+        mil = 'Not available';
+      } else if (v.original_mileage) {
+        const milesNum = parseInt(v.original_mileage.toString().replace(/,/g,''), 10);
+        if (!isNaN(milesNum)) mil = milesNum + ' km';
       }
 
       $('#vehicleDetailsBody').html(`
@@ -426,7 +556,7 @@ $(function(){
     });
   }
 
-  // ─── Assigned User Select2 (search-employees.php) ─────────
+  // ─── Assigned User Select2 ────────────────────────────────────
   $('#assigned_user_hris').select2({
     placeholder: "-- Select User --",
     minimumInputLength: 2,
@@ -447,9 +577,7 @@ $(function(){
     width: '100%'
   });
 
-  // ─── Initialize Table ──────────────────────────
+  // ─── Initialize Table ─────────────────────────────────────────
   loadVehicles();
 });
 </script>
-
-
