@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
   $action = $_POST['action'];
 
-  // get rate profiles by vendor (for dropdown)
+  // Fetch rate profiles for the selected vendor (used in the rate profile dropdown)
   if ($action === 'get_rate_profiles') {
     $vendorId = clean_int0($_POST['vendor_id'] ?? 0);
 
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     json_out(["status"=>"success","items"=>$items]);
   }
 
-  // create machine
+  // Create a new machine record
   if ($action === 'create_machine') {
     $serialNo = clean_str($_POST['serial_no'] ?? '', 100);
     $model    = clean_str($_POST['model_name'] ?? '', 255);
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
       json_out(["status"=>"error","message"=>"Serial No is required."]);
     }
 
-    // Insert (NULLIF turns 0 into NULL)
+    // vendor_id / rate_profile_id can be empty => save as NULL (we send 0 from the UI, NULLIF converts it)
     $sql = "
       INSERT INTO tbl_admin_photocopy_machines
       (model_name, serial_no, vendor_id, rate_profile_id, is_active)
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $stmt->bind_param("ssiii", $model, $serialNo, $vendorId, $rateId, $isActive);
 
     if (!$stmt->execute()) {
-      // duplicate serial
+      // Most common failure here is duplicate serial number
       if ($conn->errno === 1062) {
         json_out(["status"=>"error","message"=>"This serial already exists in Machines Master."]);
       }
@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     json_out(["status"=>"success","message"=>"✅ Machine added successfully.", "machine_id" => (int)$conn->insert_id]);
   }
 
-  // update machine
+  // Update an existing machine record
   if ($action === 'update_machine') {
     $machineId = clean_int0($_POST['machine_id'] ?? 0);
     $serialNo  = clean_str($_POST['serial_no'] ?? '', 100);
@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     json_out(["status"=>"success","message"=>"✅ Machine updated successfully."]);
   }
 
-  // toggle active
+  // Flip ACTIVE <-> INACTIVE
   if ($action === 'toggle_active') {
     $machineId = clean_int0($_POST['machine_id'] ?? 0);
     if ($machineId <= 0) json_out(["status"=>"error","message"=>"Invalid machine_id."]);
@@ -174,15 +174,23 @@ if (!isset($conn) || !($conn instanceof mysqli)) {
 
 $vendorNameCol = pick_vendor_name_col($conn);
 
-/**
- * Filter vendors to only PHOTOCOPY (if vendor_type column exists)
- */
+/*
+  This is a Photocopy machines page, so we only want Photocopy vendors in the dropdown.
+
+  If your DB has `vendor_type`, we filter like:
+    vendor_type = 'PHOTOCOPY'
+
+  If it doesn't exist (older DB), we simply don't filter to avoid breaking the page.
+*/
 $whereVendorType = '';
 if (table_has_column($conn, 'tbl_admin_vendors', 'vendor_type')) {
   $whereVendorType = "WHERE vendor_type = 'PHOTOCOPY'";
 }
 
-// Vendors dropdown
+/*
+  Vendors for the dropdown.
+  Vendor "name" column can vary between databases, so we detect it automatically.
+*/
 $vendors = [];
 if ($vendorNameCol) {
   $qv = $conn->query("
@@ -193,6 +201,7 @@ if ($vendorNameCol) {
   ");
   while($r = $qv->fetch_assoc()) $vendors[] = $r;
 } else {
+  // If we couldn't detect a name column, show vendor_id as the label
   $qv = $conn->query("
     SELECT vendor_id, vendor_id AS vendor_name
     FROM tbl_admin_vendors
@@ -202,13 +211,16 @@ if ($vendorNameCol) {
   while($r = $qv->fetch_assoc()) $vendors[] = $r;
 }
 
-// Machines list
+/*
+  Machines list for the table below.
+  We join Vendors and Rate Profiles only to show friendly labels on the UI.
+*/
 $vendorSelect = $vendorNameCol ? "v.`$vendorNameCol` AS vendor_name" : "NULL AS vendor_name";
 
-/**
- * OPTIONAL: show only machines linked to PHOTOCOPY vendors
- * (but still show machines with no vendor_id set)
- */
+/*
+  Optional: also hide machines that are linked to NON-photocopy vendors.
+  (We still show machines with vendor_id not set yet)
+*/
 $machinesWhere = '';
 if (table_has_column($conn, 'tbl_admin_vendors', 'vendor_type')) {
   $machinesWhere = "WHERE (m.vendor_id IS NULL OR m.vendor_id = 0 OR v.vendor_type = 'PHOTOCOPY')";
@@ -224,24 +236,6 @@ $sqlList = "
   LEFT JOIN tbl_admin_vendors v ON v.vendor_id = m.vendor_id
   LEFT JOIN tbl_admin_photocopy_rate_profiles rp ON rp.rate_profile_id = m.rate_profile_id
   $machinesWhere
-  ORDER BY m.machine_id DESC
-";
-$resList = $conn->query($sqlList);
-$machines = [];
-while($r = $resList->fetch_assoc()) $machines[] = $r;
-
-// Machines list
-$vendorSelect = $vendorNameCol ? "v.`$vendorNameCol` AS vendor_name" : "NULL AS vendor_name";
-
-$sqlList = "
-  SELECT
-    m.machine_id, m.model_name, m.serial_no, m.vendor_id, m.rate_profile_id, m.is_active,
-    m.created_at, m.updated_at,
-    $vendorSelect,
-    rp.copy_rate, rp.sscl_percentage, rp.vat_percentage, rp.model_match
-  FROM tbl_admin_photocopy_machines m
-  LEFT JOIN tbl_admin_vendors v ON v.vendor_id = m.vendor_id
-  LEFT JOIN tbl_admin_photocopy_rate_profiles rp ON rp.rate_profile_id = m.rate_profile_id
   ORDER BY m.machine_id DESC
 ";
 $resList = $conn->query($sqlList);
@@ -495,7 +489,7 @@ while($r = $resList->fetch_assoc()) $machines[] = $r;
 
     $.post('photocopy-machines-master.php', {action:'toggle_active', machine_id:id}, function(resp){
       if(resp.status==='success'){
-        showMsg('success', resp.message + " (Reloading…)"); 
+        showMsg('success', resp.message + " (Reloading…)");
         setTimeout(()=>location.reload(), 500);
       } else {
         showMsg('error', '❌ ' + (resp.message || 'Failed'));
