@@ -1,4 +1,5 @@
-<?php
+<?php 
+// comments
 session_start();
 require_once 'connections/connection.php';
 
