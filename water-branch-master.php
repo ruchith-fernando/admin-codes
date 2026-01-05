@@ -131,7 +131,7 @@ try {
   <div class="container-fluid">
     <div class="card shadow bg-white rounded p-4">
 
-      <h5 class="mb-4 text-primary">Water - Branch Master</h5>
+      <h5 class="mb-4 text-primary">Branch Master</h5>
 
       <div id="alertPlaceholder">
         <?php if ($errorMsg): ?>
