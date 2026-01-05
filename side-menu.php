@@ -102,18 +102,14 @@ $masterSubMenus = [
         'title' => 'Common Information',
         'id'    => 'collapseMasterCommon',
         'items' => [
-            [
-                'key'  => 'vendor-master',
-                'file' => 'vendor-master.php',
-                'label'=> 'Vendors (Master)'
-            ],
+            ['key'  => 'vendor-master', 'file' => 'vendor-master.php', 'label'=> 'Vendors (Master)'],
+            ['key'=>'branch-water',        'file'=>'water-branch-master.php', 'label'=>'Update Branch Information'],
         ]
     ],
     [
         'title' => 'Water',
         'id'    => 'collapseMasterWater',
         'items' => [
-            ['key'=>'branch-water',        'file'=>'water-branch-master.php', 'label'=>'Water - Update Branch Information'],
             ['key'=>'water-types-master',  'file'=>'water-types-master.php',  'label'=>'Water - Types / Modes'],
             ['key'=>'water-vendor-map',    'file'=>'water-vendor-map.php',    'label'=>'Water - Map Types to Vendors'],
             ['key'=>'water-rate-profiles', 'file'=>'water-rate-profiles.php', 'label'=>'Water - Rate Profiles'],
