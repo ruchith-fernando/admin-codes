@@ -44,6 +44,7 @@ $vendor_rs = mysqli_query($conn, $vendor_sql);
             <select name="vendor_type" class="form-select">
                 <option value="WATER">WATER</option>
                 <option value="ELECTRICITY">ELECTRICITY</option>
+                <option value="PHOTOCOPY">PHOTOCOPY</option>
                 <option value="OTHER">OTHER</option>
             </select>
         </div>
