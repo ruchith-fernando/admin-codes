@@ -12,7 +12,7 @@ if (empty($_SESSION['loggedin'])) {
 <div class="content font-size">
     <div class="container-fluid">
         <div class="card p-4 shadow-sm">
-            <h5 class="mb-4 text-primary">Water Vendor Master</h5>
+            <h5 class="mb-4 text-primary">Vendor Master</h5>
 
             <!-- 🔔 Inline alert area -->
             <div id="vendorAlertPlaceholder"></div>
