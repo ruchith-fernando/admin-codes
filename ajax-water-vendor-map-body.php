@@ -34,8 +34,7 @@ if ($res2) {
 
 // Existing mappings (for display)
 $mappings = [];
-$mapSql = "
-    SELECT wv.*,
+$mapSql = "SELECT wv.*,
            wt.water_type_name,
            wt.water_type_code,
            v.vendor_name AS master_vendor_name
@@ -44,8 +43,7 @@ $mapSql = "
         ON wv.water_type_id = wt.water_type_id
     LEFT JOIN tbl_admin_vendors v
         ON wv.vendor_master_id = v.vendor_id
-    ORDER BY wt.water_type_name, wv.vendor_name
-";
+    ORDER BY wt.water_type_name, wv.vendor_name";
 $mapRes = mysqli_query($conn, $mapSql);
 if ($mapRes) {
     while ($row = mysqli_fetch_assoc($mapRes)) {
