@@ -1,0 +1,120 @@
+<?php
+require_once 'connections/connection.php';
+require_once 'includes/userlog.php';
+require_once 'fpdf/fpdf.php';
+require_once 'includes/pdf_namer.php';
+
+if (session_status() === PHP_SESSION_NONE) session_start();
+
+header('Content-Type: application/json');
+date_default_timezone_set('Asia/Colombo');
+
+$current_hris  = trim($_SESSION['hris'] ?? '');
+$current_name  = trim($_SESSION['name'] ?? '');
+$ip            = $_SERVER['REMOTE_ADDR'] ?? 'N/A';
+
+$ids_raw = $_POST['ids'] ?? '';
+$id_list = array_filter(array_map('intval', explode(',', $ids_raw)));
+$id_list = array_values(array_unique($id_list));
+
+if(!$id_list){
+  echo json_encode(["success"=>false,"message"=>"Invalid request"]);
+  exit;
+}
+
+$id_str = implode(",", $id_list);
+
+// Bulk approve (skip own entries)
+$sql = "
+  UPDATE tbl_admin_actual_tea_branches
+  SET approval_status='approved',
+      approved_hris='" . mysqli_real_escape_string($conn,$current_hris) . "',
+      approved_name='" . mysqli_real_escape_string($conn,$current_name) . "',
+      approved_by='" . mysqli_real_escape_string($conn,$current_name) . "',
+      approved_at=NOW()
+  WHERE id IN ($id_str)
+    AND (approval_status='pending' OR approval_status IS NULL)
+    AND (entered_hris IS NULL OR TRIM(entered_hris) <> '" . mysqli_real_escape_string($conn,$current_hris) . "')
+";
+mysqli_query($conn,$sql);
+$count = mysqli_affected_rows($conn);
+
+userlog("✅ Tea Branch bulk approve | Approved By:$current_name ($current_hris) | Count:$count | IDs:$id_str | IP:$ip");
+
+if($count <= 0){
+  echo json_encode(["success"=>false,"message"=>"No records approved. They may be non-pending or your own entries."]);
+  exit;
+}
+
+// Fetch approved rows for PDF
+$res = mysqli_query($conn,"
+  SELECT branch_code, branch, total_amount, month_applicable
+  FROM tbl_admin_actual_tea_branches
+  WHERE id IN ($id_str) AND approval_status='approved'
+");
+
+$pdf_dir = __DIR__ . '/exports';
+if (!is_dir($pdf_dir)) mkdir($pdf_dir,0777,true);
+
+$pdf_name = generate_pdf_filename("bulk");
+$pdf_path = $pdf_dir . "/" . $pdf_name;
+
+$pdf = new FPDF();
+$pdf->AddPage();
+$pdf->SetFont('Arial','B',16);
+$pdf->Cell(0,10,"Bulk Approved Tea Branch Records",0,1,'C');
+$pdf->Ln(4);
+
+$pdf->SetFont('Arial','',12);
+$pdf->Cell(0,7,"Approved By: $current_name ($current_hris)",0,1);
+$pdf->Cell(0,7,"Approved At: ".date("Y-m-d H:i:s"),0,1);
+$pdf->Ln(6);
+
+$pdf->SetFont('Arial','B',11);
+$pdf->SetFillColor(230,230,230);
+$pdf->Cell(30,9,"Code",1,0,"C",true);
+$pdf->Cell(110,9,"Branch",1,0,"C",true);
+$pdf->Cell(50,9,"Amount",1,1,"C",true);
+
+$pdf->SetFont('Arial','',11);
+
+$month_for_log = "";
+while($row = mysqli_fetch_assoc($res)){
+  if($month_for_log === "") $month_for_log = $row['month_applicable'];
+  $pdf->Cell(30,9,$row['branch_code'],1);
+  $pdf->Cell(110,9,$row['branch'],1);
+  $pdf->Cell(50,9,"Rs. ".number_format((float)$row['total_amount'],2),1,1);
+}
+
+$pdf->Output('F',$pdf_path);
+
+// PDF log
+$module       = 'tea_branches';
+$pdf_type     = 'bulk';
+$record_ids   = $id_str;
+$entity_label = "Tea bulk approval ({$count} record(s))";
+
+$stmt = $conn->prepare("
+  INSERT INTO tbl_admin_pdf_log
+  (module, pdf_name, pdf_type, record_ids, month_applicable, entity_label,
+   approved_by_hris, approved_by_name, generated_at)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+");
+$stmt->bind_param(
+  "ssssssss",
+  $module,
+  $pdf_name,
+  $pdf_type,
+  $record_ids,
+  $month_for_log,
+  $entity_label,
+  $current_hris,
+  $current_name
+);
+$stmt->execute();
+
+echo json_encode([
+  "success"=>true,
+  "message"=>"Bulk approval completed ({$count} record(s)).",
+  "pdf_url"=>"exports/".$pdf_name
+]);

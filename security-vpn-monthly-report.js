@@ -1,0 +1,173 @@
+$(document).ready(function(){
+// security-vpn-monthly-report.js
+
+  const blankSecutiryVPNRow = () => `
+    <tr>
+      <td><input type="text" class="form-control security_vpn_branch_code" maxlength="10" /></td>
+      <td><input type="text" class="form-control security_vpn_branch_name" readonly /></td>
+      <td><input type="text" class="form-control security_vpn_amount" /></td>
+      <td>
+        <select class="form-select security_vpn_provision">
+          <option value="no" selected>No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </td>
+      <td><input type="text" class="form-control security_vpn_provision_reason" placeholder="Optional" /></td>
+    </tr>
+  `;
+
+  const resetSecurityVPNForm = () => {
+    $("#security_vpn_entry_rows").html(blankSecutiryVPNRow());
+    $("#security_vpn_status_msg").html('');
+    $("#security_vpn_provision_info").addClass("d-none").html('');
+  };
+
+  const updateAlerts = (res, month, missingSel, provisionSel) => {
+    let out = '';
+    if (res.missing && res.missing.length) {
+      out += `<b>${res.missing.length} branches</b> missing for <b>${month}</b>:<br>${res.missing.join(', ')}`;
+    }
+    if (res.provisions && res.provisions.length) {
+      out += `${out ? '<br>' : ''}<b>${res.provisions.length} provisional</b>:<br>${res.provisions.join(', ')}`;
+    }
+    if (out) $(missingSel).removeClass("d-none").html(out);
+    else $(missingSel).addClass("d-none").html('');
+    if (res.provisions && res.provisions.length) {
+      $(provisionSel).removeClass("d-none").html(`Provisional entries present for <b>${month}</b>.`);
+    } else {
+      $(provisionSel).addClass("d-none").html('');
+    }
+  };
+
+  // View dropdown
+  $("#security_vpn_month_view").change(function(){
+    resetSecurityVPNForm();
+    const month = $(this).val();
+    if (month) {
+      $("#security_vpn_manual_form").addClass("d-none");
+      $("#security_vpn_report_section").addClass("d-none").html('');
+      $("#security_vpn_missing_view_branches").removeClass("d-none").html('Loading...');
+      $.post("security-vpn-monthly-fetch.php", {month}, function(res){
+        $("#security_vpn_report_section").removeClass("d-none").html(res.table || '');
+        $("#security_vpn_csv_download_container").removeClass("d-none");
+        updateAlerts(res, month, "#security_vpn_missing_view_branches", "#security_vpn_provision_info");
+      }, 'json');
+    } else {
+      $("#security_vpn_report_section").addClass("d-none").html('');
+      $("#security_vpn_missing_view_branches").addClass("d-none").html('');
+      $("#security_vpn_csv_download_container").addClass("d-none");
+    }
+  });
+
+  // Manual dropdown
+  $("#security_vpn_month_manual").change(function(){
+    resetSecurityVPNForm();
+    const month = $(this).val();
+    if (month) {
+      $("#security_vpn_manual_form").removeClass("d-none");
+      $("#security_vpn_missing_manual_branches").removeClass("d-none").html('Loading...');
+      $.post("security-vpn-monthly-fetch.php", {month}, function(res){
+        updateAlerts(res, month, "#security_vpn_missing_manual_branches", "#security_vpn_provision_info");
+      }, 'json');
+    } else {
+      $("#security_vpn_manual_form").addClass("d-none");
+      $("#security_vpn_missing_manual_branches").addClass("d-none").html('');
+      $("#security_vpn_provision_info").addClass("d-none").html('');
+    }
+  });
+
+  // Branch code blur
+  $(document).on('blur', '.security_vpn_branch_code', function(){
+    const row = $(this).closest('tr');
+    const branch_code = $(this).val();
+    const month = $("#security_vpn_month_manual").val();
+    if (!branch_code || !month) return;
+
+    $.post("ajax-get-existing-security-vpn.php", {branch_code, month}, function(res){
+      if (res.exists) {
+        row.find('.security_vpn_branch_name').val(res.branch).prop('readonly', true);
+        row.find('.security_vpn_amount').val(res.total_amount || '').prop('readonly', res.is_provision==='no');
+        row.find('.security_vpn_provision').val(res.is_provision || 'no').prop('disabled', res.is_provision==='no');
+        row.find('.security_vpn_provision_reason').val(res.provision_reason || '').prop('readonly', res.is_provision==='no');
+        $("#security_vpn_status_msg").html(`<div class='alert alert-${res.is_provision==='yes'?'warning':'danger'}'>${res.is_provision==='yes'?'Provision entry — you can finalize.':'Locked finalized entry.'}</div>`);
+      } else {
+        $.post("ajax-get-security-vpn-branch.php", {branch_code}, function(b){
+          if (b.success) row.find('.security_vpn_branch_name').val(b.branch_name).prop('readonly', true);
+          else row.find('.security_vpn_branch_name').val('Not Found').prop('readonly', true);
+        }, 'json');
+        row.find('.security_vpn_amount').val('').prop('readonly', false);
+        row.find('.security_vpn_provision').val('no').prop('disabled', false);
+        row.find('.security_vpn_provision_reason').val('').prop('readonly', false);
+        $("#security_vpn_status_msg").html('');
+      }
+    }, 'json');
+  });
+
+  // Live thousand separator
+  $(document).on('input', '.security_vpn_amount', function(){
+    let v = $(this).val().replace(/,/g,'');
+    if (!isNaN(v) && v !== '') {
+      const parts = v.split('.');
+      parts[0] = Number(parts[0] || 0).toLocaleString('en-US');
+      $(this).val(parts.length > 1 ? parts[0]+'.'+parts[1].slice(0,2) : parts[0]);
+    } else $(this).val('');
+  });
+
+  // Save
+  $("#security_vpn_save_entry").click(function(){
+    const month = $("#security_vpn_month_manual").val();
+    const row = $("#security_vpn_entry_rows tr").last();
+    const branch_code = row.find('.security_vpn_branch_code').val();
+    const branch_name = row.find('.security_vpn_branch_name').val();
+    const amount = row.find('.security_vpn_amount').val().replace(/,/g,'');
+    const provision = row.find('.security_vpn_provision').val();
+    const provision_reason = row.find('.security_vpn_provision_reason').val();
+
+    if (!month || !branch_code || !branch_name || !amount) {
+      $("#security_vpn_status_msg").html(`<div class='alert alert-danger'>Fill required fields.</div>`);
+      return;
+    }
+    if (isNaN(amount) || Number(amount)<=0) {
+      $("#security_vpn_status_msg").html(`<div class='alert alert-danger'>Amount must be > 0</div>`);
+      return;
+    }
+
+    $.post("security-vpn-monthly-save.php", {month, branch_code, branch_name, amount, provision, provision_reason}, function(res){
+      if (res.success) {
+        $("#security_vpn_status_msg").html(`<div class='alert alert-success'>${res.message}</div>`);
+        $.post("security-vpn-monthly-fetch.php", {month}, function(r2){
+          updateAlerts(r2, month, "#security_vpn_missing_manual_branches", "#security_vpn_provision_info");
+        }, 'json');
+        $("#security_vpn_entry_rows").append(blankSecutiryVPNRow());
+      } else {
+        $("#security_vpn_status_msg").html(`<div class='alert alert-danger'>${res.message}</div>`);
+      }
+    }, 'json');
+  });
+
+  // CSV Download
+  $("#security_vpn_download_csv_btn").click(function(){
+    const table = $("#security_vpn_report_section table");
+    if (!table.length) return;
+    let csv = [];
+    table.find("tr").each(function(){
+      let row = [];
+      $(this).find("th,td").each(function(){
+        let text=$(this).text().trim().replace(/"/g,'""');
+        row.push(`"${text}"`);
+      });
+      csv.push(row.join(","));
+    });
+    const blob=new Blob([csv.join("\n")],{type:"text/csv;charset=utf-8;"});
+    const link=document.createElement("a");
+    const month=$("#security_vpn_month_view").val()?$("#security_vpn_month_view").val().replace(/\s+/g,'_'):'Month';
+    link.setAttribute("href",URL.createObjectURL(blob));
+    link.setAttribute("download",`security_vpn_Report_${month}.csv`);
+    link.style.display="none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+
+});
+

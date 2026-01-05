@@ -1,0 +1,2 @@
+[19-Aug-2025 10:20:27 Asia/Colombo] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in /home/admincodebuild/public_html/pages/slt-upload-process.php on line 21
+[19-Aug-2025 10:20:27 Asia/Colombo] File upload failed or missing.

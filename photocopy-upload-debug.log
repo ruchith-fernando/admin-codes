@@ -1,0 +1,355 @@
+2025-12-23 13:20:16 | BATCH START id=1 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=1 serial=85023275 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=2 serial=7500861Y code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=3 serial=85001560 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=4 serial=95011494 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=5 serial=85017256 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=6 serial=85017288 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=7 serial=7500481X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=8 serial=7500869Y code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=9 serial=95002454 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=10 serial=8500310X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=11 serial=85017238 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=12 serial=85010397 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=13 serial=85026457 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=14 serial=85004148 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=15 serial=95013131 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=16 serial=95006078 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=17 serial=85026557 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=18 serial=95015085 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=19 serial=85035147 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=20 serial=85015092 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=21 serial=95019459 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=22 serial=85005188 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=23 serial=95013311 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=24 serial=95000776 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=25 serial=85009487 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=26 serial=95013085 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=27 serial=85013521 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=28 serial=85017868 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=29 serial=95019559 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=30 serial=85014899 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=31 serial=85004368 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=32 serial=85013471 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=33 serial=85035197 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=34 serial=85017118 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=35 serial=85015220 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=36 serial=95011504 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=37 serial=95000836 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=38 serial=7501793X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=39 serial=85001425 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=40 serial=85017246 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=41 serial=85009802 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=42 serial=85001874 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=43 serial=85019255 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=44 serial=85022707 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=45 serial=85004408 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=46 serial=85001245 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=47 serial=85009613 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=48 serial=8500159X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=49 serial=85015318 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=50 serial=85004768 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=51 serial=85006974 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=52 serial=85005558 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=53 serial=95006877 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=54 serial=85017196 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=55 serial=85017028 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=56 serial=8500951X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=57 serial=85002285 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=58 serial=95005888 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=59 serial=85015338 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=60 serial=85013035 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=61 serial=85004899 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=62 serial=85017818 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=63 serial=85012005 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=64 serial=85029795 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=65 serial=85003051 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=66 serial=8500145X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=67 serial=95009314 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=68 serial=85001005 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=69 serial=85015231 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=70 serial=85015008 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=71 serial=7500517X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=72 serial=85005292 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=73 serial=85029695 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=74 serial=95019429 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=75 serial=85001525 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=76 serial=95017244 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=77 serial=85011722 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=78 serial=95006393 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=79 serial=85001815 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=80 serial=85018590 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=81 serial=85015158 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=82 serial=7501748X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=83 serial=95005708 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=84 serial=85012021 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=85 serial=95000966 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=86 serial=7501317Y code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=87 serial=7500994X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=88 serial=85017348 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=89 serial=85017468 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=90 serial=85004976 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=91 serial=95005487 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=92 serial=85005408 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=93 serial=95001804 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=94 serial=8500231X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=95 serial=8500148X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=96 serial=85029045 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=97 serial=85004709 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=98 serial=85004308 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=99 serial=85018250 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=100 serial=85004178 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | ROW FAIL batch=1 row=101 serial=75011740 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:20:16 | BATCH END id=1 total=101 ins=0 upd=0 fail=101 months=
+2025-12-23 13:22:45 | BATCH START id=2 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 13:22:45 | ROW FAIL batch=2 row=1 serial=85023275 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:24:02 | BATCH START id=3 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 13:24:02 | ROW FAIL batch=3 row=1 serial=85023275 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | BATCH START id=4 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=1 serial=85023275 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=2 serial=7500861Y code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=3 serial=85001560 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=4 serial=95011494 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=5 serial=85017256 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=6 serial=85017288 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=7 serial=7500481X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=8 serial=7500869Y code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=9 serial=95002454 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=10 serial=8500310X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=11 serial=85017238 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=12 serial=85010397 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=13 serial=85026457 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=14 serial=85004148 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=15 serial=95013131 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=16 serial=95006078 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=17 serial=85026557 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=18 serial=95015085 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=19 serial=85035147 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=20 serial=85015092 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=21 serial=95019459 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=22 serial=85005188 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=23 serial=95013311 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=24 serial=95000776 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=25 serial=85009487 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=26 serial=95013085 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=27 serial=85013521 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=28 serial=85017868 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=29 serial=95019559 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=30 serial=85014899 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=31 serial=85004368 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=32 serial=85013471 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=33 serial=85035197 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=34 serial=85017118 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=35 serial=85015220 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=36 serial=95011504 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=37 serial=95000836 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=38 serial=7501793X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=39 serial=85001425 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=40 serial=85017246 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=41 serial=85009802 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=42 serial=85001874 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=43 serial=85019255 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=44 serial=85022707 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=45 serial=85004408 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=46 serial=85001245 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=47 serial=85009613 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=48 serial=8500159X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=49 serial=85015318 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=50 serial=85004768 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=51 serial=85006974 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=52 serial=85005558 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=53 serial=95006877 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=54 serial=85017196 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=55 serial=85017028 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=56 serial=8500951X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=57 serial=85002285 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=58 serial=95005888 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=59 serial=85015338 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=60 serial=85013035 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=61 serial=85004899 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=62 serial=85017818 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=63 serial=85012005 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=64 serial=85029795 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=65 serial=85003051 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=66 serial=8500145X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=67 serial=95009314 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=68 serial=85001005 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=69 serial=85015231 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=70 serial=85015008 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=71 serial=7500517X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=72 serial=85005292 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=73 serial=85029695 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=74 serial=95019429 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=75 serial=85001525 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=76 serial=95017244 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=77 serial=85011722 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=78 serial=95006393 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=79 serial=85001815 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=80 serial=85018590 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=81 serial=85015158 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=82 serial=7501748X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=83 serial=95005708 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=84 serial=85012021 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=85 serial=95000966 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=86 serial=7501317Y code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=87 serial=7500994X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=88 serial=85017348 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=89 serial=85017468 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=90 serial=85004976 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=91 serial=95005487 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=92 serial=85005408 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=93 serial=95001804 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=94 serial=8500231X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=95 serial=8500148X code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=96 serial=85029045 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=97 serial=85004709 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=98 serial=85004308 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=99 serial=85018250 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=100 serial=85004178 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | ROW FAIL batch=4 row=101 serial=75011740 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:27:58 | BATCH END id=4 total=101 ins=0 upd=0 fail=101 months=
+2025-12-23 13:30:43 | BATCH START id=5 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 13:30:48 | BATCH START id=6 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 13:36:02 | BATCH START id=7 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 13:36:02 | ROW FAIL batch=7 row=4 serial=95011494 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:36:02 | ROW FAIL batch=7 row=37 serial=95000836 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:36:02 | ROW FAIL batch=7 row=67 serial=95009314 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:36:03 | BATCH END id=7 total=101 ins=98 upd=0 fail=3 months=November 2025
+2025-12-23 13:49:31 | BATCH START id=8 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 13:49:31 | ROW FAIL batch=8 row=4 serial=95011494 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:49:31 | ROW FAIL batch=8 row=37 serial=95000836 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:49:31 | ROW FAIL batch=8 row=67 serial=95009314 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 13:49:31 | BATCH END id=8 total=101 ins=98 upd=0 fail=3 months=November 2025
+2025-12-23 14:25:38 | BATCH START id=9 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 14:25:38 | ROW FAIL batch=9 row=4 serial=95011494 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 14:25:38 | ROW FAIL batch=9 row=37 serial=95000836 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 14:25:38 | ROW FAIL batch=9 row=67 serial=95009314 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 14:25:38 | BATCH END id=9 total=101 ins=98 upd=0 fail=3 months=November 2025
+2025-12-23 14:35:40 | BATCH START id=10 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 14:35:40 | ROW FAIL batch=10 row=67 serial=95009314 code=NO_ACTIVE_ASSIGNMENT msg=No assignment found for this machine for period end 2025-11-30.
+2025-12-23 14:35:40 | BATCH END id=10 total=101 ins=100 upd=0 fail=1 months=November 2025
+2025-12-23 14:38:47 | BATCH START id=11 file=CDB SUMMARY FOR MONTH OF NOV -2025 (2).csv
+2025-12-23 14:38:48 | BATCH END id=11 total=101 ins=101 upd=0 fail=0 months=November 2025
+2025-12-23 14:41:40 | BATCH START id=12 file=CDB SUMMARY FOR MONTH OF SEP-2025.csv
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=1 serial=7500861Y code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=2 serial=85001560 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=3 serial=95011494 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=4 serial=85017256 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=5 serial=7500481X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=6 serial=7500869Y code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=7 serial=95002454 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=8 serial=8500310X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=9 serial=85017238 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=10 serial=85010397 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=11 serial=85004148 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=12 serial=95009314 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=13 serial=95006078 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=14 serial=95019459 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=15 serial=85005188 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=16 serial=95013311 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=17 serial=95000776 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=18 serial=85009487 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=19 serial=95013085 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=20 serial=95019559 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=21 serial=85014899 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=22 serial=85004368 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=23 serial=95015085 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=24 serial=85017868 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=25 serial=85018590 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=26 serial=85026457 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=27 serial=85017818 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=28 serial=85035147 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=29 serial=85015092 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=30 serial=85013521 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=31 serial=85026557 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=32 serial=85017028 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=33 serial=85023275 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=34 serial=85017288 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=35 serial=85013471 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=36 serial=85035197 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=37 serial=85017348 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=38 serial=85017468 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=39 serial=85017118 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=40 serial=85015220 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=41 serial=95011504 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=42 serial=85002285 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=43 serial=95000836 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=44 serial=7501793X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=45 serial=85017246 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=46 serial=85009802 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=47 serial=85001874 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=48 serial=85019255 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=49 serial=85022707 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=50 serial=85004408 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=51 serial=85001245 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=52 serial=85009613 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=53 serial=8500159X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=54 serial=85015318 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=55 serial=85004768 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=56 serial=85006974 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=57 serial=45916610 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=58 serial=95006877 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=59 serial=85017196 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=60 serial=8500951X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=61 serial=85001005 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=62 serial=95005888 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=63 serial=85015338 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=64 serial=85013035 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=65 serial=85004899 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=66 serial=85012005 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=67 serial=85029795 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=68 serial=85003051 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=69 serial=8500145X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=70 serial=85015231 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=71 serial=85015008 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=72 serial=7500517X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=73 serial=85005292 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=74 serial=85029695 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=75 serial=95019429 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=76 serial=85001525 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=77 serial=95017244 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=78 serial=85011722 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=79 serial=95006393 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=80 serial=7501317Y code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=81 serial=85015158 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=82 serial=7501748X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=83 serial=95013131 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=84 serial=95005708 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=85 serial=85012021 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=86 serial=95000966 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=87 serial=85029775 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=88 serial=7500994X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=89 serial=85001425 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=90 serial=85004976 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=91 serial=95005487 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=92 serial=85005408 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=93 serial=95001804 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=94 serial=8500231X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=95 serial=8500148X code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=96 serial=85029045 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=97 serial=85004709 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=98 serial=85004308 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=99 serial=85018250 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=100 serial=85004178 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | ROW FAIL batch=12 row=101 serial=75011740 code=INVALID_READING msg=Start/End must be integers.
+2025-12-23 14:41:40 | BATCH END id=12 total=101 ins=0 upd=0 fail=101 months=
+2025-12-23 14:42:39 | BATCH START id=13 file=CDB SUMMARY FOR MONTH OF SEP-2025.csv
+2025-12-23 14:42:39 | ROW FAIL batch=13 row=57 serial=45916610 code=SERIAL_NOT_FOUND msg=Serial not found in machines master.
+2025-12-23 14:42:39 | ROW FAIL batch=13 row=87 serial=85029775 code=SERIAL_NOT_FOUND msg=Serial not found in machines master.
+2025-12-23 14:42:39 | BATCH END id=13 total=101 ins=99 upd=0 fail=2 months=September 2025
+2025-12-23 15:37:27 | BATCH START id=14 file=CDB SUMMARY FOR MONTH OF OCT-2025.csv
+2025-12-23 15:37:28 | BATCH END id=14 total=101 ins=100 upd=0 fail=1 months=October 2025
+2025-12-29 11:50:44 | BATCH START id=15 file=CDB SUMMARY FOR MONTH OF AUG (1).csv
+2025-12-29 11:50:44 | BATCH END id=15 total=102 ins=0 upd=0 fail=102 months=
+2025-12-29 11:52:15 | BATCH START id=16 file=CDB SUMMARY FOR MONTH OF AUG (1).csv
+2025-12-29 11:52:15 | BATCH END id=16 total=102 ins=98 upd=0 fail=4 months=August 2025
+2025-12-29 11:59:11 | BATCH START id=17 file=CDB SUMMARY FOR MONTH OF AUG (1).csv
+2025-12-29 11:59:11 | BATCH END id=17 total=102 ins=99 upd=0 fail=3 months=August 2025
+2025-12-29 12:20:59 | BATCH START id=18 file=CDB SUMMARY FOR MONTH OF SEP-2025 (1).csv
+2025-12-29 12:20:59 | BATCH END id=18 total=101 ins=101 upd=0 fail=0 months=September 2025
+2025-12-29 12:27:05 | BATCH START id=19 file=CDB SUMMARY FOR MONTH OF SEP-2025 (1).csv
+2025-12-29 12:27:05 | BATCH END id=19 total=101 ins=0 upd=101 fail=0 months=September 2025
+2025-12-29 12:36:38 | BATCH START id=20 file=CDB SUMMARY FOR MONTH OF OCT-2025 (1).csv
+2025-12-29 12:36:38 | BATCH END id=20 total=101 ins=100 upd=0 fail=1 months=October 2025
+2025-12-29 12:41:51 | BATCH START id=21 file=CDB SUMMARY FOR MONTH OF NOV -2025 (3).csv
+2025-12-29 12:41:52 | BATCH END id=21 total=101 ins=101 upd=0 fail=0 months=November 2025

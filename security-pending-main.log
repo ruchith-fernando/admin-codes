@@ -1,0 +1,455 @@
+2025-12-10 14:50:24 | === security-pending.php loaded (normal request) ===
+2025-12-10 14:50:24 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 14:50:24 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 14:50:26 | === security-pending.php loaded (normal request) ===
+2025-12-10 14:50:26 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 14:51:40 | === security-pending.php loaded (normal request) ===
+2025-12-10 14:51:40 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 14:51:40 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 14:51:42 | === security-pending.php loaded (normal request) ===
+2025-12-10 14:51:42 | Month click AJAX | 🔐 Security pending | Month selected | Month: June 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 14:56:27 | === security-pending.php loaded (normal request) ===
+2025-12-10 14:56:27 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 14:56:27 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 14:56:29 | === security-pending.php loaded (normal request) ===
+2025-12-10 14:56:29 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 14:56:36 | === security-pending.php loaded (normal request) ===
+2025-12-10 14:56:36 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 14:56:38 | === security-pending.php loaded (normal request) ===
+2025-12-10 14:56:38 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 15:20:23 | === security-pending.php loaded (normal request) ===
+2025-12-10 15:20:23 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 15:20:23 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 15:20:26 | === security-pending.php loaded (normal request) ===
+2025-12-10 15:20:26 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 15:31:40 | === security-pending.php loaded (normal request) ===
+2025-12-10 15:31:40 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 15:31:40 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 15:31:42 | === security-pending.php loaded (normal request) ===
+2025-12-10 15:31:42 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 15:31:46 | === security-pending.php loaded (normal request) ===
+2025-12-10 15:31:46 | Month click AJAX | 🔐 Security pending | Month selected | Month: June 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 15:32:12 | === security-pending.php loaded (normal request) ===
+2025-12-10 15:32:12 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 15:32:12 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 15:32:16 | === security-pending.php loaded (normal request) ===
+2025-12-10 15:32:16 | Month click AJAX | 🔐 Security pending | Month selected | Month: July 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 16:01:48 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:01:48 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 16:01:48 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 16:01:51 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:01:51 | Month click AJAX | 🔐 Security pending | Month selected | Month: June 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 16:01:59 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:01:59 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 16:02:07 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:02:07 | Month click AJAX | 🔐 Security pending | Month selected | Month: July 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 16:09:04 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:09:04 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 16:09:04 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 16:34:18 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:34:18 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 16:34:18 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 16:34:20 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:34:20 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 16:41:03 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:41:03 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 16:41:03 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 16:41:10 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:41:10 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 16:41:50 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:41:50 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 16:41:50 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 16:41:53 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:41:53 | Month click AJAX | 🔐 Security pending | Month selected | Month: June 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-10 16:52:50 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:52:50 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-10 16:52:50 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-10 16:52:54 | === security-pending.php loaded (normal request) ===
+2025-12-10 16:52:54 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-11 08:57:14 | === security-pending.php loaded (normal request) ===
+2025-12-11 08:57:14 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 08:57:14 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 08:57:16 | === security-pending.php loaded (normal request) ===
+2025-12-11 08:57:16 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.210.177
+2025-12-11 09:06:48 | === security-pending.php loaded (normal request) ===
+2025-12-11 09:06:48 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 09:06:48 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 09:06:55 | === security-pending.php loaded (normal request) ===
+2025-12-11 09:06:55 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 43.250.242.96
+2025-12-11 09:09:52 | === security-pending.php loaded (normal request) ===
+2025-12-11 09:09:52 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 09:09:52 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 09:39:29 | === security-pending.php loaded (normal request) ===
+2025-12-11 09:39:29 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 09:39:29 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 09:41:38 | === security-pending.php loaded (normal request) ===
+2025-12-11 09:41:38 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 09:41:38 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 12:33:44 | === security-pending.php loaded (normal request) ===
+2025-12-11 12:33:44 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 12:33:44 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 12:33:46 | === security-pending.php loaded (normal request) ===
+2025-12-11 12:33:46 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 43.250.242.96
+2025-12-11 12:35:42 | === security-pending.php loaded (normal request) ===
+2025-12-11 12:35:42 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 12:35:42 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 12:35:47 | === security-pending.php loaded (normal request) ===
+2025-12-11 12:35:47 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 43.250.242.96
+2025-12-11 12:35:50 | === security-pending.php loaded (normal request) ===
+2025-12-11 12:35:50 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 12:35:50 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 12:35:54 | === security-pending.php loaded (normal request) ===
+2025-12-11 12:35:54 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 43.250.242.96
+2025-12-11 12:36:08 | === security-pending.php loaded (normal request) ===
+2025-12-11 12:36:08 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 43.250.242.96
+2025-12-11 12:36:10 | === security-pending.php loaded (normal request) ===
+2025-12-11 12:36:10 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 43.250.242.96
+2025-12-11 14:30:51 | === security-pending.php loaded (normal request) ===
+2025-12-11 14:30:51 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 14:30:51 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 14:30:56 | === security-pending.php loaded (normal request) ===
+2025-12-11 14:30:56 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 14:30:56 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 14:32:48 | === security-pending.php loaded (normal request) ===
+2025-12-11 14:32:48 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 14:32:48 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 14:32:52 | === security-pending.php loaded (normal request) ===
+2025-12-11 14:32:52 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 14:32:52 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-11 14:32:56 | === security-pending.php loaded (normal request) ===
+2025-12-11 14:32:56 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 124.43.144.242
+2025-12-11 14:35:54 | === security-pending.php loaded (normal request) ===
+2025-12-11 14:35:54 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-11 14:35:54 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-12 10:55:33 | === security-pending.php loaded (normal request) ===
+2025-12-12 10:55:33 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 10:55:33 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-12 10:57:34 | === security-pending.php loaded (normal request) ===
+2025-12-12 10:57:34 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 10:57:34 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-12 10:57:56 | === security-pending.php loaded (normal request) ===
+2025-12-12 10:57:56 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 10:57:56 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-12 10:57:59 | === security-pending.php loaded (normal request) ===
+2025-12-12 10:57:59 | Month click AJAX | 🔐 Security pending | Month selected | Month: February 2026 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.217.120
+2025-12-12 10:58:10 | === security-pending.php loaded (normal request) ===
+2025-12-12 10:58:10 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.217.120
+2025-12-12 10:58:24 | === security-pending.php loaded (normal request) ===
+2025-12-12 10:58:24 | Month click AJAX | 🔐 Security pending | Month selected | Month: January 2026 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.217.120
+2025-12-12 10:58:28 | === security-pending.php loaded (normal request) ===
+2025-12-12 10:58:28 | Month click AJAX | 🔐 Security pending | Month selected | Month: October 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.217.120
+2025-12-12 11:41:23 | === security-pending.php loaded (normal request) ===
+2025-12-12 11:41:23 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 11:41:23 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-12 11:50:44 | === security-pending.php loaded (normal request) ===
+2025-12-12 11:50:44 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 11:50:44 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, January 2026, February 2026
+2025-12-12 13:47:48 | === security-pending.php loaded (normal request) ===
+2025-12-12 13:47:48 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 13:47:48 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, December 2025, January 2026, February 2026
+2025-12-12 14:01:14 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:01:14 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 14:01:14 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, December 2025, January 2026, February 2026
+2025-12-12 14:01:18 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:01:18 | Month click AJAX | 🔐 Security pending | Month selected | Month: December 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:01:21 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:01:21 | Month click AJAX | 🔐 Security pending | Month selected | Month: October 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:01:37 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:01:37 | Month click AJAX | 🔐 Security pending | Month selected | Month: December 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:01:52 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:01:52 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:02:21 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:02:21 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:02:32 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:02:32 | Month click AJAX | 🔐 Security pending | Month selected | Month: December 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:02:49 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:02:49 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 14:02:49 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, December 2025, January 2026, February 2026
+2025-12-12 14:02:54 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:02:54 | Month click AJAX | 🔐 Security pending | Month selected | Month: October 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 103.87.12.205
+2025-12-12 14:02:59 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:02:59 | Month click AJAX | 🔐 Security pending | Month selected | Month: February 2026 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 103.87.12.205
+2025-12-12 14:03:16 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:03:16 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 14:03:16 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, December 2025, January 2026, February 2026
+2025-12-12 14:04:35 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:04:35 | Month SQL: 
+    SELECT DISTINCT month_applicable 
+    FROM tbl_admin_actual_security_firmwise
+    ORDER BY STR_TO_DATE(month_applicable,'%M %Y') ASC
+
+2025-12-12 14:04:35 | Months found: April 2025, May 2025, June 2025, July 2025, August 2025, September 2025, October 2025, November 2025, December 2025, January 2026, February 2026
+2025-12-12 14:04:38 | === security-pending.php loaded (normal request) ===
+2025-12-12 14:04:38 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:25:58 | === security-pending.php loaded ===
+2025-12-12 14:26:01 | === security-pending.php loaded ===
+2025-12-12 14:26:01 | Month click AJAX | 🔐 Security pending | Month selected | Month: October 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:26:11 | === security-pending.php loaded ===
+2025-12-12 14:26:11 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:26:26 | === security-pending.php loaded ===
+2025-12-12 14:26:30 | === security-pending.php loaded ===
+2025-12-12 14:26:30 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 103.87.12.205
+2025-12-12 14:29:06 | === security-pending.php loaded ===
+2025-12-12 14:29:09 | === security-pending.php loaded ===
+2025-12-12 14:29:09 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:30:09 | === security-pending.php loaded ===
+2025-12-12 14:30:12 | === security-pending.php loaded ===
+2025-12-12 14:30:12 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:30:48 | === security-pending.php loaded ===
+2025-12-12 14:30:52 | === security-pending.php loaded ===
+2025-12-12 14:30:52 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 103.87.12.205
+2025-12-12 14:31:22 | === security-pending.php loaded ===
+2025-12-12 14:31:22 | Month click AJAX | 🔐 Security pending | Month selected | Month: August 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:31:25 | === security-pending.php loaded ===
+2025-12-12 14:31:25 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:34:32 | === security-pending.php loaded ===
+2025-12-12 14:34:35 | === security-pending.php loaded ===
+2025-12-12 14:34:35 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:42:33 | === security-pending.php loaded ===
+2025-12-12 14:42:36 | === security-pending.php loaded ===
+2025-12-12 14:42:36 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 103.87.12.205
+2025-12-12 14:42:42 | === security-pending.php loaded ===
+2025-12-12 14:42:45 | === security-pending.php loaded ===
+2025-12-12 14:42:45 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:43:46 | === security-pending.php loaded ===
+2025-12-12 14:52:12 | === security-pending.php loaded ===
+2025-12-12 14:52:15 | === security-pending.php loaded ===
+2025-12-12 14:52:15 | Month click AJAX | 🔐 Security pending | Month selected | Month: October 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:52:17 | === security-pending.php loaded ===
+2025-12-12 14:52:17 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 14:52:32 | === security-pending.php loaded ===
+2025-12-12 15:28:07 | === security-pending.php loaded ===
+2025-12-12 15:28:11 | === security-pending.php loaded ===
+2025-12-12 15:28:11 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 15:28:25 | === security-pending.php loaded ===
+2025-12-12 15:28:28 | === security-pending.php loaded ===
+2025-12-12 15:28:28 | Month click AJAX | 🔐 Security pending | Month selected | Month: November 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 103.87.12.205
+2025-12-12 15:38:33 | === security-pending.php loaded ===
+2025-12-12 15:38:35 | === security-pending.php loaded ===
+2025-12-12 15:38:35 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 15:39:34 | === security-pending.php loaded ===
+2025-12-12 15:39:34 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 15:39:35 | === security-pending.php loaded ===
+2025-12-12 15:39:35 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 15:40:12 | === security-pending.php loaded ===
+2025-12-12 15:40:15 | === security-pending.php loaded ===
+2025-12-12 15:40:15 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 15:43:00 | === security-pending.php loaded ===
+2025-12-12 15:43:02 | === security-pending.php loaded ===
+2025-12-12 15:43:02 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 103.87.12.205
+2025-12-12 15:44:04 | === security-pending.php loaded ===
+2025-12-12 15:44:07 | === security-pending.php loaded ===
+2025-12-12 15:44:07 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 103.87.12.205
+2025-12-12 16:32:51 | === security-pending.php loaded ===
+2025-12-12 16:36:03 | === security-pending.php loaded ===
+2025-12-12 16:36:07 | === security-pending.php loaded ===
+2025-12-12 16:36:07 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 103.87.12.205
+2025-12-12 16:36:23 | === security-pending.php loaded ===
+2025-12-12 16:36:25 | === security-pending.php loaded ===
+2025-12-12 16:36:25 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 16:39:50 | === security-pending.php loaded ===
+2025-12-12 16:39:52 | === security-pending.php loaded ===
+2025-12-12 16:39:52 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01006428 | User: Ruchith Fernando | IP: 103.87.12.205
+2025-12-12 16:40:05 | === security-pending.php loaded ===
+2025-12-15 09:21:14 | === security-pending.php loaded ===
+2025-12-15 09:21:18 | === security-pending.php loaded ===
+2025-12-15 09:21:18 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.156.108
+2025-12-15 09:21:48 | === security-pending.php loaded ===
+2025-12-15 09:22:40 | === security-pending.php loaded ===
+2025-12-15 09:22:43 | === security-pending.php loaded ===
+2025-12-15 09:22:43 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.156.108
+2025-12-15 09:45:48 | === security-pending.php loaded ===
+2025-12-15 11:57:38 | === security-pending.php loaded ===
+2025-12-15 11:59:08 | === security-pending.php loaded ===
+2025-12-15 12:13:59 | === security-pending.php loaded ===
+2025-12-15 12:36:29 | === security-pending.php loaded ===
+2025-12-15 12:37:52 | === security-pending.php loaded ===
+2025-12-15 12:38:13 | === security-pending.php loaded ===
+2025-12-15 12:40:59 | === security-pending.php loaded ===
+2025-12-15 12:41:02 | === security-pending.php loaded ===
+2025-12-15 12:41:02 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.156.108
+2025-12-15 12:41:04 | === security-pending.php loaded ===
+2025-12-15 12:41:04 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.156.108
+2025-12-15 12:41:10 | === security-pending.php loaded ===
+2025-12-15 12:41:10 | Month click AJAX | 🔐 Security pending | Month selected | Month: June 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.156.108
+2025-12-15 12:41:16 | === security-pending.php loaded ===
+2025-12-15 12:41:16 | Month click AJAX | 🔐 Security pending | Month selected | Month: July 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.156.108
+2025-12-15 12:41:22 | === security-pending.php loaded ===
+2025-12-15 12:41:22 | Month click AJAX | 🔐 Security pending | Month selected | Month: August 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.156.108
+2025-12-15 12:41:31 | === security-pending.php loaded ===
+2025-12-15 12:41:31 | Month click AJAX | 🔐 Security pending | Month selected | Month: September 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.156.108
+2025-12-15 12:41:43 | === security-pending.php loaded ===
+2025-12-15 12:41:44 | === security-pending.php loaded ===
+2025-12-15 12:41:44 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 124.43.144.242
+2025-12-15 12:41:46 | === security-pending.php loaded ===
+2025-12-15 12:41:46 | Month click AJAX | 🔐 Security pending | Month selected | Month: May 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 124.43.144.242
+2025-12-15 12:41:49 | === security-pending.php loaded ===
+2025-12-15 12:41:49 | Month click AJAX | 🔐 Security pending | Month selected | Month: June 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 124.43.144.242
+2025-12-15 12:41:51 | === security-pending.php loaded ===
+2025-12-15 12:41:51 | Month click AJAX | 🔐 Security pending | Month selected | Month: July 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 124.43.144.242
+2025-12-15 12:41:58 | === security-pending.php loaded ===
+2025-12-15 12:41:58 | Month click AJAX | 🔐 Security pending | Month selected | Month: August 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 124.43.144.242
+2025-12-15 12:42:05 | === security-pending.php loaded ===
+2025-12-15 12:42:05 | Month click AJAX | 🔐 Security pending | Month selected | Month: September 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 124.43.144.242
+2025-12-15 14:02:29 | === security-pending.php loaded ===
+2025-12-15 14:06:24 | === security-pending.php loaded ===
+2025-12-15 14:08:04 | === security-pending.php loaded ===
+2025-12-15 14:08:07 | === security-pending.php loaded ===
+2025-12-15 14:08:07 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 124.43.144.242
+2025-12-15 14:10:56 | === security-pending.php loaded ===
+2025-12-15 14:11:00 | === security-pending.php loaded ===
+2025-12-15 14:11:00 | Month click AJAX | 🔐 Security pending | Month selected | Month: April 2025 | HRIS: 01006428 | User: Ruchith Fernando | IP: 124.43.144.242
+2025-12-15 14:12:37 | === security-pending.php loaded ===
+2025-12-15 14:12:37 | === security-pending.php loaded ===
+2025-12-15 14:12:39 | === security-pending.php loaded ===
+2025-12-15 14:12:39 | === security-pending.php loaded ===
+2025-12-15 15:06:13 | === security-pending.php loaded ===
+2025-12-17 14:26:16 | === security-pending.php loaded ===
+2025-12-18 15:19:06 | === security-pending.php loaded ===
+2025-12-18 15:19:09 | === security-pending.php loaded ===
+2025-12-18 15:19:09 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01006428 | User: Ruchith Fernando | IP: 175.157.155.30
+2025-12-18 16:17:43 | === security-pending.php loaded ===
+2025-12-18 16:17:46 | === security-pending.php loaded ===
+2025-12-18 16:17:46 | Month click AJAX | 🔐 Security pending | Month selected | Month: March 2026 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.155.30
+2025-12-18 16:17:49 | === security-pending.php loaded ===
+2025-12-18 16:17:49 | Month click AJAX | 🔐 Security pending | Month selected | Month: February 2026 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.155.30
+2025-12-22 14:49:02 | === security-pending.php loaded ===
+2025-12-22 15:23:17 | === security-pending.php loaded ===
+2025-12-22 15:23:22 | === security-pending.php loaded ===
+2025-12-22 15:23:22 | Month click AJAX | 🔐 Security pending | Month selected | Month: June 2025 | HRIS: 01000036 | User: Sampath Jayasinghe | IP: 175.157.155.30

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File and Gift Request & Issuance Decision Flow</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 40px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    pre.mermaid {
+      display: block;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>File and Gift Request & Issuance Process Decision Flow</h1>
+  <pre class="mermaid">
+  flowchart TD
+      A([Start]) --> B[Branch BOIC raises request to Admin]
+      B --> C{Stock available at Admin?}
+      C -- Yes --> D[Admin issues files & updates system]
+      C -- No --> E[Admin notifies BOIC of shortage]
+      D --> F[Files delivered to Branch / Marketing Office]
+      F --> G[BOIC allocates files to Marketing Officers]
+      G --> H{Dual Control Approval?}
+      H -- Yes --> I[Allocation Approved]
+      H -- No --> J[Reject allocation request]
+      I --> K[Marketing Officer receives & acknowledges files]
+      K --> L{File entered in LOS?}
+      L -- Yes --> M[System marks file as Used]
+      L -- No --> N[File remains in active stock]
+      M --> O{File damaged?}
+      O -- Yes --> P[Record damage details (Client Code, NIC, Phone)]
+      P --> Q[Charge Marketing Officer for damaged file]
+      O -- No --> R[Continue with monthly reconciliation]
+      Q --> R
+      N --> R
+      R --> S{Any unused or damaged files?}
+      S -- Yes --> T[BOIC removes or returns under dual control]
+      S -- No --> U[Proceed to monthly audit]
+      T --> V[Return / Report to Admin Department]
+      V --> W[Admin updates master stock and reports]
+      U --> W
+      W --> X([End])
+  </pre>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

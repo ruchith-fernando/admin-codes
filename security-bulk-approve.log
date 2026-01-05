@@ -1,0 +1,26 @@
+2025-12-10 14:56:32 | Bulk approve called | ids_raw=23,37,63,69,33,27,79,51,53,49,31,57,29,11,35,45,15,9,83,75,3,65,25,73,61,17,59,77,47,67,5,21,19,13,39 | HRIS=01006428 | Name=Ruchith Fernando | IP=175.157.210.177
+2025-12-10 14:56:32 | Running SQL: 
+    UPDATE tbl_admin_actual_security_firmwise
+    SET approval_status = 'approved',
+        approved_hris   = '01006428',
+        approved_name   = 'Ruchith Fernando',
+        approved_by     = 'Ruchith Fernando',
+        approved_at     = NOW()
+    WHERE id IN (23,37,63,69,33,27,79,51,53,49,31,57,29,11,35,45,15,9,83,75,3,65,25,73,61,17,59,77,47,67,5,21,19,13,39)
+      AND (approval_status = 'pending' OR approval_status IS NULL)
+      AND (entered_hris IS NULL OR TRIM(entered_hris) <> '01006428')
+
+2025-12-10 14:56:32 | Rows affected: 35
+2025-12-10 15:20:29 | Bulk approve called | ids_raw=115,99,81,131,145,91,97,141,135,107,159,161,109,157,139,85,137,119,89,143,153,123,117,103,111,93,133,101,125,87,105,155,95,113,129,127,121,147,149,151 | HRIS=01006428 | Name=Ruchith Fernando | IP=175.157.210.177
+2025-12-10 15:20:29 | Running SQL: 
+    UPDATE tbl_admin_actual_security_firmwise
+    SET approval_status = 'approved',
+        approved_hris   = '01006428',
+        approved_name   = 'Ruchith Fernando',
+        approved_by     = 'Ruchith Fernando',
+        approved_at     = NOW()
+    WHERE id IN (115,99,81,131,145,91,97,141,135,107,159,161,109,157,139,85,137,119,89,143,153,123,117,103,111,93,133,101,125,87,105,155,95,113,129,127,121,147,149,151)
+      AND (approval_status = 'pending' OR approval_status IS NULL)
+      AND (entered_hris IS NULL OR TRIM(entered_hris) <> '01006428')
+
+2025-12-10 15:20:29 | Rows affected: 40

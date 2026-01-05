@@ -1,0 +1,110 @@
+[2025-08-12 13:26:25] Search Term: july-2025
+[2025-08-12 13:26:25] WHERE Clause: WHERE (MOBILE_Number LIKE '%july-2025%' 
+        OR name_of_employee LIKE '%july-2025%' 
+        OR Update_date LIKE '%july-2025%' 
+        OR nic_no LIKE '%july-2025%' 
+        OR hris_no LIKE '%july-2025%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-08-12 13:26:25] Query executed. Rows returned: 1274
+[2025-08-12 13:26:25] Total rows processed for export: 1274
+[2025-08-12 13:26:25] Excel export completed successfully.
+[2025-08-21 11:35:41] Search Term: 
+[2025-08-21 11:35:41] WHERE Clause: WHERE (MOBILE_Number LIKE '%%' 
+        OR name_of_employee LIKE '%%' 
+        OR Update_date LIKE '%%' 
+        OR nic_no LIKE '%%' 
+        OR hris_no LIKE '%%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-08-21 11:35:41] Query executed. Rows returned: 9144
+[2025-08-21 11:35:41] Total rows processed for export: 9144
+[2025-08-21 11:35:41] Excel export completed successfully.
+[2025-08-21 11:35:58] Search Term: 
+[2025-08-21 11:35:58] WHERE Clause: WHERE (MOBILE_Number LIKE '%%' 
+        OR name_of_employee LIKE '%%' 
+        OR Update_date LIKE '%%' 
+        OR nic_no LIKE '%%' 
+        OR hris_no LIKE '%%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-08-21 11:35:58] Query executed. Rows returned: 9144
+[2025-08-21 11:35:59] Total rows processed for export: 9144
+[2025-08-21 11:35:59] Excel export completed successfully.
+[2025-08-21 11:47:29] Search Term: 
+[2025-08-21 11:47:29] WHERE Clause: WHERE (MOBILE_Number LIKE '%%' 
+        OR name_of_employee LIKE '%%' 
+        OR Update_date LIKE '%%' 
+        OR nic_no LIKE '%%' 
+        OR hris_no LIKE '%%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-08-21 11:47:30] Query executed. Rows returned: 9144
+[2025-08-21 11:47:30] Total rows processed for export: 9144
+[2025-08-21 11:47:30] Excel export completed successfully.
+[2025-08-21 13:01:12] Search Term: 
+[2025-08-21 13:01:12] WHERE Clause: WHERE (MOBILE_Number LIKE '%%' 
+        OR name_of_employee LIKE '%%' 
+        OR Update_date LIKE '%%' 
+        OR nic_no LIKE '%%' 
+        OR hris_no LIKE '%%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-08-21 13:01:12] Query executed. Rows returned: 9144
+[2025-08-21 13:01:12] Total rows processed for export: 9144
+[2025-08-21 13:01:12] Excel export completed successfully.
+[2025-08-28 12:50:22] Search Term: August-2025
+[2025-08-28 12:50:22] WHERE Clause: WHERE (MOBILE_Number LIKE '%August-2025%' 
+        OR name_of_employee LIKE '%August-2025%' 
+        OR Update_date LIKE '%August-2025%' 
+        OR nic_no LIKE '%August-2025%' 
+        OR hris_no LIKE '%August-2025%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-08-28 12:50:22] Query executed. Rows returned: 1259
+[2025-08-28 12:50:22] Total rows processed for export: 1259
+[2025-08-28 12:50:22] Excel export completed successfully.
+[2025-08-28 12:50:57] Search Term: August-202
+[2025-08-28 12:50:57] WHERE Clause: WHERE (MOBILE_Number LIKE '%August-202%' 
+        OR name_of_employee LIKE '%August-202%' 
+        OR Update_date LIKE '%August-202%' 
+        OR nic_no LIKE '%August-202%' 
+        OR hris_no LIKE '%August-202%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-08-28 12:50:57] Query executed. Rows returned: 1259
+[2025-08-28 12:50:57] Total rows processed for export: 1259
+[2025-08-28 12:50:57] Excel export completed successfully.
+[2025-08-28 12:50:57] Search Term: August-202
+[2025-08-28 12:50:57] WHERE Clause: WHERE (MOBILE_Number LIKE '%August-202%' 
+        OR name_of_employee LIKE '%August-202%' 
+        OR Update_date LIKE '%August-202%' 
+        OR nic_no LIKE '%August-202%' 
+        OR hris_no LIKE '%August-202%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-08-28 12:50:57] Query executed. Rows returned: 1259
+[2025-08-28 12:50:57] Total rows processed for export: 1259
+[2025-08-28 12:50:57] Excel export completed successfully.
+[2025-09-04 14:51:36] Search Term: august-2025
+[2025-09-04 14:51:36] WHERE Clause: WHERE (MOBILE_Number LIKE '%august-2025%' 
+        OR name_of_employee LIKE '%august-2025%' 
+        OR Update_date LIKE '%august-2025%' 
+        OR nic_no LIKE '%august-2025%' 
+        OR hris_no LIKE '%august-2025%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-09-04 14:51:36] Query executed. Rows returned: 1286
+[2025-09-04 14:51:36] Total rows processed for export: 1286
+[2025-09-04 14:51:36] Excel export completed successfully.
+[2025-09-23 14:14:21] Search Term: august-2025
+[2025-09-23 14:14:21] WHERE Clause: WHERE (MOBILE_Number LIKE '%august-2025%' 
+        OR name_of_employee LIKE '%august-2025%' 
+        OR Update_date LIKE '%august-2025%' 
+        OR nic_no LIKE '%august-2025%' 
+        OR hris_no LIKE '%august-2025%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-09-23 14:14:21] Query executed. Rows returned: 1286
+[2025-09-23 14:14:21] Total rows processed for export: 1286
+[2025-09-23 14:14:21] Excel export completed successfully.
+[2025-09-23 14:18:15] Search Term: august-2025
+[2025-09-23 14:18:15] WHERE Clause: WHERE (MOBILE_Number LIKE '%august-2025%' 
+        OR name_of_employee LIKE '%august-2025%' 
+        OR Update_date LIKE '%august-2025%' 
+        OR nic_no LIKE '%august-2025%' 
+        OR hris_no LIKE '%august-2025%') 
+        AND hris_no REGEXP '^[0-9]+$'
+[2025-09-23 14:18:15] Query executed. Rows returned: 1286
+[2025-09-23 14:18:15] Total rows processed for export: 1286
+[2025-09-23 14:18:15] Excel export completed successfully.

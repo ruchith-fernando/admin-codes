@@ -1,0 +1,9 @@
+Array
+(
+    [item_code] => STACM00009
+    [quantity] => 890
+    [unit_price] => 5.50
+    [received_date] => 2025-06-03
+    [tax_included] => yes
+)
+Received Date = 2025-06-03

@@ -1,0 +1,41 @@
+[21-Aug-2025 17:30:10 Asia/Colombo] PHP Deprecated:  preg_match(): Passing null to parameter #2 ($subject) of type string is deprecated in /home/admincodebuild/public_html/pages/cdma-upload-form.php on line 107
+[21-Aug-2025 17:30:10 Asia/Colombo] PHP Warning:  Undefined variable $row in /home/admincodebuild/public_html/pages/cdma-upload-form.php on line 107
+[21-Aug-2025 17:30:10 Asia/Colombo] PHP Deprecated:  preg_match(): Passing null to parameter #2 ($subject) of type string is deprecated in /home/admincodebuild/public_html/pages/cdma-upload-form.php on line 107
+[25-Aug-2025 08:43:36 Asia/Colombo] PDF process failed [Approval.pdf]: BILL PERIOD not found.
+[25-Aug-2025 08:43:39 Asia/Colombo] PDF process failed [contract wise payment shedule.pdf]: BILL PERIOD not found.
+[28-Aug-2025 12:27:10 Asia/Colombo] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/admincodebuild/public_html/pages/connections/connection.php:10
+Stack trace:
+#0 /home/admincodebuild/public_html/pages/connections/connection.php(10): mysqli_connect()
+#1 /home/admincodebuild/public_html/pages/cdma-upload-form.php(34): include('/home/admincode...')
+#2 {main}
+  thrown in /home/admincodebuild/public_html/pages/connections/connection.php on line 10
+[28-Aug-2025 12:27:10 Asia/Colombo] FATAL: Uncaught mysqli_sql_exception: Too many connections in /home/admincodebuild/public_html/pages/connections/connection.php:10
+Stack trace:
+#0 /home/admincodebuild/public_html/pages/connections/connection.php(10): mysqli_connect()
+#1 /home/admincodebuild/public_html/pages/cdma-upload-form.php(34): include('/home/admincode...')
+#2 {main}
+  thrown in /home/admincodebuild/public_html/pages/connections/connection.php:10
+[28-Aug-2025 12:27:17 Asia/Colombo] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/admincodebuild/public_html/pages/connections/connection.php:10
+Stack trace:
+#0 /home/admincodebuild/public_html/pages/connections/connection.php(10): mysqli_connect()
+#1 /home/admincodebuild/public_html/pages/cdma-upload-form.php(34): include('/home/admincode...')
+#2 {main}
+  thrown in /home/admincodebuild/public_html/pages/connections/connection.php on line 10
+[28-Aug-2025 12:27:17 Asia/Colombo] FATAL: Uncaught mysqli_sql_exception: Too many connections in /home/admincodebuild/public_html/pages/connections/connection.php:10
+Stack trace:
+#0 /home/admincodebuild/public_html/pages/connections/connection.php(10): mysqli_connect()
+#1 /home/admincodebuild/public_html/pages/cdma-upload-form.php(34): include('/home/admincode...')
+#2 {main}
+  thrown in /home/admincodebuild/public_html/pages/connections/connection.php:10
+[28-Aug-2025 12:27:21 Asia/Colombo] PHP Fatal error:  Uncaught mysqli_sql_exception: Too many connections in /home/admincodebuild/public_html/pages/connections/connection.php:10
+Stack trace:
+#0 /home/admincodebuild/public_html/pages/connections/connection.php(10): mysqli_connect()
+#1 /home/admincodebuild/public_html/pages/cdma-upload-form.php(34): include('/home/admincode...')
+#2 {main}
+  thrown in /home/admincodebuild/public_html/pages/connections/connection.php on line 10
+[28-Aug-2025 12:27:21 Asia/Colombo] FATAL: Uncaught mysqli_sql_exception: Too many connections in /home/admincodebuild/public_html/pages/connections/connection.php:10
+Stack trace:
+#0 /home/admincodebuild/public_html/pages/connections/connection.php(10): mysqli_connect()
+#1 /home/admincodebuild/public_html/pages/cdma-upload-form.php(34): include('/home/admincode...')
+#2 {main}
+  thrown in /home/admincodebuild/public_html/pages/connections/connection.php:10

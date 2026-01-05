@@ -1,0 +1,274 @@
+==== New Mobile Issue Entry ====
+Table: tbl_admin_mobile_issues
+mobile_no: 0773021186
+remarks: Issued via Manage Requests page
+voice_data: Voice
+branch_operational_remarks: From SIM request
+name_of_employee: Condergamage Ruchith Gerard  Fernando
+hris_no: 006428
+company_contribution: 
+epf_no: 009088
+company_hierarchy: Emerging Business Information Technology (EBIT)
+title: Mr
+designation: Assistant Manager
+display_name: Ruchith Fernando
+location: Head Office
+nic_no: 791861586V
+category: Assistant Manager - Operations
+type: Permanent
+date_joined: 2018-12-17
+date_resigned: 
+category_ops_sales: Operational
+status: Active
+connection_status: Active
+=====================================
+
+==== Request Rejected ====
+Request ID: 33
+Rejected by: admin_main
+===========================
+
+==== New Mobile Issue Entry ====
+Request ID: 37
+mobile_no: 0765455585
+company_contribution: 1500
+Issued by: admin_main
+=====================================
+
+==== Request Rejected ====
+Request ID: 43
+Rejected by: admin_main
+===========================
+
+==== Request Rejected ====
+Request ID: 35
+Rejected by: admin_main
+===========================
+
+==== Request Rejected ====
+Request ID: 35
+Rejected by: admin_main
+===========================
+
+==== New Mobile Issue Entry ====
+Request ID: 35
+mobile_no: 077123456
+company_contribution: 1500
+Issued by: admin_main
+=====================================
+
+==== Request Rejected ====
+Request ID: 35
+Rejected by: admin_main
+===========================
+
+==== New Mobile Issue Entry ====
+Request ID: 48
+mobile_no: 770239049
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 49
+mobile_no: 772872241
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 50
+mobile_no: 774418237
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 52
+mobile_no: 770261576
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 53
+mobile_no: 770243539
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 54
+mobile_no: 773462172
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 55
+mobile_no: 772793012
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 56
+mobile_no: 770572403
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 57
+mobile_no: 770247632
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 58
+mobile_no: 770314657
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 59
+mobile_no: 770628681
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 60
+mobile_no: 771575476
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 61
+mobile_no: 773864562
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 62
+mobile_no: 770268623
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 63
+mobile_no: 771740184
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 64
+mobile_no: 773872620
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 71
+mobile_no: 740870696
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 65
+mobile_no: 770583691
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 66
+mobile_no: 770183306
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 67
+mobile_no: 769467642
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 68
+mobile_no: 769913639
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 69
+mobile_no: 769467707
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 70
+mobile_no: 769919385
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 72
+mobile_no: 765087903
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 73
+mobile_no: 765035206
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 74
+mobile_no: 743934133
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 75
+mobile_no: 765034604
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 76
+mobile_no: 743934991
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 77
+mobile_no: 765199429
+company_contribution: 250
+Issued by: admin_main
+=====================================
+
+==== New Mobile Issue Entry ====
+Request ID: 78
+mobile_no: 768198278
+company_contribution: 250
+Issued by: admin_main
+=====================================
+

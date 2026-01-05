@@ -1,0 +1,37 @@
+Months: null
+Budget Data: null
+Actual Data: null
+Filtered Months: null
+Months: null
+Budget Data: null
+Actual Data: null
+Filtered Months: null
+Months: null
+Budget Data: null
+Actual Data: null
+Filtered Months: null
+Months: null
+Budget Data: null
+Actual Data: null
+Filtered Months: null
+====== NEW REQUEST at 2025-06-20 15:20:37 ======
+Requested year: 2024
+Months: ["April 2024","May 2024","June 2024","July 2024","August 2024","September 2024","October 2024","November 2024","December 2024","January 2025","February 2025","March 2025"]
+Budget Data: {"april 2025":"2865190.00","may 2025":"2865190.00","june 2025":"2865190.00","july 2025":"2865190.00","august 2025":"2865190.00","september 2025":"2865190.00","october 2025":"2865190.00","november 2025":"2865190.00","december 2025":"2865190.00","january 2026":"2865190.00","february 2026":"2865190.00","march 2026":"2865190.00"}
+Actual Data: {"june 2025":"1216098.13"}
+Filtered Months: []
+
+====== NEW REQUEST at 2025-06-20 15:20:41 ======
+Requested year: 2024
+Months: ["April 2024","May 2024","June 2024","July 2024","August 2024","September 2024","October 2024","November 2024","December 2024","January 2025","February 2025","March 2025"]
+Budget Data: {"april 2025":"2865190.00","may 2025":"2865190.00","june 2025":"2865190.00","july 2025":"2865190.00","august 2025":"2865190.00","september 2025":"2865190.00","october 2025":"2865190.00","november 2025":"2865190.00","december 2025":"2865190.00","january 2026":"2865190.00","february 2026":"2865190.00","march 2026":"2865190.00"}
+Actual Data: {"june 2025":"1216098.13"}
+Filtered Months: []
+
+====== NEW REQUEST at 2025-06-20 15:21:00 ======
+Requested year: 2024
+Months: ["April 2024","May 2024","June 2024","July 2024","August 2024","September 2024","October 2024","November 2024","December 2024","January 2025","February 2025","March 2025"]
+Budget Data: {"april 2025":"2865190.00","may 2025":"2865190.00","june 2025":"2865190.00","july 2025":"2865190.00","august 2025":"2865190.00","september 2025":"2865190.00","october 2025":"2865190.00","november 2025":"2865190.00","december 2025":"2865190.00","january 2026":"2865190.00","february 2026":"2865190.00","march 2026":"2865190.00"}
+Actual Data: {"june 2025":"1216098.13"}
+Filtered Months: []
+

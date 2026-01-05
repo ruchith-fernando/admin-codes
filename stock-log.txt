@@ -1,0 +1,28 @@
+Called fetch-stock-info
+Received item_code: STACM00009
+SQL: 
+    SELECT item_code, remaining_quantity AS stock_available, unit_price, received_date
+    FROM tbl_admin_stationary_stock_in
+    WHERE item_code = 'STACM00009'
+      AND status = 'approved'
+    ORDER BY received_date DESC
+
+Returned rows: 0
+Called fetch-stock-info
+Received item_code: STACM00009
+SQL: 
+    SELECT item_code, remaining_quantity AS stock_available, unit_price, received_date
+    FROM tbl_admin_stationary_stock_in
+    WHERE item_code = 'STACM00009'
+    ORDER BY received_date DESC
+
+Returned rows: 1
+Called fetch-stock-info
+Received item_code: STACM00009
+SQL: 
+    SELECT item_code, remaining_quantity AS stock_available, unit_price, received_date
+    FROM tbl_admin_stationary_stock_in
+    WHERE item_code = 'STACM00009'
+    ORDER BY received_date DESC
+
+Returned rows: 1

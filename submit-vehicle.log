@@ -1,0 +1,215 @@
+[2025-10-21 16:17:22] ====== NEW REQUEST ======
+[2025-10-21 16:17:22] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:17:22] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2866","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"0","assigned_user_hris":"002974","vehicle_category":"SUV"}
+[2025-10-21 16:17:22] Validation failed - missing required fields.
+[2025-10-21 16:17:22] Response: {"status":"error","message":"Please fill all required fields."}
+[2025-10-21 16:17:32] ====== NEW REQUEST ======
+[2025-10-21 16:17:32] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:17:32] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2866","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"0","assigned_user_hris":"002974","vehicle_category":"SUV"}
+[2025-10-21 16:17:32] Validation failed - missing required fields.
+[2025-10-21 16:17:32] Response: {"status":"error","message":"Please fill all required fields."}
+[2025-10-21 16:18:58] ====== NEW REQUEST ======
+[2025-10-21 16:18:58] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:18:58] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2866","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"0","assigned_user_hris":"002974","vehicle_category":"SUV"}
+[2025-10-21 16:18:58] Validation failed - missing required fields.
+[2025-10-21 16:18:58] Response: {"status":"error","message":"Please fill all required fields."}
+[2025-10-21 16:24:25] ====== NEW REQUEST ======
+[2025-10-21 16:24:25] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:24:25] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2866","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"0","assigned_user_hris":"002974","vehicle_category":"SUV"}
+[2025-10-21 16:24:25] Validation failed - missing required fields.
+[2025-10-21 16:24:25] Response: {"status":"error","message":"Please fill all required fields."}
+[2025-10-21 16:24:28] ====== NEW REQUEST ======
+[2025-10-21 16:24:28] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:24:28] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2866","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"0","assigned_user_hris":"002974","vehicle_category":"SUV"}
+[2025-10-21 16:24:28] Validation failed - missing required fields.
+[2025-10-21 16:24:28] Response: {"status":"error","message":"Please fill all required fields."}
+[2025-10-21 16:24:43] ====== NEW REQUEST ======
+[2025-10-21 16:24:43] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:24:43] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2866","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"0","assigned_user_hris":"002974","vehicle_category":"SUV"}
+[2025-10-21 16:24:43] Validation failed - missing required fields.
+[2025-10-21 16:24:43] Response: {"status":"error","message":"Please fill all required fields."}
+[2025-10-21 16:25:49] ====== NEW REQUEST ======
+[2025-10-21 16:25:49] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:25:49] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"bubuib","make_model":"test","fuel_type":"Fuel","purchase_date":"202-07-22","purchase_value":"31,500,000","original_mileage":"0","assigned_user_hris":"006428","vehicle_category":"SUV"}
+[2025-10-21 16:25:49] Validation failed - missing required fields.
+[2025-10-21 16:25:49] Response: {"status":"error","message":"Please fill all required fields."}
+[2025-10-21 16:25:55] ====== NEW REQUEST ======
+[2025-10-21 16:25:55] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:25:55] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"bubuib","make_model":"test","fuel_type":"Fuel","purchase_date":"202-07-22","purchase_value":"31,500,000","original_mileage":"23","assigned_user_hris":"006428","vehicle_category":"SUV"}
+[2025-10-21 16:25:55] Insert success. ID: 162, SR: 2510000157, Mileage: 23
+[2025-10-21 16:25:55] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000157","original_mileage":"23"}
+[2025-10-21 16:27:44] ====== NEW REQUEST ======
+[2025-10-21 16:27:44] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:27:44] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2866","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"002974","vehicle_category":"SUV"}
+[2025-10-21 16:27:44] Insert success. ID: 163, SR: 2510000158, Mileage: 1
+[2025-10-21 16:27:44] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000158","original_mileage":"1"}
+[2025-10-21 16:28:39] ====== NEW REQUEST ======
+[2025-10-21 16:28:39] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:28:39] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2879","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"000007","vehicle_category":"SUV"}
+[2025-10-21 16:28:39] Insert success. ID: 164, SR: 2510000159, Mileage: 1
+[2025-10-21 16:28:39] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000159","original_mileage":"1"}
+[2025-10-21 16:29:20] ====== NEW REQUEST ======
+[2025-10-21 16:29:20] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:29:20] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2884","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"000006","vehicle_category":"SUV"}
+[2025-10-21 16:29:20] Insert success. ID: 165, SR: 2510000160, Mileage: 1
+[2025-10-21 16:29:20] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000160","original_mileage":"1"}
+[2025-10-21 16:30:01] ====== NEW REQUEST ======
+[2025-10-21 16:30:01] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:30:01] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBO 2885","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"000011","vehicle_category":"SUV"}
+[2025-10-21 16:30:01] Insert success. ID: 166, SR: 2510000161, Mileage: 1
+[2025-10-21 16:30:01] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000161","original_mileage":"1"}
+[2025-10-21 16:30:55] ====== NEW REQUEST ======
+[2025-10-21 16:30:55] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:30:55] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBP 3938","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-09-02","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"003365","vehicle_category":"SUV"}
+[2025-10-21 16:30:55] Insert success. ID: 167, SR: 2510000162, Mileage: 1
+[2025-10-21 16:30:55] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000162","original_mileage":"1"}
+[2025-10-21 16:31:45] ====== NEW REQUEST ======
+[2025-10-21 16:31:45] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:31:45] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBP 3795","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-09-02","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"000069","vehicle_category":"SUV"}
+[2025-10-21 16:31:45] Insert success. ID: 168, SR: 2510000163, Mileage: 1
+[2025-10-21 16:31:45] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000163","original_mileage":"1"}
+[2025-10-21 16:33:14] ====== NEW REQUEST ======
+[2025-10-21 16:33:14] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:33:14] POST data: {"vehicle_type":"Award Winner","vehicle_number":"CBM 4274","make_model":"Hyandai Grand i10","fuel_type":"Fuel","purchase_date":"2024-07-10","purchase_value":"9,439,999","original_mileage":"1","assigned_user_hris":"009991","vehicle_category":"Car"}
+[2025-10-21 16:33:14] Insert success. ID: 169, SR: 2510000164, Mileage: 1
+[2025-10-21 16:33:14] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000164","original_mileage":"1"}
+[2025-10-21 16:34:02] ====== NEW REQUEST ======
+[2025-10-21 16:34:02] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:34:02] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBQ 4056","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-10-01","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"000698","vehicle_category":"SUV"}
+[2025-10-21 16:34:02] Insert success. ID: 170, SR: 2510000165, Mileage: 1
+[2025-10-21 16:34:02] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000165","original_mileage":"1"}
+[2025-10-21 16:38:47] ====== NEW REQUEST ======
+[2025-10-21 16:38:47] User Role: standard_user | HRIS: 01006428
+[2025-10-21 16:38:47] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBQ 6176","make_model":"Honda CRV","fuel_type":"Fuel","purchase_date":"2025-10-09","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"000698","vehicle_category":"SUV"}
+[2025-10-21 16:38:47] Insert success. ID: 171, SR: 2510000166, Mileage: 1
+[2025-10-21 16:38:47] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000166","original_mileage":"1"}
+[2025-10-21 16:49:29] ====== NEW REQUEST ======
+[2025-10-21 16:49:29] User Role: standard_user | HRIS: 01000036
+[2025-10-21 16:49:29] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"test","chassis_number":"151841321 54498","make_model":"gyug","engine_capacity":"1700","year_of_manufacture":"2025","fuel_type":"Hybrid","purchase_date":"2025-10-21","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"010752","vehicle_category":"Car"}
+[2025-10-21 16:49:29] Insert success. ID: 172, SR: 2510000167
+[2025-10-21 16:49:29] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000167"}
+[2025-10-22 09:38:16] ====== NEW REQUEST ======
+[2025-10-22 09:38:16] User Role: standard_user | HRIS: 01006428
+[2025-10-22 09:38:16] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"252-3204","chassis_number":"154516","make_model":"Toyota Hilux","fuel_type":"Fuel","engine_capacity":"3000","year_of_manufacture":"1994","purchase_date":"2020-08-01","purchase_value":"2,400,000","original_mileage":"205,000","assigned_user_hris":"006428","vehicle_category":"SUV"}
+[2025-10-22 09:38:16] Insert success. ID: 173, SR: 2510000168
+[2025-10-22 09:38:16] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000168"}
+[2025-10-22 09:45:55] ====== NEW REQUEST ======
+[2025-10-22 09:45:55] User Role: standard_user | HRIS: 01006428
+[2025-10-22 09:45:55] POST data: {"vehicle_type":"Award Winner","vehicle_number":"CBE 1774","chassis_number":"Chassie Number","make_model":"Audi A3","fuel_type":"Fuel","engine_capacity":"990","year_of_manufacture":"2018","purchase_date":"2018-10-15","purchase_value":"8,250,000","original_mileage":"350","assigned_user_hris":"006428","vehicle_category":"SUV"}
+[2025-10-22 09:45:55] Insert success. ID: 174, SR: 2510000169
+[2025-10-22 09:45:55] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000169"}
+[2025-10-22 09:57:53] ====== NEW REQUEST ======
+[2025-10-22 09:57:53] User Role: standard_user | HRIS: 01006428
+[2025-10-22 09:57:53] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"252-3204","chassis_number":"Chassie Number","make_model":"Toyota Hilux","fuel_type":"Fuel","engine_capacity":"3000","year_of_manufacture":"1994","purchase_date":"1994-07-04","purchase_value":"2,400,000","original_mileage":"150000","assigned_user_hris":"006428","vehicle_category":"SUV"}
+[2025-10-22 09:57:53] Insert success. ID: 175, SR: 2510000170
+[2025-10-22 09:57:53] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000170"}
+[2025-10-22 10:33:15] ====== NEW REQUEST ======
+[2025-10-22 10:33:15] User Role: standard_user | HRIS: 01000036
+[2025-10-22 10:33:15] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"test","chassis_number":"test","make_model":"test","fuel_type":"Hybrid","engine_capacity":"1500","year_of_manufacture":"2025","purchase_date":"2025-10-22","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"006428","vehicle_category":"Van"}
+[2025-10-22 10:33:15] Insert success. ID: 176, SR: 2510000171
+[2025-10-22 10:33:15] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000171"}
+[2025-10-27 11:42:10] ====== NEW REQUEST ======
+[2025-10-27 11:42:10] User Role: standard_user | HRIS: 01006428
+[2025-10-27 11:42:10] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBN 6349","chassis_number":"XXXX","make_model":"BMW EQS 450+","fuel_type":"Electric","engine_capacity":"14","year_of_manufacture":"2025","purchase_date":"2025-10-27","purchase_value":"1","original_mileage":"1","assigned_user_hris":"000015","vehicle_category":"Car"}
+[2025-10-27 11:42:10] Insert success. ID: 177, SR: 2510000417
+[2025-10-27 11:42:10] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000417"}
+[2025-10-27 11:47:48] ====== NEW REQUEST ======
+[2025-10-27 11:47:48] User Role: standard_user | HRIS: 01006428
+[2025-10-27 11:47:48] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBG 3252","chassis_number":"SALGA2AY2KA542461","make_model":"Landrover RRN-PHEW","fuel_type":"Electric","engine_capacity":"11","year_of_manufacture":"2019","purchase_date":"2019-02-27","purchase_value":"1","original_mileage":"1","assigned_user_hris":"000015","vehicle_category":"SUV"}
+[2025-10-27 11:47:48] Insert success. ID: 178, SR: 2510000418
+[2025-10-27 11:47:48] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000418"}
+[2025-10-27 15:07:54] ====== NEW REQUEST ======
+[2025-10-27 15:07:54] User Role: standard_user | HRIS: 01000036
+[2025-10-27 15:07:54] POST data: {"vehicle_type":"Company Vehicles","vehicle_number":"CBK 1620","chassis_number":"SALWA2AY9KA859777","make_model":"Landrover RRS-PHEW","fuel_type":"Electric","engine_capacity":"14","year_of_manufacture":"2019","purchase_date":"2025-10-27","purchase_value":"1","original_mileage":"1","assigned_user_hris":"000037","vehicle_category":"SUV"}
+[2025-10-27 15:07:54] Insert success. ID: 179, SR: 2510000435
+[2025-10-27 15:07:54] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000435"}
+[2025-10-28 12:10:42] ====== NEW REQUEST ======
+[2025-10-28 12:10:42] User Role: standard_user | HRIS: 01006428
+[2025-10-28 12:10:42] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBJ 6765","chassis_number":"SALWA2AY6KA825490","make_model":"Landrover RRS-P-GM","fuel_type":"Electric","engine_capacity":"14","year_of_manufacture":"2019","purchase_date":"2025-10-28","purchase_value":"1","original_mileage":"1","assigned_user_hris":"000066","vehicle_category":"SUV"}
+[2025-10-28 12:10:42] Insert success. ID: 180, SR: 2510000465
+[2025-10-28 12:10:42] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000465"}
+[2025-10-28 14:35:35] ====== NEW REQUEST ======
+[2025-10-28 14:35:35] User Role: standard_user | HRIS: 01006428
+[2025-10-28 14:35:35] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBN 8181","chassis_number":"SALWA2AY0JA803788","make_model":"Landrover RRS-P-GM","fuel_type":"Electric","engine_capacity":"1","year_of_manufacture":"2018","purchase_date":"2018-05-09","purchase_value":"1","original_mileage":"1","assigned_user_hris":"000022","vehicle_category":"SUV"}
+[2025-10-28 14:35:35] Insert success. ID: 181, SR: 2510000484
+[2025-10-28 14:35:35] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000484"}
+[2025-10-29 14:46:06] ====== NEW REQUEST ======
+[2025-10-29 14:46:06] User Role: standard_user | HRIS: 01006428
+[2025-10-29 14:46:06] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBL 2851","chassis_number":"WDD2130762A750046","make_model":"Mercedese Benz E180","fuel_type":"Fuel","engine_capacity":"47870","year_of_manufacture":"2019","purchase_date":"2020-07-01","purchase_value":"14,100,000","original_mileage":"1","assigned_user_hris":"000106","vehicle_category":"Car"}
+[2025-10-29 14:46:06] Insert success. ID: 182, SR: 2510000494
+[2025-10-29 14:46:06] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000494"}
+[2025-10-30 13:10:04] ====== NEW REQUEST ======
+[2025-10-30 13:10:04] User Role: standard_user | HRIS: 01006428
+[2025-10-30 13:10:04] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBI 0999","chassis_number":"SALWA2AY5JA812454","make_model":"Landrover RRS","fuel_type":"Electric","engine_capacity":"1","year_of_manufacture":"2018","purchase_date":"2024-08-01","purchase_value":"75,500,000","original_mileage":"1","assigned_user_hris":"004385","vehicle_category":"SUV"}
+[2025-10-30 13:10:04] Insert success. ID: 183, SR: 2510000510
+[2025-10-30 13:10:04] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000510"}
+[2025-10-30 13:52:06] ====== NEW REQUEST ======
+[2025-10-30 13:52:06] User Role: standard_user | HRIS: 01000036
+[2025-10-30 13:52:06] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBL 2887","chassis_number":"WDD2050762R558171","make_model":"BENZ-C-180","fuel_type":"Fuel","engine_capacity":"1497","year_of_manufacture":"2019","purchase_date":"2020-07-01","purchase_value":"11,200,000","original_mileage":"1","assigned_user_hris":"000001","vehicle_category":"Car"}
+[2025-10-30 13:52:06] Insert success. ID: 184, SR: 2510000521
+[2025-10-30 13:52:06] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000521"}
+[2025-10-30 14:50:46] ====== NEW REQUEST ======
+[2025-10-30 14:50:46] User Role: standard_user | HRIS: 01006428
+[2025-10-30 14:50:46] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBL 2869","chassis_number":"W1K2050762R570836","make_model":"BENZ-C-180","fuel_type":"Fuel","engine_capacity":"1497","year_of_manufacture":"2020","purchase_date":"2020-07-01","purchase_value":"11,500,000","original_mileage":"1","assigned_user_hris":"000884","vehicle_category":"Car"}
+[2025-10-30 14:50:46] Insert success. ID: 185, SR: 2510000531
+[2025-10-30 14:50:46] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000531"}
+[2025-10-31 09:53:33] ====== NEW REQUEST ======
+[2025-10-31 09:53:33] User Role: standard_user | HRIS: 01006428
+[2025-10-31 09:53:33] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CAN 4584","chassis_number":"AAA","make_model":"Mitzubishi Outlander","fuel_type":"Electric","engine_capacity":"1990","year_of_manufacture":"2015","purchase_date":"2023-12-15","purchase_value":"17,200,000","original_mileage":"1","assigned_user_hris":"000561","vehicle_category":"SUV"}
+[2025-10-31 09:53:33] Insert success. ID: 186, SR: 2510000549
+[2025-10-31 09:53:33] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000549"}
+[2025-10-31 12:16:11] ====== NEW REQUEST ======
+[2025-10-31 12:16:11] User Role: standard_user | HRIS: 01006428
+[2025-10-31 12:16:11] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBJ 9530","chassis_number":"MCANJURCH6LFA58963","make_model":"Jeep Compass Limit 1.4L AWD","fuel_type":"Fuel","engine_capacity":"1368","year_of_manufacture":"2019","purchase_date":"2023-12-15","purchase_value":"11,000,000","original_mileage":"1","assigned_user_hris":"000023","vehicle_category":"SUV"}
+[2025-10-31 12:16:11] Insert success. ID: 187, SR: 2510000571
+[2025-10-31 12:16:11] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000571"}
+[2025-10-31 12:43:14] ====== NEW REQUEST ======
+[2025-10-31 12:43:14] User Role: standard_user | HRIS: 01000036
+[2025-10-31 12:43:14] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBJ 9529","chassis_number":"MCANUJCH7LFA58955","make_model":"Jeep Compass Limit 1.4L AWD","fuel_type":"Fuel","engine_capacity":"1398","year_of_manufacture":"2019","purchase_date":"2020-02-07","purchase_value":"11,000,000","original_mileage":"1","assigned_user_hris":"000162","vehicle_category":"SUV"}
+[2025-10-31 12:43:14] Insert success. ID: 188, SR: 2510000581
+[2025-10-31 12:43:14] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000581"}
+[2025-10-31 14:46:18] ====== NEW REQUEST ======
+[2025-10-31 14:46:18] User Role: standard_user | HRIS: 01000036
+[2025-10-31 14:46:18] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CBO 2866","chassis_number":"MRHRS4875SP060021","make_model":"Honda CRV","fuel_type":"Fuel","engine_capacity":"1498","year_of_manufacture":"2025","purchase_date":"2025-07-22","purchase_value":"31,500,000","original_mileage":"1","assigned_user_hris":"002974","vehicle_category":"SUV"}
+[2025-10-31 14:46:18] Insert success. ID: 189, SR: 2510000596
+[2025-10-31 14:46:18] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2510000596"}
+[2025-11-03 09:08:51] ====== NEW REQUEST ======
+[2025-11-03 09:08:51] User Role: standard_user | HRIS: 01006428
+[2025-11-03 09:08:51] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CAI 1276","chassis_number":"NA","make_model":"Mitzubishi Outlander","fuel_type":"Electric","engine_capacity":"1990","year_of_manufacture":"2015","purchase_date":"2022-02-01","purchase_value":"12,000,000","original_mileage":"1","assigned_user_hris":"000084","vehicle_category":"SUV"}
+[2025-11-03 09:08:51] Insert success. ID: 190, SR: 2511000001
+[2025-11-03 09:08:51] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2511000001"}
+[2025-11-03 10:04:03] ====== NEW REQUEST ======
+[2025-11-03 10:04:03] User Role: standard_user | HRIS: 01000036
+[2025-11-03 10:04:03] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CAH 1439","chassis_number":"NA","make_model":"Mitzubishi Outlander","fuel_type":"Electric","engine_capacity":"1990","year_of_manufacture":"2015","purchase_date":"2022-03-01","purchase_value":"12,450,000","original_mileage":"1","assigned_user_hris":"000698","vehicle_category":"SUV"}
+[2025-11-03 10:04:03] Insert success. ID: 191, SR: 2511000018
+[2025-11-03 10:04:03] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2511000018"}
+[2025-11-03 10:07:26] ====== NEW REQUEST ======
+[2025-11-03 10:07:26] User Role: standard_user | HRIS: 01000036
+[2025-11-03 10:07:26] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CAM 2688","chassis_number":"NA","make_model":"Mitzubishi Outlander","fuel_type":"Electric","engine_capacity":"1990","year_of_manufacture":"2015","purchase_date":"2022-02-01","purchase_value":"13,000,000","original_mileage":"1","assigned_user_hris":"000025","vehicle_category":"SUV"}
+[2025-11-03 10:07:26] Insert success. ID: 192, SR: 2511000019
+[2025-11-03 10:07:26] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2511000019"}
+[2025-11-17 09:53:38] ====== NEW REQUEST ======
+[2025-11-17 09:53:38] User Role: standard_user | HRIS: 01006428
+[2025-11-17 09:53:38] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CAN 9244","chassis_number":"NA","make_model":"Mitsubishi Outlander ","fuel_type":"Electric","engine_capacity":" 1990","year_of_manufacture":"2015","purchase_date":"2022-02-01","purchase_value":"13,000,000","original_mileage":"NA","assigned_user_hris":"000007","vehicle_category":"SUV"}
+[2025-11-17 09:53:38] Insert success. ID: 193, SR: 2511000045
+[2025-11-17 09:53:38] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2511000045"}
+[2025-11-17 10:27:27] ====== NEW REQUEST ======
+[2025-11-17 10:27:27] User Role: standard_user | HRIS: 01006428
+[2025-11-17 10:27:27] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"TREST-VEHICLE","chassis_number":"TEST ","make_model":"nake and model","fuel_type":"Hybrid","engine_capacity":"1990","year_of_manufacture":"2025","purchase_date":"2025-11-17","purchase_value":"13,000,000","original_mileage":"NA","assigned_user_hris":"006428","vehicle_category":"SUV"}
+[2025-11-17 10:27:27] Insert success. ID: 194, SR: 2511000046
+[2025-11-17 10:27:27] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2511000046"}
+[2025-11-17 13:16:30] ====== NEW REQUEST ======
+[2025-11-17 13:16:30] User Role: standard_user | HRIS: 01006428
+[2025-11-17 13:16:30] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CAH 7711","chassis_number":"NA","make_model":"Mitzubishi Outlander","fuel_type":"Electric","engine_capacity":"1990","year_of_manufacture":"2015","purchase_date":"2022-03-01","purchase_value":"12,950,000","original_mileage":"na","assigned_user_hris":"000008","vehicle_category":"SUV"}
+[2025-11-17 13:16:30] Insert success. ID: 195, SR: 2511000060
+[2025-11-17 13:16:30] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2511000060"}
+[2025-11-17 15:20:23] ====== NEW REQUEST ======
+[2025-11-17 15:20:23] User Role: standard_user | HRIS: 01000036
+[2025-11-17 15:20:23] POST data: {"vehicle_type":"CMM Vehicles","vehicle_number":"CAJ 0717","chassis_number":"NA","make_model":"Mitsubishi Outlander ","fuel_type":"Electric","engine_capacity":"1990","year_of_manufacture":"2015","purchase_date":"2023-03-01","purchase_value":"13,000,000","original_mileage":"NA","assigned_user_hris":"000006","vehicle_category":"SUV"}
+[2025-11-17 15:20:23] Insert success. ID: 196, SR: 2511000077
+[2025-11-17 15:20:23] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2511000077"}
+[2025-12-30 15:48:53] ====== NEW REQUEST ======
+[2025-12-30 15:48:53] User Role: standard_user | HRIS: 01006428
+[2025-12-30 15:48:53] POST data: {"vehicle_type":"Company Bikes","vehicle_number":"252-3204","chassis_number":"CHASSIE NUMBER","make_model":"Toyota LN 107","fuel_type":"Fuel","engine_capacity":"3000","year_of_manufacture":"1991","purchase_date":"2015-07-04","purchase_value":"2,400,000","original_mileage":"150000","assigned_user_hris":"006428","vehicle_category":"SUV"}
+[2025-12-30 15:48:53] Insert success. ID: 197, SR: 2512000006
+[2025-12-30 15:48:53] Response: {"status":"success","message":"Vehicle submitted. Awaiting approval from super admin.","sr_number":"2512000006"}

@@ -1,0 +1,1116 @@
+2025-12-10 14:50:26 | === security-pending-load.php called ===
+2025-12-10 14:50:26 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-10 14:50:26 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 14:50:26 | Escaped month: April 2025
+2025-12-10 14:50:26 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 14:50:26 | Row count: 75
+2025-12-10 14:51:42 | === security-pending-load.php called ===
+2025-12-10 14:51:42 | POST: Array
+(
+    [month] => June 2025
+)
+
+2025-12-10 14:51:42 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 14:51:42 | Escaped month: June 2025
+2025-12-10 14:51:42 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'June 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 14:51:42 | Row count: 78
+2025-12-10 14:56:29 | === security-pending-load.php called ===
+2025-12-10 14:56:29 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-10 14:56:29 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 14:56:29 | Escaped month: April 2025
+2025-12-10 14:56:29 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 14:56:29 | Row count: 75
+2025-12-10 14:56:36 | === security-pending-load.php called ===
+2025-12-10 14:56:36 | POST: Array
+(
+    [month] => May 2025
+)
+
+2025-12-10 14:56:36 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 14:56:36 | Escaped month: May 2025
+2025-12-10 14:56:36 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'May 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 14:56:36 | Row count: 81
+2025-12-10 14:56:38 | === security-pending-load.php called ===
+2025-12-10 14:56:38 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-10 14:56:38 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 14:56:38 | Escaped month: April 2025
+2025-12-10 14:56:38 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 14:56:38 | Row count: 40
+2025-12-10 15:20:26 | === security-pending-load.php called ===
+2025-12-10 15:20:26 | POST: Array
+(
+    [month] => May 2025
+)
+
+2025-12-10 15:20:26 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 15:20:26 | Escaped month: May 2025
+2025-12-10 15:20:26 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'May 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 15:20:26 | Row count: 81
+2025-12-10 15:31:42 | === security-pending-load.php called ===
+2025-12-10 15:31:42 | POST: Array
+(
+    [month] => May 2025
+)
+
+2025-12-10 15:31:42 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 15:31:42 | Escaped month: May 2025
+2025-12-10 15:31:42 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'May 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 15:31:42 | Row count: 41
+2025-12-10 15:31:46 | === security-pending-load.php called ===
+2025-12-10 15:31:46 | POST: Array
+(
+    [month] => June 2025
+)
+
+2025-12-10 15:31:46 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 15:31:46 | Escaped month: June 2025
+2025-12-10 15:31:46 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'June 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 15:31:46 | Row count: 78
+2025-12-10 15:32:16 | === security-pending-load.php called ===
+2025-12-10 15:32:16 | POST: Array
+(
+    [month] => July 2025
+)
+
+2025-12-10 15:32:16 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 15:32:16 | Escaped month: July 2025
+2025-12-10 15:32:16 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'July 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 15:32:16 | Row count: 82
+2025-12-10 16:01:51 | === security-pending-load.php called ===
+2025-12-10 16:01:51 | POST: Array
+(
+    [month] => June 2025
+)
+
+2025-12-10 16:01:51 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 16:01:51 | Escaped month: June 2025
+2025-12-10 16:01:51 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'June 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 16:01:51 | Row count: 39
+2025-12-10 16:01:59 | === security-pending-load.php called ===
+2025-12-10 16:01:59 | POST: Array
+(
+    [month] => May 2025
+)
+
+2025-12-10 16:01:59 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 16:01:59 | Escaped month: May 2025
+2025-12-10 16:01:59 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'May 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 16:01:59 | Row count: 41
+2025-12-10 16:02:07 | === security-pending-load.php called ===
+2025-12-10 16:02:07 | POST: Array
+(
+    [month] => July 2025
+)
+
+2025-12-10 16:02:07 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 16:02:07 | Escaped month: July 2025
+2025-12-10 16:02:07 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'July 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 16:02:07 | Row count: 79
+2025-12-10 16:34:20 | === security-pending-load.php called ===
+2025-12-10 16:34:20 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-10 16:34:20 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 16:34:20 | Escaped month: April 2025
+2025-12-10 16:34:20 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 16:34:20 | Row count: 80
+2025-12-10 16:41:10 | === security-pending-load.php called ===
+2025-12-10 16:41:10 | POST: Array
+(
+    [month] => May 2025
+)
+
+2025-12-10 16:41:10 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 16:41:10 | Escaped month: May 2025
+2025-12-10 16:41:10 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'May 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 16:41:10 | Row count: 81
+2025-12-10 16:41:53 | === security-pending-load.php called ===
+2025-12-10 16:41:53 | POST: Array
+(
+    [month] => June 2025
+)
+
+2025-12-10 16:41:53 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 16:41:53 | Escaped month: June 2025
+2025-12-10 16:41:53 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'June 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 16:41:53 | Row count: 78
+2025-12-10 16:52:54 | === security-pending-load.php called ===
+2025-12-10 16:52:54 | POST: Array
+(
+    [month] => May 2025
+)
+
+2025-12-10 16:52:54 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-10 16:52:54 | Escaped month: May 2025
+2025-12-10 16:52:54 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'May 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-10 16:52:54 | Row count: 81
+2025-12-11 08:57:16 | === security-pending-load.php called ===
+2025-12-11 08:57:16 | POST: Array
+(
+    [month] => May 2025
+)
+
+2025-12-11 08:57:16 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-11 08:57:16 | Escaped month: May 2025
+2025-12-11 08:57:16 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'May 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-11 08:57:16 | Row count: 41
+2025-12-11 09:06:55 | === security-pending-load.php called ===
+2025-12-11 09:06:55 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-11 09:06:55 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-11 09:06:55 | Escaped month: April 2025
+2025-12-11 09:06:55 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-11 09:06:55 | Row count: 40
+2025-12-11 12:33:46 | === security-pending-load.php called ===
+2025-12-11 12:33:46 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-11 12:33:46 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-11 12:33:46 | Escaped month: April 2025
+2025-12-11 12:33:46 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-11 12:33:46 | Row count: 41
+2025-12-11 12:35:47 | === security-pending-load.php called ===
+2025-12-11 12:35:47 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-11 12:35:47 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-11 12:35:47 | Escaped month: April 2025
+2025-12-11 12:35:47 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-11 12:35:47 | Row count: 41
+2025-12-11 12:35:54 | === security-pending-load.php called ===
+2025-12-11 12:35:54 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-11 12:35:54 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-11 12:35:54 | Escaped month: April 2025
+2025-12-11 12:35:54 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-11 12:35:54 | Row count: 41
+2025-12-11 12:36:08 | === security-pending-load.php called ===
+2025-12-11 12:36:08 | POST: Array
+(
+    [month] => May 2025
+)
+
+2025-12-11 12:36:08 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-11 12:36:08 | Escaped month: May 2025
+2025-12-11 12:36:08 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'May 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-11 12:36:08 | Row count: 41
+2025-12-11 12:36:10 | === security-pending-load.php called ===
+2025-12-11 12:36:10 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-11 12:36:10 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-11 12:36:10 | Escaped month: April 2025
+2025-12-11 12:36:10 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-11 12:36:10 | Row count: 41
+2025-12-11 14:32:56 | === security-pending-load.php called ===
+2025-12-11 14:32:56 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-11 14:32:56 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-11 14:32:56 | Escaped month: April 2025
+2025-12-11 14:32:56 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-11 14:32:56 | Row count: 40
+2025-12-12 10:57:59 | === security-pending-load.php called ===
+2025-12-12 10:57:59 | POST: Array
+(
+    [month] => February 2026
+)
+
+2025-12-12 10:57:59 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-12 10:57:59 | Escaped month: February 2026
+2025-12-12 10:57:59 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'February 2026'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 10:57:59 | Row count: 3
+2025-12-12 10:58:10 | === security-pending-load.php called ===
+2025-12-12 10:58:10 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-12 10:58:10 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-12 10:58:10 | Escaped month: April 2025
+2025-12-12 10:58:10 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 10:58:10 | Row count: 2
+2025-12-12 10:58:24 | === security-pending-load.php called ===
+2025-12-12 10:58:24 | POST: Array
+(
+    [month] => January 2026
+)
+
+2025-12-12 10:58:24 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-12 10:58:24 | Escaped month: January 2026
+2025-12-12 10:58:24 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'January 2026'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 10:58:24 | Row count: 1
+2025-12-12 10:58:28 | === security-pending-load.php called ===
+2025-12-12 10:58:28 | POST: Array
+(
+    [month] => October 2025
+)
+
+2025-12-12 10:58:28 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-12 10:58:28 | Escaped month: October 2025
+2025-12-12 10:58:28 | SQL: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'October 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 10:58:28 | Row count: 1
+2025-12-12 14:01:18 | === security-pending-load.php called ===
+2025-12-12 14:01:18 | POST: Array
+(
+    [month] => December 2025
+)
+
+2025-12-12 14:01:18 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-12 14:01:18 | Escaped month: December 2025
+2025-12-12 14:01:18 | SQL firmwise: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'December 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 14:01:18 | Firmwise rows: 4
+2025-12-12 14:01:18 | SQL invoices: 
+    SELECT
+        i.*,
+        f.firm_name,
+        rr.reason AS reason_text
+    FROM tbl_admin_actual_security_2000_invoices i
+    LEFT JOIN tbl_admin_security_firms f ON f.id = i.firm_id
+    LEFT JOIN tbl_admin_reason rr ON rr.id = i.reason_id
+    WHERE i.month_applicable = 'December 2025'
+      AND (i.approval_status = 'pending' OR i.approval_status IS NULL)
+    ORDER BY i.entered_at DESC, CAST(i.branch_code AS UNSIGNED), i.branch_code, i.id DESC
+
+2025-12-12 14:01:18 | Invoice rows: 1
+2025-12-12 14:01:21 | === security-pending-load.php called ===
+2025-12-12 14:01:21 | POST: Array
+(
+    [month] => October 2025
+)
+
+2025-12-12 14:01:21 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-12 14:01:21 | Escaped month: October 2025
+2025-12-12 14:01:21 | SQL firmwise: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'October 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 14:01:21 | Firmwise rows: 3
+2025-12-12 14:01:21 | SQL invoices: 
+    SELECT
+        i.*,
+        f.firm_name,
+        rr.reason AS reason_text
+    FROM tbl_admin_actual_security_2000_invoices i
+    LEFT JOIN tbl_admin_security_firms f ON f.id = i.firm_id
+    LEFT JOIN tbl_admin_reason rr ON rr.id = i.reason_id
+    WHERE i.month_applicable = 'October 2025'
+      AND (i.approval_status = 'pending' OR i.approval_status IS NULL)
+    ORDER BY i.entered_at DESC, CAST(i.branch_code AS UNSIGNED), i.branch_code, i.id DESC
+
+2025-12-12 14:01:21 | Invoice rows: 1
+2025-12-12 14:01:37 | === security-pending-load.php called ===
+2025-12-12 14:01:37 | POST: Array
+(
+    [month] => December 2025
+)
+
+2025-12-12 14:01:37 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-12 14:01:37 | Escaped month: December 2025
+2025-12-12 14:01:37 | SQL firmwise: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'December 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 14:01:37 | Firmwise rows: 4
+2025-12-12 14:01:37 | SQL invoices: 
+    SELECT
+        i.*,
+        f.firm_name,
+        rr.reason AS reason_text
+    FROM tbl_admin_actual_security_2000_invoices i
+    LEFT JOIN tbl_admin_security_firms f ON f.id = i.firm_id
+    LEFT JOIN tbl_admin_reason rr ON rr.id = i.reason_id
+    WHERE i.month_applicable = 'December 2025'
+      AND (i.approval_status = 'pending' OR i.approval_status IS NULL)
+    ORDER BY i.entered_at DESC, CAST(i.branch_code AS UNSIGNED), i.branch_code, i.id DESC
+
+2025-12-12 14:01:37 | Invoice rows: 1
+2025-12-12 14:01:52 | === security-pending-load.php called ===
+2025-12-12 14:01:52 | POST: Array
+(
+    [month] => April 2025
+)
+
+2025-12-12 14:01:52 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-12 14:01:52 | Escaped month: April 2025
+2025-12-12 14:01:52 | SQL firmwise: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'April 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 14:01:52 | Firmwise rows: 2
+2025-12-12 14:01:52 | SQL invoices: 
+    SELECT
+        i.*,
+        f.firm_name,
+        rr.reason AS reason_text
+    FROM tbl_admin_actual_security_2000_invoices i
+    LEFT JOIN tbl_admin_security_firms f ON f.id = i.firm_id
+    LEFT JOIN tbl_admin_reason rr ON rr.id = i.reason_id
+    WHERE i.month_applicable = 'April 2025'
+      AND (i.approval_status = 'pending' OR i.approval_status IS NULL)
+    ORDER BY i.entered_at DESC, CAST(i.branch_code AS UNSIGNED), i.branch_code, i.id DESC
+
+2025-12-12 14:01:52 | Invoice rows: 0
+2025-12-12 14:02:21 | === security-pending-load.php called ===
+2025-12-12 14:02:21 | POST: Array
+(
+    [month] => May 2025
+)
+
+2025-12-12 14:02:21 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-12 14:02:21 | Escaped month: May 2025
+2025-12-12 14:02:21 | SQL firmwise: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'May 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 14:02:21 | Firmwise rows: 41
+2025-12-12 14:02:21 | SQL invoices: 
+    SELECT
+        i.*,
+        f.firm_name,
+        rr.reason AS reason_text
+    FROM tbl_admin_actual_security_2000_invoices i
+    LEFT JOIN tbl_admin_security_firms f ON f.id = i.firm_id
+    LEFT JOIN tbl_admin_reason rr ON rr.id = i.reason_id
+    WHERE i.month_applicable = 'May 2025'
+      AND (i.approval_status = 'pending' OR i.approval_status IS NULL)
+    ORDER BY i.entered_at DESC, CAST(i.branch_code AS UNSIGNED), i.branch_code, i.id DESC
+
+2025-12-12 14:02:21 | Invoice rows: 1
+2025-12-12 14:02:32 | === security-pending-load.php called ===
+2025-12-12 14:02:32 | POST: Array
+(
+    [month] => December 2025
+)
+
+2025-12-12 14:02:32 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-12 14:02:32 | Escaped month: December 2025
+2025-12-12 14:02:32 | SQL firmwise: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'December 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 14:02:32 | Firmwise rows: 4
+2025-12-12 14:02:32 | SQL invoices: 
+    SELECT
+        i.*,
+        f.firm_name,
+        rr.reason AS reason_text
+    FROM tbl_admin_actual_security_2000_invoices i
+    LEFT JOIN tbl_admin_security_firms f ON f.id = i.firm_id
+    LEFT JOIN tbl_admin_reason rr ON rr.id = i.reason_id
+    WHERE i.month_applicable = 'December 2025'
+      AND (i.approval_status = 'pending' OR i.approval_status IS NULL)
+    ORDER BY i.entered_at DESC, CAST(i.branch_code AS UNSIGNED), i.branch_code, i.id DESC
+
+2025-12-12 14:02:32 | Invoice rows: 1
+2025-12-12 14:02:54 | === security-pending-load.php called ===
+2025-12-12 14:02:54 | POST: Array
+(
+    [month] => October 2025
+)
+
+2025-12-12 14:02:54 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-12 14:02:54 | Escaped month: October 2025
+2025-12-12 14:02:54 | SQL firmwise: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'October 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 14:02:54 | Firmwise rows: 3
+2025-12-12 14:02:54 | SQL invoices: 
+    SELECT
+        i.*,
+        f.firm_name,
+        rr.reason AS reason_text
+    FROM tbl_admin_actual_security_2000_invoices i
+    LEFT JOIN tbl_admin_security_firms f ON f.id = i.firm_id
+    LEFT JOIN tbl_admin_reason rr ON rr.id = i.reason_id
+    WHERE i.month_applicable = 'October 2025'
+      AND (i.approval_status = 'pending' OR i.approval_status IS NULL)
+    ORDER BY i.entered_at DESC, CAST(i.branch_code AS UNSIGNED), i.branch_code, i.id DESC
+
+2025-12-12 14:02:54 | Invoice rows: 1
+2025-12-12 14:02:59 | === security-pending-load.php called ===
+2025-12-12 14:02:59 | POST: Array
+(
+    [month] => February 2026
+)
+
+2025-12-12 14:02:59 | Session HRIS: 01000036, Name: Sampath Jayasinghe
+2025-12-12 14:02:59 | Escaped month: February 2026
+2025-12-12 14:02:59 | SQL firmwise: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'February 2026'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 14:02:59 | Firmwise rows: 3
+2025-12-12 14:02:59 | SQL invoices: 
+    SELECT
+        i.*,
+        f.firm_name,
+        rr.reason AS reason_text
+    FROM tbl_admin_actual_security_2000_invoices i
+    LEFT JOIN tbl_admin_security_firms f ON f.id = i.firm_id
+    LEFT JOIN tbl_admin_reason rr ON rr.id = i.reason_id
+    WHERE i.month_applicable = 'February 2026'
+      AND (i.approval_status = 'pending' OR i.approval_status IS NULL)
+    ORDER BY i.entered_at DESC, CAST(i.branch_code AS UNSIGNED), i.branch_code, i.id DESC
+
+2025-12-12 14:02:59 | Invoice rows: 5
+2025-12-12 14:04:38 | === security-pending-load.php called ===
+2025-12-12 14:04:38 | POST: Array
+(
+    [month] => November 2025
+)
+
+2025-12-12 14:04:38 | Session HRIS: 01006428, Name: Ruchith Fernando
+2025-12-12 14:04:38 | Escaped month: November 2025
+2025-12-12 14:04:38 | SQL firmwise: 
+    SELECT 
+        t1.*,
+        f.firm_name,
+        r.reason AS reason_text,
+        b.no_of_shifts AS budget_shifts
+    FROM tbl_admin_actual_security_firmwise AS t1
+    LEFT JOIN tbl_admin_security_firms AS f
+        ON f.id = t1.firm_id
+    LEFT JOIN tbl_admin_reason AS r
+        ON r.id = t1.reason_id
+    LEFT JOIN tbl_admin_budget_security AS b
+        ON b.branch_code = t1.branch_code
+       AND b.month_applicable = t1.month_applicable
+    WHERE t1.month_applicable = 'November 2025'
+      AND (t1.approval_status = 'pending' OR t1.approval_status IS NULL)
+    ORDER BY t1.entered_at DESC, t1.branch_code ASC
+
+2025-12-12 14:04:38 | Firmwise rows: 1
+2025-12-12 14:04:38 | SQL invoices: 
+    SELECT
+        i.*,
+        f.firm_name,
+        rr.reason AS reason_text
+    FROM tbl_admin_actual_security_2000_invoices i
+    LEFT JOIN tbl_admin_security_firms f ON f.id = i.firm_id
+    LEFT JOIN tbl_admin_reason rr ON rr.id = i.reason_id
+    WHERE i.month_applicable = 'November 2025'
+      AND (i.approval_status = 'pending' OR i.approval_status IS NULL)
+    ORDER BY i.entered_at DESC, CAST(i.branch_code AS UNSIGNED), i.branch_code, i.id DESC
+
+2025-12-12 14:04:38 | Invoice rows: 7

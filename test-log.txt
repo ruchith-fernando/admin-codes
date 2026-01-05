@@ -1,0 +1,447 @@
+2025-06-20 06:27:22 - Loaded stock-in.php
+2025-06-20 06:35:43 - Loaded stock-in.php
+2025-06-20 06:36:32 - Loaded stock-in.php
+2025-06-20 06:39:50 - Loaded stock-in.php
+2025-06-20 06:39:50 - POST triggered: Array
+(
+)
+
+2025-06-20 06:42:52 - Loaded stock-in.php
+2025-06-20 06:42:52 - POST triggered: Array
+(
+)
+
+2025-06-20 06:46:38 - Loaded stock-in.php
+2025-06-20 06:46:38 - POST triggered: Array
+(
+)
+
+2025-06-20 06:51:03 - Loaded stock-in.php
+2025-06-20 06:51:03 - POST triggered: Array
+(
+)
+
+2025-06-20 06:51:32 - Loaded stock-in.php
+2025-06-20 06:51:32 - POST triggered: Array
+(
+    [item_code] => STACM00079
+    [quantity] => 1850
+    [unit_price] => 500.00
+    [received_date] => 2025-06-01
+    [tax_included] => yes
+)
+
+2025-06-20 12:21:32 - POST triggered: Array
+(
+    [item_code] => STACM00079
+    [quantity] => 1850
+    [unit_price] => 500.00
+    [received_date] => 2025-06-01
+    [tax_included] => yes
+)
+
+2025-06-20 06:52:11 - Loaded stock-in.php
+2025-06-20 06:52:11 - POST triggered: Array
+(
+    [item_code] => STACM00079
+    [quantity] => 500
+    [unit_price] => 890.00
+    [received_date] => 2025-06-05
+    [tax_included] => yes
+)
+
+2025-06-20 12:22:11 - POST triggered: Array
+(
+    [item_code] => STACM00079
+    [quantity] => 500
+    [unit_price] => 890.00
+    [received_date] => 2025-06-05
+    [tax_included] => yes
+)
+
+2025-06-20 07:00:52 - Loaded stock-in.php
+2025-06-20 07:00:52 - POST triggered: Array
+(
+)
+
+2025-06-20 07:01:22 - Loaded stock-in.php
+2025-06-20 07:01:22 - POST triggered: Array
+(
+    [item_code] => STACM00041
+    [quantity] => 8500
+    [unit_price] => 1852000
+    [received_date] => 2025-05-06
+    [tax_included] => yes
+)
+
+2025-06-20 12:31:22 - POST triggered: Array
+(
+    [item_code] => STACM00041
+    [quantity] => 8500
+    [unit_price] => 1852000
+    [received_date] => 2025-05-06
+    [tax_included] => yes
+)
+
+2025-06-20 07:04:32 - Loaded stock-in.php
+2025-06-20 07:04:32 - POST triggered: Array
+(
+)
+
+2025-06-20 07:05:02 - Loaded stock-in.php
+2025-06-20 07:05:02 - POST triggered: Array
+(
+    [item_code] => PPDRPA00025
+    [quantity] => 1500
+    [unit_price] => 158.50
+    [received_date] => 2025-06-02
+    [tax_included] => yes
+)
+
+2025-06-20 12:35:02 - POST triggered: Array
+(
+    [item_code] => PPDRPA00025
+    [quantity] => 1500
+    [unit_price] => 158.50
+    [received_date] => 2025-06-02
+    [tax_included] => yes
+)
+
+2025-06-20 07:28:38 - Loaded stock-in.php
+2025-06-20 07:28:38 - POST triggered: Array
+(
+)
+
+2025-06-20 09:02:36 - Loaded stock-in.php
+2025-06-20 09:02:36 - POST triggered: Array
+(
+)
+
+2025-06-20 09:02:37 - Loaded stock-in.php
+2025-06-20 09:02:37 - POST triggered: Array
+(
+)
+
+2025-06-20 09:03:01 - Loaded stock-in.php
+2025-06-20 09:03:01 - POST triggered: Array
+(
+    [item_code] => STACM00042
+    [quantity] => 500
+    [unit_price] => 1750.00
+    [received_date] => 2025-06-01
+    [tax_included] => yes
+)
+
+2025-06-20 14:33:01 - POST triggered: Array
+(
+    [item_code] => STACM00042
+    [quantity] => 500
+    [unit_price] => 1750.00
+    [received_date] => 2025-06-01
+    [tax_included] => yes
+)
+
+2025-06-20 09:09:14 - Loaded stock-in.php
+2025-06-20 09:09:14 - POST triggered: Array
+(
+)
+
+2025-06-20 11:08:04 - Loaded stock-in.php
+2025-06-20 11:08:04 - POST triggered: Array
+(
+)
+
+2025-06-20 11:08:22 - Loaded stock-in.php
+2025-06-20 11:08:22 - POST triggered: Array
+(
+)
+
+2025-06-20 11:22:08 - Loaded stock-in.php
+2025-06-20 11:22:08 - POST triggered: Array
+(
+)
+
+2025-06-20 11:36:54 - Loaded stock-in.php
+2025-06-20 11:36:54 - POST triggered: Array
+(
+)
+
+2025-06-23 02:23:17 - Loaded stock-in.php
+2025-06-23 02:23:17 - POST triggered: Array
+(
+)
+
+2025-06-23 02:23:18 - Loaded stock-in.php
+2025-06-23 02:23:18 - POST triggered: Array
+(
+)
+
+2025-06-23 02:23:21 - Loaded stock-in.php
+2025-06-23 02:23:21 - POST triggered: Array
+(
+)
+
+2025-06-23 02:23:22 - Loaded stock-in.php
+2025-06-23 02:23:22 - POST triggered: Array
+(
+)
+
+2025-06-23 02:23:37 - Loaded stock-in.php
+2025-06-23 02:23:37 - POST triggered: Array
+(
+)
+
+2025-06-23 02:48:45 - Loaded stock-in.php
+2025-06-23 02:48:45 - POST triggered: Array
+(
+)
+
+2025-06-23 04:31:21 - Loaded stock-in.php
+2025-06-23 04:31:21 - POST triggered: Array
+(
+)
+
+2025-06-27 02:16:31 - Loaded stock-in.php
+2025-06-27 02:16:31 - POST triggered: Array
+(
+)
+
+2025-07-01 04:13:21 - Loaded stock-in.php
+2025-07-01 04:13:21 - POST triggered: Array
+(
+)
+
+2025-07-01 04:22:49 - Loaded stock-in.php
+2025-07-01 04:22:49 - POST triggered: Array
+(
+)
+
+2025-07-01 04:23:51 - Loaded stock-in.php
+2025-07-01 04:23:51 - POST triggered: Array
+(
+    [item_code] => STACM00121
+    [quantity] => 100000
+    [unit_price] => 2.80
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-01 04:23:51 - POST triggered: Array
+(
+    [item_code] => STACM00121
+    [quantity] => 100000
+    [unit_price] => 2.80
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-01 04:24:59 - Loaded stock-in.php
+2025-07-01 04:24:59 - POST triggered: Array
+(
+    [item_code] => PPDFN00006
+    [quantity] => 780
+    [unit_price] => 10.50
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-01 04:24:59 - POST triggered: Array
+(
+    [item_code] => PPDFN00006
+    [quantity] => 780
+    [unit_price] => 10.50
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-01 04:24:59 - Loaded stock-in.php
+2025-07-01 04:24:59 - POST triggered: Array
+(
+    [item_code] => PPDFN00006
+    [quantity] => 780
+    [unit_price] => 10.50
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-01 04:24:59 - POST triggered: Array
+(
+    [item_code] => PPDFN00006
+    [quantity] => 780
+    [unit_price] => 10.50
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-01 04:31:24 - Loaded stock-in.php
+2025-07-01 04:31:24 - POST triggered: Array
+(
+)
+
+2025-07-01 04:31:47 - Loaded stock-in.php
+2025-07-01 04:31:47 - POST triggered: Array
+(
+    [item_code] => PPDLE00111
+    [quantity] => 850
+    [unit_price] => 2.75
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-01 04:31:47 - POST triggered: Array
+(
+    [item_code] => PPDLE00111
+    [quantity] => 850
+    [unit_price] => 2.75
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-01 04:32:16 - Loaded stock-in.php
+2025-07-01 04:32:16 - POST triggered: Array
+(
+    [item_code] => PPDPD00007
+    [quantity] => 980
+    [unit_price] => 3.85
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-01 04:32:16 - POST triggered: Array
+(
+    [item_code] => PPDPD00007
+    [quantity] => 980
+    [unit_price] => 3.85
+    [received_date] => 2025-01-01
+    [tax_included] => yes
+)
+
+2025-07-09 04:35:44 - Loaded stock-in.php
+2025-07-09 04:35:44 - POST triggered: Array
+(
+)
+
+2025-07-29 04:12:48 - Loaded stock-in.php
+2025-07-29 04:12:48 - POST triggered: Array
+(
+)
+
+2025-07-29 05:40:16 - Loaded stock-in.php
+2025-07-29 05:40:16 - POST triggered: Array
+(
+)
+
+2025-07-29 11:29:48 - POST: Array
+(
+    [item_code] => STACM00009
+    [quantity] => 1500
+    [unit_price] => 7.50
+    [received_date] => 2025-07-01
+    [tax_included] => yes
+)
+2025-07-29 12:18:12 - POST: Array
+(
+    [item_code] => STACM00009
+    [quantity] => 1500
+    [unit_price] => 5.50
+    [received_date] => 2025-07-29
+    [tax_included] => yes
+)
+2025-07-29 06:52:56 - Loaded stock-in.php
+2025-07-29 06:52:56 - POST triggered: Array
+(
+)
+
+2025-07-29 12:23:21 - POST: Array
+(
+    [item_code] => STACM00009
+    [quantity] => 850
+    [unit_price] => 9.50
+    [received_date] => 2025-07-16
+    [tax_included] => yes
+)
+2025-08-04 03:10:29 - Loaded stock-in.php
+2025-08-04 03:10:29 - POST triggered: Array
+(
+)
+
+2025-08-04 03:10:29 - Loaded stock-in.php
+2025-08-04 03:10:29 - POST triggered: Array
+(
+)
+
+2025-08-04 03:11:00 - Loaded stock-in.php
+2025-08-04 03:11:00 - POST triggered: Array
+(
+)
+
+2025-08-04 03:11:00 - Loaded stock-in.php
+2025-08-04 03:11:00 - POST triggered: Array
+(
+)
+
+2025-08-04 03:18:00 - Loaded stock-in.php
+2025-08-04 03:18:00 - POST triggered: Array
+(
+)
+
+2025-08-04 03:19:16 - Loaded stock-in.php
+2025-08-04 03:19:16 - POST triggered: Array
+(
+)
+
+2025-08-04 03:19:17 - Loaded stock-in.php
+2025-08-04 03:19:17 - POST triggered: Array
+(
+)
+
+2025-08-04 03:33:50 - Loaded stock-in.php
+2025-08-04 03:33:50 - POST triggered: Array
+(
+)
+
+2025-08-05 04:52:19 - Loaded stock-in.php
+2025-08-05 04:52:19 - POST triggered: Array
+(
+)
+
+2025-08-13 06:30:00 - Loaded stock-in.php
+2025-08-13 06:30:00 - POST triggered: Array
+(
+)
+
+2025-08-13 10:51:09 - Loaded stock-in.php
+2025-08-13 10:51:09 - POST triggered: Array
+(
+)
+
+2025-08-14 04:42:55 - Loaded stock-in.php
+2025-08-14 04:42:55 - POST triggered: Array
+(
+)
+
+2025-08-25 08:52:36 - Loaded stock-in.php
+2025-08-25 08:52:36 - POST triggered: Array
+(
+)
+
+2025-08-28 04:57:37 - Loaded stock-in.php
+2025-08-28 04:57:37 - POST triggered: Array
+(
+)
+
+2025-08-28 04:57:46 - Loaded stock-in.php
+2025-08-28 04:57:46 - POST triggered: Array
+(
+)
+
+2025-09-01 03:41:55 - Loaded stock-in.php
+2025-09-01 03:41:55 - POST triggered: Array
+(
+)
+
+2025-09-03 12:06:19 - Loaded stock-in.php
+2025-09-03 12:06:19 - POST triggered: Array
+(
+)
+
