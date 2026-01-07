@@ -489,56 +489,92 @@ while ($row = mysqli_fetch_assoc($res)) {
     }
 }
 
-// Tea Branches 
-$actuals['Tea Branches'] = 0;
-$monthly_actual_breakdown['Tea Branches'] = [];
+/* ---------------- Tea Branches (GL) — DASHBOARD CORRECT ---------------- */
+$catTeaB = 'Tea Branches';
 
-$res = mysqli_query($conn, "
-  SELECT DATE_FORMAT(STR_TO_DATE(month_applicable, '%M %Y'), '%M %Y') AS month,
-         SUM(CAST(REPLACE(TRIM(total_amount), ',', '') AS DECIMAL(15,2))) AS total_amount
-  FROM tbl_admin_actual_tea_branches
-  WHERE TRIM(total_amount) != ''
-  GROUP BY month
-");
+// init
+$actuals[$catTeaB] = 0;
+$monthly_actual_breakdown[$catTeaB] = [];
 
-while ($row = mysqli_fetch_assoc($res)) {
-    $month  = $row['month'];
-    $amount = (float)$row['total_amount'];
+$budgets[$catTeaB] = 0;
+$monthly_budget_breakdown[$catTeaB] = [];
 
-    // only count if month is selected
-    if (in_array($month, $selected_months_by_category['Tea Branches'] ?? [])) {
-        $monthly_actual_breakdown['Tea Branches'][$month] =
-            ($monthly_actual_breakdown['Tea Branches'][$month] ?? 0) + $amount;
-        $actuals['Tea Branches'] += $amount;
-    }
+// denominator: total distinct branches from budget master table
+$total_branches = 0;
+$resTB = $conn->query("SELECT COUNT(DISTINCT branch_code) AS total FROM tbl_admin_budget_tea_branch");
+if ($resTB && $rowTB = $resTB->fetch_assoc()) {
+    $total_branches = (int)($rowTB['total'] ?? 0);
+}
+
+// (optional) store completion if you later show it in UI
+$monthly_completion_breakdown[$catTeaB] = [];
+
+foreach ($all_months as $mlbl) {
+    $mEsc = mysqli_real_escape_string($conn, $mlbl);
+
+    /* Budget: month total */
+    $bRow = $conn->query("
+        SELECT COALESCE(SUM(budget_amount),0) AS b
+        FROM tbl_admin_budget_tea_branch
+        WHERE applicable_month = '{$mEsc}'
+    ")->fetch_assoc();
+
+    $budget = (float)($bRow['b'] ?? 0);
+
+    $monthly_budget_breakdown[$catTeaB][$mlbl] =
+        ($monthly_budget_breakdown[$catTeaB][$mlbl] ?? 0) + $budget;
+
+    $budgets[$catTeaB] += $budget;
+
+    /* Actual: sum debits for that month (robust debit flag handling) */
+    $aRow = $conn->query("
+        SELECT COALESCE(SUM(debits),0) AS a
+        FROM tbl_admin_actual_branch_gl_tea
+        WHERE applicable_month = '{$mEsc}'
+          AND debits IS NOT NULL
+          AND debits > 0
+          AND (
+                tran_db_cr_flg IS NULL
+                OR UPPER(TRIM(tran_db_cr_flg)) IN ('D','DR','DEBIT')
+                OR UPPER(TRIM(tran_db_cr_flg)) LIKE 'D%'
+              )
+    ")->fetch_assoc();
+
+    $actual = (float)($aRow['a'] ?? 0);
+
+    // match your page: show/use only months with actuals
+    if ($actual <= 0) continue;
+
+    $monthly_actual_breakdown[$catTeaB][$mlbl] =
+        ($monthly_actual_breakdown[$catTeaB][$mlbl] ?? 0) + $actual;
+
+    $actuals[$catTeaB] += $actual;
+
+    /* Completion: distinct branches with debits > 0 */
+    $cRow = $conn->query("
+        SELECT COUNT(DISTINCT enterd_brn) AS c
+        FROM tbl_admin_actual_branch_gl_tea
+        WHERE applicable_month = '{$mEsc}'
+          AND debits IS NOT NULL
+          AND debits > 0
+          AND enterd_brn IS NOT NULL
+          AND TRIM(enterd_brn) <> ''
+          AND (
+                tran_db_cr_flg IS NULL
+                OR UPPER(TRIM(tran_db_cr_flg)) IN ('D','DR','DEBIT')
+                OR UPPER(TRIM(tran_db_cr_flg)) LIKE 'D%'
+              )
+    ")->fetch_assoc();
+
+    $completed = (int)($cRow['c'] ?? 0);
+
+    $monthly_completion_breakdown[$catTeaB][$mlbl] = [
+        'completed' => $completed,
+        'total'     => $total_branches
+    ];
 }
 
 
-// Tea Branches
-$budgets['Tea Branches'] = 0;
-$monthly_budget_breakdown['Tea Branches'] = [];
-
-$res = mysqli_query($conn, "
-  SELECT budget_year, SUM(amount) AS monthly_total
-  FROM tbl_admin_budget_tea_branches
-  GROUP BY budget_year
-");
-
-while ($row = mysqli_fetch_assoc($res)) {
-    $year          = $row['budget_year'];
-    $monthly_total = (float)$row['monthly_total'];
-
-    // Budget (Full Year)
-    $budgets['Tea Branches'] += ($monthly_total * 12);
-
-    // Budget (To Date) handled later via selected months
-    foreach ($all_months as $mlbl) {
-        if (strpos($mlbl, (string)$year) !== false) {
-            $monthly_budget_breakdown['Tea Branches'][$mlbl] =
-                ($monthly_budget_breakdown['Tea Branches'][$mlbl] ?? 0) + $monthly_total;
-        }
-    }
-}
 
 
 // News Paper 
