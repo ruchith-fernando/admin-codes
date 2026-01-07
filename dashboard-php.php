@@ -69,8 +69,7 @@ function dialog_actual(mysqli $conn, array $cfg, string $month_label, string $ym
 /* Ratio-based part for CDMA/SLT – same as telephone page */
 function ratio_actual(mysqli $conn, string $monthly, string $charges, string $conns, array $col, string $start, string $end): float {
     $bs=$col['bill_start']; $be=$col['bill_end']; $u=$col['upload_id']; $s=$col['subtotal']; $t=$col['tax_total']; $m='m';
-    $sql = "
-      WITH base AS (
+    $sql = "WITH base AS (
         SELECT c.$u upload_id, SUM(c.$s) conn_total
         FROM $conns c
         JOIN $monthly $m ON $m.id = c.$u
@@ -86,8 +85,7 @@ function ratio_actual(mysqli $conn, string $monthly, string $charges, string $co
       FROM $conns c
       JOIN $monthly $m ON $m.id = c.$u
       LEFT JOIN ratio r ON r.upload_id = c.$u
-      WHERE $m.$bs <= ? AND $m.$be >= ?
-    ";
+      WHERE $m.$bs <= ? AND $m.$be >= ?";
     $st = $conn->prepare($sql);
     $st->bind_param('ssss', $end, $start, $end, $start);
     $st->execute(); $row=$st->get_result()->fetch_assoc(); $st->close();
@@ -153,11 +151,9 @@ foreach ($budget_tables as $category => $info) {
         $budgets[$category] = 0;
 
         $fyEsc = mysqli_real_escape_string($conn, (string)$currentFY);
-        $row   = $conn->query("
-            SELECT SUM(amount) AS monthly_total
+        $row   = $conn->query("SELECT SUM(amount) AS monthly_total
             FROM tbl_admin_budget_electricity
-            WHERE budget_year = '{$fyEsc}'
-        ")->fetch_assoc();
+            WHERE budget_year = '{$fyEsc}'")->fetch_assoc();
 
         $monthly_total = (float)($row['monthly_total'] ?? 0);
 
@@ -227,12 +223,10 @@ foreach ($all_months as $mlbl) {
 
 /* Electricity Need to complete first */
 $actuals['Electricity Charges'] = 0;
-$res = mysqli_query($conn, "
-  SELECT month_applicable AS month,
+$res = mysqli_query($conn, "SELECT month_applicable AS month,
          SUM(CAST(REPLACE(TRIM(total_amount), ',', '') AS DECIMAL(15,2))) AS total_amount
   FROM tbl_admin_actual_electricity
-  GROUP BY month_applicable
-");
+  GROUP BY month_applicable");
 while ($row = mysqli_fetch_assoc($res)) {
     $month  = $row['month'];
     $amount = (float)$row['total_amount'];
@@ -914,132 +908,178 @@ while ($row = mysqli_fetch_assoc($resB)) {
 
 
 
-/* Vehicle Maintenance — unified robust query using report_date */
-$actuals['Vehicle Maintenance'] = 0;
-if (!isset($monthly_actual_breakdown['Vehicle Maintenance'])) {
-    $monthly_actual_breakdown['Vehicle Maintenance'] = [];
-}
+/* ---------------- Vehicle Maintenance  ---------------- */
+$catVM = 'Vehicle Maintenance';
 
-$sqlVehicle = "
-SELECT
-  m.month_name                                AS `Month`,
-  COALESCE(b.budget_amount, 0)                AS budget_amount,
-  COALESCE(a.maintenance, 0)                  AS actual_maintenance,
-  COALESCE(a.service, 0)                      AS actual_service,
-  COALESCE(a.lic_ins, 0)                      AS actual_lic_ins,
-  (COALESCE(a.maintenance,0)+COALESCE(a.service,0)+COALESCE(a.lic_ins,0)) AS actual_total,
-  COALESCE(b.budget_amount,0) - (COALESCE(a.maintenance,0)+COALESCE(a.service,0)+COALESCE(a.lic_ins,0)) AS difference,
-  CASE
-    WHEN COALESCE(b.budget_amount,0) > 0 THEN ROUND(
-      (COALESCE(b.budget_amount,0) - (COALESCE(a.maintenance,0)+COALESCE(a.service,0)+COALESCE(a.lic_ins,0)))
-      / COALESCE(b.budget_amount,0) * 100
-    )
-    ELSE NULL
-  END                                          AS variance_pct
-FROM
-(
-  SELECT budget_month AS month_name
-  FROM tbl_admin_budget_vehicle_maintenance
-  WHERE budget_month IS NOT NULL AND TRIM(budget_month) <> ''
+$actuals[$catVM] = 0;
+$monthly_actual_breakdown[$catVM] = [];
 
-  UNION
-  SELECT DATE_FORMAT(report_date, '%M %Y')
-  FROM tbl_admin_vehicle_maintenance
-  WHERE STATUS='Approved' AND report_date IS NOT NULL
+$fyMonths = array_flip($all_months);
 
-  UNION
-  SELECT DATE_FORMAT(report_date, '%M %Y')
-  FROM tbl_admin_vehicle_service
-  WHERE STATUS='Approved' AND report_date IS NOT NULL
+// FY bounds based on dashboard FY list
+$fyStart = DateTime::createFromFormat('F Y', $all_months[0]);
+$fyStartStr = $fyStart ? $fyStart->format('Y-m-01') : null;
+$fyEndStr   = $fyStart ? (clone $fyStart)->modify('+1 year')->format('Y-m-01') : null; // exclusive
 
-  UNION
-  SELECT DATE_FORMAT(report_date, '%M %Y')
-  FROM tbl_admin_vehicle_licensing_insurance
-  WHERE STATUS='Approved' AND report_date IS NOT NULL
-) m
-LEFT JOIN
-(
-  SELECT
-    budget_month,
-    SUM(CAST(REPLACE(amount, ',', '') AS DECIMAL(15,2))) AS budget_amount
-  FROM tbl_admin_budget_vehicle_maintenance
-  WHERE budget_month IS NOT NULL AND TRIM(budget_month) <> ''
-  GROUP BY budget_month
-) b
-  ON b.budget_month = m.month_name
-LEFT JOIN
-(
-  SELECT month_name,
-         SUM(actual_maintenance) AS maintenance,
-         SUM(actual_service)     AS service,
-         SUM(actual_lic_ins)     AS lic_ins
-  FROM (
-    /* Maintenance */
-    SELECT
-      DATE_FORMAT(report_date, '%M %Y') AS month_name,
-      SUM(CAST(REPLACE(price, ',', '') AS DECIMAL(15,2))) AS actual_maintenance,
-      0 AS actual_service,
-      0 AS actual_lic_ins
-    FROM tbl_admin_vehicle_maintenance
-    WHERE STATUS='Approved' AND report_date IS NOT NULL
-    GROUP BY month_name
+if ($fyStartStr && $fyEndStr) {
 
-    UNION ALL
+    $sql = "SELECT m.month_name AS month_name,
+      COALESCE(b.budget_amount, 0) AS budget_amount,
+      COALESCE(a.tire, 0) AS tire,
+      COALESCE(a.alignment, 0) AS alignment,
+      COALESCE(a.battery, 0) AS battery,
+      COALESCE(a.ac, 0) AS ac,
+      COALESCE(a.running_repairs, 0) AS running_repairs,
+      COALESCE(a.service, 0) AS service,
+      COALESCE(a.licensing, 0) AS licensing,
+      (
+        COALESCE(a.tire,0) + COALESCE(a.alignment,0) + COALESCE(a.battery,0) + COALESCE(a.ac,0) +
+        COALESCE(a.running_repairs,0) + COALESCE(a.service,0) + COALESCE(a.licensing,0)
+      ) AS total_actual
+    FROM
+    (
+      SELECT budget_month AS month_name
+      FROM tbl_admin_budget_vehicle_maintenance
+      WHERE budget_month IS NOT NULL AND TRIM(budget_month) <> ''
 
-    /* Service */
-    SELECT
-      DATE_FORMAT(report_date, '%M %Y') AS month_name,
-      0,
-      SUM(CAST(REPLACE(amount, ',', '') AS DECIMAL(15,2))) AS actual_service,
-      0
-    FROM tbl_admin_vehicle_service
-    WHERE STATUS='Approved' AND report_date IS NOT NULL
-    GROUP BY month_name
+      UNION
 
-    UNION ALL
+      SELECT DATE_FORMAT(report_date, '%M %Y')
+      FROM tbl_admin_vehicle_maintenance
+      WHERE status='Approved' AND report_date IS NOT NULL
 
-    /* Licensing + Insurance */
-    SELECT
-      DATE_FORMAT(report_date, '%M %Y') AS month_name,
-      0, 0,
-      SUM(
-        CAST(REPLACE(COALESCE(emission_test_amount, '0'), ',', '') AS DECIMAL(15,2)) +
-        CAST(REPLACE(COALESCE(revenue_license_amount, '0'), ',', '') AS DECIMAL(15,2)) +
-        CAST(REPLACE(COALESCE(insurance_amount, '0'), ',', '') AS DECIMAL(15,2))
-      ) AS actual_lic_ins
-    FROM tbl_admin_vehicle_licensing_insurance
-    WHERE STATUS='Approved' AND report_date IS NOT NULL
-    GROUP BY month_name
-  ) x
-  GROUP BY month_name
-) a
-  ON a.month_name = m.month_name
-WHERE m.month_name IS NOT NULL AND m.month_name <> ''
-ORDER BY STR_TO_DATE(m.month_name, '%M %Y');
-";
+      UNION
 
-$resVehicle = $conn->query($sqlVehicle);
-if ($resVehicle) {
-    $fyMonths = array_flip($all_months);
+      SELECT DATE_FORMAT(report_date, '%M %Y')
+      FROM tbl_admin_vehicle_service
+      WHERE status='Approved' AND report_date IS NOT NULL
 
-    while ($r = $resVehicle->fetch_assoc()) {
-        $mLabel = $r['Month'] ?? '';
-        if ($mLabel === '' || !isset($fyMonths[$mLabel])) continue;
+      UNION
 
-        $actualTotal = (float)($r['actual_total'] ?? 0);
-        if ($actualTotal == 0.0) continue;
+      SELECT DATE_FORMAT(report_date, '%M %Y')
+      FROM tbl_admin_vehicle_licensing_insurance
+      WHERE status='Approved' AND report_date IS NOT NULL
+    ) m
 
-        $monthly_actual_breakdown['Vehicle Maintenance'][$mLabel] =
-            ($monthly_actual_breakdown['Vehicle Maintenance'][$mLabel] ?? 0) + $actualTotal;
+    LEFT JOIN (
+      SELECT budget_month,
+             SUM(CAST(REPLACE(amount, ',', '') AS DECIMAL(15,2))) AS budget_amount
+      FROM tbl_admin_budget_vehicle_maintenance
+      WHERE budget_month IS NOT NULL AND TRIM(budget_month) <> ''
+      GROUP BY budget_month
+    ) b ON b.budget_month = m.month_name
 
-        $actuals['Vehicle Maintenance'] += $actualTotal;
+    LEFT JOIN (
+      SELECT month_name,
+             SUM(tire) AS tire,
+             SUM(alignment) AS alignment,
+             SUM(battery) AS battery,
+             SUM(ac) AS ac,
+             SUM(running_repairs) AS running_repairs,
+             SUM(service) AS service,
+             SUM(licensing) AS licensing
+      FROM (
+        /* Maintenance */
+        SELECT
+          DATE_FORMAT(vm.report_date, '%M %Y') AS month_name,
+
+          SUM(
+            CASE
+              WHEN vm.maintenance_type='Tire'
+              THEN COALESCE(ti.tire_sum, CAST(REPLACE(COALESCE(vm.price,'0'), ',', '') AS DECIMAL(15,2)))
+              ELSE 0
+            END
+          ) AS tire,
+
+          SUM(
+            CASE
+              WHEN vm.maintenance_type='Tire'
+              THEN CAST(REPLACE(COALESCE(vm.wheel_alignment_amount,'0'), ',', '') AS DECIMAL(15,2))
+              ELSE 0
+            END
+          ) AS alignment,
+
+          SUM(CASE WHEN vm.maintenance_type='Battery' THEN CAST(REPLACE(COALESCE(vm.price,'0'), ',', '') AS DECIMAL(15,2)) ELSE 0 END) AS battery,
+          SUM(CASE WHEN vm.maintenance_type='AC'      THEN CAST(REPLACE(COALESCE(vm.price,'0'), ',', '') AS DECIMAL(15,2)) ELSE 0 END) AS ac,
+
+          SUM(
+            CASE
+              WHEN vm.maintenance_type IN ('Other','Running Repairs')
+              THEN CAST(REPLACE(COALESCE(vm.price,'0'), ',', '') AS DECIMAL(15,2))
+              ELSE 0
+            END
+          ) AS running_repairs,
+
+          0 AS service,
+          0 AS licensing
+        FROM tbl_admin_vehicle_maintenance vm
+        LEFT JOIN (
+          SELECT maintenance_id,
+                 SUM(CAST(REPLACE(COALESCE(tire_price,'0'), ',', '') AS DECIMAL(15,2))) AS tire_sum
+          FROM tbl_admin_vehicle_maintenance_tire_items
+          GROUP BY maintenance_id
+        ) ti ON ti.maintenance_id = vm.id
+        WHERE vm.status='Approved' AND vm.report_date IS NOT NULL
+        GROUP BY month_name
+
+        UNION ALL
+
+        /* Service */
+        SELECT
+          DATE_FORMAT(report_date, '%M %Y') AS month_name,
+          0,0,0,0,0,
+          SUM(CAST(REPLACE(COALESCE(amount,'0'), ',', '') AS DECIMAL(15,2))) AS service,
+          0 AS licensing
+        FROM tbl_admin_vehicle_service
+        WHERE status='Approved' AND report_date IS NOT NULL
+        GROUP BY month_name
+
+        UNION ALL
+
+        /* Licensing */
+        SELECT
+          DATE_FORMAT(report_date, '%M %Y') AS month_name,
+          0,0,0,0,0,0,
+          SUM(
+            CAST(REPLACE(COALESCE(emission_test_amount, '0'), ',', '') AS DECIMAL(15,2)) +
+            CAST(REPLACE(COALESCE(revenue_license_amount, '0'), ',', '') AS DECIMAL(15,2)) +
+            CAST(REPLACE(COALESCE(insurance_amount, '0'), ',', '') AS DECIMAL(15,2))
+          ) AS licensing
+        FROM tbl_admin_vehicle_licensing_insurance
+        WHERE status='Approved' AND report_date IS NOT NULL
+        GROUP BY month_name
+      ) allx
+      GROUP BY month_name
+    ) a ON a.month_name = m.month_name
+
+    WHERE m.month_name IS NOT NULL AND m.month_name <> ''
+      AND STR_TO_DATE(CONCAT('01 ', m.month_name), '%d %M %Y') >= '".$conn->real_escape_string($fyStartStr)."'
+      AND STR_TO_DATE(CONCAT('01 ', m.month_name), '%d %M %Y') <  '".$conn->real_escape_string($fyEndStr)."'
+
+    ORDER BY STR_TO_DATE(m.month_name, '%M %Y');
+    ";
+
+    $res = $conn->query($sql);
+    if ($res) {
+        while ($r = $res->fetch_assoc()) {
+            $mlbl = trim((string)($r['month_name'] ?? ''));
+            if ($mlbl === '' || !isset($fyMonths[$mlbl])) continue;
+
+            $total = (float)($r['total_actual'] ?? 0);
+            if ($total <= 0) continue; // match report page behavior
+
+            $monthly_actual_breakdown[$catVM][$mlbl] =
+                ($monthly_actual_breakdown[$catVM][$mlbl] ?? 0) + $total;
+
+            $actuals[$catVM] += $total;
+        }
     }
 }
 
+
 /* Staff Transport */
 $actuals['Staff Transport'] = 0;
-$res = mysqli_query($conn, "
-  SELECT DATE_FORMAT(`date`, '%M %Y') AS month, SUM(total) AS amount
+$res = mysqli_query($conn, "SELECT DATE_FORMAT(`date`, '%M %Y') AS month, SUM(total) AS amount
   FROM tbl_admin_kangaroo_transport
   GROUP BY DATE_FORMAT(`date`, '%M %Y')
 ");
@@ -1050,8 +1090,7 @@ while ($row = mysqli_fetch_assoc($res)) {
         ($monthly_actual_breakdown['Staff Transport'][$month] ?? 0) + $amount;
     $actuals['Staff Transport'] += $amount;
 }
-$res = mysqli_query($conn, "
-  SELECT DATE_FORMAT(STR_TO_DATE(pickup_time, '%W, %M %D %Y, %l:%i:%s %p'), '%M %Y') AS month,
+$res = mysqli_query($conn, "SELECT DATE_FORMAT(STR_TO_DATE(pickup_time, '%W, %M %D %Y, %l:%i:%s %p'), '%M %Y') AS month,
          SUM(total_fare) AS amount
   FROM tbl_admin_pickme_data
   WHERE pickup_time IS NOT NULL AND pickup_time != ''
@@ -1065,7 +1104,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     $actuals['Staff Transport'] += $amount;
 }
 
-/* ---------------- Postage & Stamps (dashboard MUST match ajax-postage-budget-vs-actual.php) ---------------- */
+/* ---------------- Postage & Stamps ---------------- */
 $catPS = 'Postage & Stamps';
 
 $actuals[$catPS] = 0;
@@ -1080,9 +1119,7 @@ $fyMonthSet = array_flip($all_months);
 
 if ($fyStartStr && $fyEndStr) {
 
-    $sqlA = "
-      SELECT
-        DATE_FORMAT(dateoftran, '%M %Y') AS month_label,
+    $sqlA = "SELECT DATE_FORMAT(dateoftran, '%M %Y') AS month_label,
         SUM(ABS(debits))                 AS actual_amount,
         MIN(dateoftran)                  AS first_date
       FROM tbl_admin_actual_branch_gl_postage
