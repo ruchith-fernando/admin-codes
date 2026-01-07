@@ -1,7 +1,4 @@
-// printing-monthly-report.js (FULL DROP-IN)
-// Goal: only one section open at a time (View OR Manual)
-// Also: keep the file clean — PHP fetch stays PHP, JS stays JS.
-
+// printing-monthly-Report.js
 $(document).ready(function () {
 
   /* -----------------------------
