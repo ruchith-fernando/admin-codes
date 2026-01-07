@@ -33,6 +33,7 @@ $completedModules = [
   'admin',
   'vehicle',
   'securityvpn',
+  'printing',
 
   // If you want to mark these completed too, just uncomment:
   // 'electricity',
@@ -219,8 +220,8 @@ $allMenus = [
         'title' => 'Electricity',
         'id' => 'collapseElectricity',
         'items' => [
-            ['key'=>'electricity-bills-upload',     'file'=>'upload-electricity-csv.php',     'label'=>'Upload Electricity Amounts and Useage'],
-            ['key'=>'electricity-bills-useage',     'file'=>'electricity-monthly-report.php', 'label'=>'Electricity Bills and Useage'],
+            ['key'=>'electricity-bills-upload',     'file'=>'upload-electricity-csv.php',     'label'=>'Upload Electricity Amounts and Usage'],
+            ['key'=>'electricity-bills-useage',     'file'=>'electricity-monthly-report.php', 'label'=>'Electricity Bills and Usage'],
             ['key'=>'electricity-initial-entry',    'file'=>'electricity-initial-entry.php', 'label'=>'Initial Electricity Bill Entry'],
             ['key'=>'electricity-cheque-entry',     'file'=>'electricity-cheque-entry.php',  'label'=>'Cheque Details'],
             ['key'=>'electricity-full-report',      'file'=>'electricity-full-report.php',   'label'=>'Full Report - Monthly'],
@@ -234,7 +235,7 @@ $allMenus = [
             ['key'=>'upload-printing-branches', 'file'=>'upload-printing-branches.php', 'label'=>'Upload Branch Details'],
             ['key'=>'upload-printing-budget',   'file'=>'upload-printing-budget.php',   'label'=>'Upload Budget'],
             ['key'=>'upload-printing-actuals',  'file'=>'upload-printing-actuals.php',  'label'=>'Upload Actuals'],
-            ['key'=>'printing-monthly-report',  'file'=>'printing-monthly-report.php',  'label'=>'Printing & Stationary Figures'],
+            ['key'=>'printing-monthly-report',  'file'=>'printing-monthly-report.php',  'label'=>'Printing & Stationary Usage'],
             ['key'=>'printing-overview',        'file'=>'printing-overview.php',        'label'=>'Monthly Budget VS Actuals'],
         ]
     ],
@@ -475,10 +476,10 @@ $remainingMenus = [
         'title' => 'Water',
         'id'    => 'collapseWater',
         'items' => [
-            ['key'=>'water-monthly-report',        'file'=>'water-monthly-report.php',        'label'=>'Water Bills and Useage'],
+            ['key'=>'water-monthly-report',        'file'=>'water-monthly-report.php',        'label'=>'Water Bills and Usage'],
             ['key'=>'water-approval',              'file'=>'water-pending.php',               'label'=>'Pending, Reject, Approve - Water Bills'],
             ['key'=>'water-approved-list',         'file'=>'water-approved-downloads.php',    'label'=>'Download Approved - Water Bills'],
-            ['key'=>'branch-water-monthly-report', 'file'=>'branch-water-monthly-report.php', 'label'=>'Water Bills and Useage - Branch'],
+            ['key'=>'branch-water-monthly-report', 'file'=>'branch-water-monthly-report.php', 'label'=>'Water Bills and Usage - Branch'],
             ['key'=>'water-overview',              'file'=>'water-overview.php',              'label'=>'Monthly Budget VS Actuals'],
         ]
     ],
@@ -510,7 +511,7 @@ $remainingMenus = [
         'items' => [
             ['key'=>'upload-security-vpn-budget',  'file'=>'upload-security-vpn-budget.php',  'label'=>'Upload Budget'],
             ['key'=>'upload-security-vpn-actuals', 'file'=>'upload-security-vpn-actuals.php', 'label'=>'Upload Actuals'],
-            ['key'=>'security-vpn-monthly-report', 'file'=>'security-vpn-monthly-report.php', 'label'=>'Security VPN Useage'],
+            ['key'=>'security-vpn-monthly-report', 'file'=>'security-vpn-monthly-report.php', 'label'=>'Security VPN Usage'],
             ['key'=>'security-vpn-overview',       'file'=>'security-vpn-overview.php',       'label'=>'Monthly Budget VS Actuals'],
         ]
     ],
