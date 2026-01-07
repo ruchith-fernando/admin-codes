@@ -198,16 +198,14 @@ foreach ($all_months as $mlbl) {
     $month_esc = mysqli_real_escape_string($conn, $mlbl);
 
     // NON-2000 (approved) excluding active 2000 branches
-    $row1 = $conn->query("
-        SELECT COALESCE(SUM(a.total_amount),0) AS s
+    $row1 = $conn->query("SELECT COALESCE(SUM(a.total_amount),0) AS s
         FROM tbl_admin_actual_security_firmwise a
         LEFT JOIN tbl_admin_security_2000_branches s
                ON s.branch_code = a.branch_code
               AND s.active = 'yes'
         WHERE a.month_applicable = '{$month_esc}'
           AND a.approval_status = 'approved'
-          AND s.branch_code IS NULL
-    ")->fetch_assoc();
+          AND s.branch_code IS NULL")->fetch_assoc();
     $actual_non2000 = (float)($row1['s'] ?? 0);
 
     // 2000 invoices (approved)
@@ -227,7 +225,7 @@ foreach ($all_months as $mlbl) {
 }
 
 
-/* Electricity */
+/* Electricity Need to complete first */
 $actuals['Electricity Charges'] = 0;
 $res = mysqli_query($conn, "
   SELECT month_applicable AS month,
@@ -243,16 +241,36 @@ while ($row = mysqli_fetch_assoc($res)) {
     $actuals['Electricity Charges'] += $amount;
 }
 
-/* Photocopy */
-// $actuals['Photocopy'] = 0;
-// $res = mysqli_query($conn, "SELECT record_date AS month, total FROM tbl_admin_actual_photocopy");
-// while ($row = mysqli_fetch_assoc($res)) {
-//     $month  = $row['month'];
-//     $amount = (float)$row['total'];
-//     $monthly_actual_breakdown['Photocopy'][$month] =
-//         ($monthly_actual_breakdown['Photocopy'][$month] ?? 0) + $amount;
-//     $actuals['Photocopy'] += $amount;
-// }
+$actuals['Photocopy'] = 0;
+$monthly_actual_breakdown['Photocopy'] = [];
+
+foreach ($all_months as $mlbl) {
+    // reuse your helper
+    [$start,$end,$ym,$ymd01] = month_bounds($mlbl);
+    if (!$start) continue;
+
+    // next month start (exclusive upper bound)
+    $dt = DateTime::createFromFormat('Y-m-d', $ymd01);
+    $next = (clone $dt)->modify('+1 month')->format('Y-m-01');
+
+    $startEsc = mysqli_real_escape_string($conn, $ymd01);
+    $nextEsc  = mysqli_real_escape_string($conn, $next);
+
+    $row = $conn->query("SELECT SUM(CAST(REPLACE(COALESCE(total_amount,'0'), ',', '') AS DECIMAL(15,2))) AS s
+        FROM tbl_admin_actual_photocopy
+        WHERE month_applicable >= '{$startEsc}'
+          AND month_applicable <  '{$nextEsc}'")->fetch_assoc();
+
+    $actual = (float)($row['s'] ?? 0);
+
+    // ✅ Match your photocopy page behavior (skip if actual == 0)
+    if ($actual <= 0) continue;
+
+    $monthly_actual_breakdown['Photocopy'][$mlbl] =
+        ($monthly_actual_breakdown['Photocopy'][$mlbl] ?? 0) + $actual;
+
+    $actuals['Photocopy'] += $actual;
+}
 
 /* Tea Service */
 $actuals['Tea Service - Head Office'] = 0;
