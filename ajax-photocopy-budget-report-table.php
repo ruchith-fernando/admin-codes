@@ -1,56 +1,78 @@
 <?php
-// ajax-photocopy-budget-report-table.php
 require_once 'connections/connection.php';
+if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 
 $category = 'Photocopy';
+$user_id  = isset($_SESSION['hris']) ? mysqli_real_escape_string($conn, $_SESSION['hris']) : '';
 
-// ✅ Financial Year
+// ✅ Financial Year AUTO (Apr–Mar)
+$tz = new DateTimeZone('Asia/Colombo');
+$now = new DateTime('now', $tz);
+
+$fyStartMonth = 4; // April
+$fyStartYear = ((int)$now->format('n') >= $fyStartMonth) ? (int)$now->format('Y') : ((int)$now->format('Y') - 1);
+
+$fy_start = new DateTime($fyStartYear . "-04-01", $tz);
+$fy_end   = (clone $fy_start)->modify('+11 months'); // up to March
+
 $months = [];
-$start = new DateTime('2025-04-01');
-$end   = new DateTime('2026-03-01');
-while ($start <= $end) {
-    $months[] = $start->format('F Y');
-    $start->modify('+1 month');
+$cursor = clone $fy_start;
+while ($cursor <= $fy_end) {
+    $monthStart = $cursor->format('Y-m-01');
+    $nextStart  = (clone $cursor)->modify('+1 month')->format('Y-m-01');
+    $label      = $cursor->format('F Y');
+
+    $months[] = ['label'=>$label, 'start'=>$monthStart, 'next'=>$nextStart];
+    $cursor->modify('+1 month');
 }
 
 $report = [];
 
-foreach ($months as $month) {
-    $month_esc    = mysqli_real_escape_string($conn, $month);
-    $category_esc = mysqli_real_escape_string($conn, $category);
+foreach ($months as $m) {
+    $monthLabel = $m['label'];
+    $monthLabelEsc = mysqli_real_escape_string($conn, $monthLabel);
 
-    // ✅ Actuals (show month only if there is actual > 0, to match Security behavior)
+    $startEsc = mysqli_real_escape_string($conn, $m['start']);
+    $nextEsc  = mysqli_real_escape_string($conn, $m['next']);
+
+    // ✅ Actuals (sum total_amount using month_applicable DATE range)
     $actual_row = $conn->query("
-        SELECT SUM(total) AS actual_amount
+        SELECT COALESCE(SUM(total_amount), 0) AS actual_amount
         FROM tbl_admin_actual_photocopy
-        WHERE record_date = '$month_esc'
+        WHERE month_applicable >= '{$startEsc}'
+          AND month_applicable <  '{$nextEsc}'
     ")->fetch_assoc();
-    $actual = $actual_row['actual_amount'] ?? 0;
+
+    $actual = (float)($actual_row['actual_amount'] ?? 0);
     if ($actual <= 0) continue;
 
-    // ✅ Budget (do NOT skip if 0 — match Security)
+    // ✅ Budget (from tbl_admin_budget_photocopies)
     $budget_row = $conn->query("
-        SELECT SUM(budget_amount) AS budget_amount
+        SELECT COALESCE(SUM(budget_amount), 0) AS budget_amount
         FROM tbl_admin_budget_photocopies
-        WHERE month_year = '$month_esc'
+        WHERE month_year = '{$monthLabelEsc}'
     ")->fetch_assoc();
-    $budget = $budget_row['budget_amount'] ?? 0;
 
-    // ✅ Checkbox selection
+    $budget = (float)($budget_row['budget_amount'] ?? 0);
+
+    // ✅ Checkbox selection (MUST filter by user_id)
+    $catEsc = mysqli_real_escape_string($conn, $category);
     $selected_row = $conn->query("
         SELECT is_selected
         FROM tbl_admin_dashboard_month_selection
-        WHERE category='$category_esc' AND month_name='$month_esc'
+        WHERE category   = '{$catEsc}'
+          AND month_name = '{$monthLabelEsc}'
+          AND user_id    = '{$user_id}'
+        LIMIT 1
     ")->fetch_assoc();
-    $selected = ($selected_row['is_selected'] ?? '') === 'yes' ? 'checked' : '';
 
-    // ✅ Variance
+    $selected = (($selected_row['is_selected'] ?? '') === 'yes') ? 'checked' : '';
+
     $difference = $budget - $actual;
     $variance   = ($budget > 0) ? round(($difference / $budget) * 100) : null;
 
-    // (Photocopy has no branch completion concept; keep the column for a 100% UI match)
     $report[] = [
-        'month'      => $month,
+        'month'      => $monthLabel,
         'budget'     => $budget,
         'actual'     => $actual,
         'difference' => $difference,
@@ -59,6 +81,7 @@ foreach ($months as $month) {
     ];
 }
 ?>
+
 
 <style>
 /* Match Security: style the Bootstrap switch inside table cells */
