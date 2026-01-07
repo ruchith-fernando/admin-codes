@@ -32,6 +32,7 @@ $completedModules = [
   'employee',
   'admin',
   'vehicle',
+  'securityvpn',
 
   // If you want to mark these completed too, just uncomment:
   // 'electricity',
