@@ -489,7 +489,7 @@ while ($row = mysqli_fetch_assoc($res)) {
     }
 }
 
-/* ---------------- Tea Branches (GL) — DASHBOARD CORRECT ---------------- */
+/* ---------------- Tea Branches  ---------------- */
 $catTeaB = 'Tea Branches';
 
 // init
@@ -527,8 +527,7 @@ foreach ($all_months as $mlbl) {
     $budgets[$catTeaB] += $budget;
 
     /* Actual: sum debits for that month (robust debit flag handling) */
-    $aRow = $conn->query("
-        SELECT COALESCE(SUM(debits),0) AS a
+    $aRow = $conn->query("SELECT COALESCE(SUM(debits),0) AS a
         FROM tbl_admin_actual_branch_gl_tea
         WHERE applicable_month = '{$mEsc}'
           AND debits IS NOT NULL
@@ -537,8 +536,7 @@ foreach ($all_months as $mlbl) {
                 tran_db_cr_flg IS NULL
                 OR UPPER(TRIM(tran_db_cr_flg)) IN ('D','DR','DEBIT')
                 OR UPPER(TRIM(tran_db_cr_flg)) LIKE 'D%'
-              )
-    ")->fetch_assoc();
+              )")->fetch_assoc();
 
     $actual = (float)($aRow['a'] ?? 0);
 
@@ -551,8 +549,7 @@ foreach ($all_months as $mlbl) {
     $actuals[$catTeaB] += $actual;
 
     /* Completion: distinct branches with debits > 0 */
-    $cRow = $conn->query("
-        SELECT COUNT(DISTINCT enterd_brn) AS c
+    $cRow = $conn->query("SELECT COUNT(DISTINCT enterd_brn) AS c
         FROM tbl_admin_actual_branch_gl_tea
         WHERE applicable_month = '{$mEsc}'
           AND debits IS NOT NULL
@@ -563,8 +560,7 @@ foreach ($all_months as $mlbl) {
                 tran_db_cr_flg IS NULL
                 OR UPPER(TRIM(tran_db_cr_flg)) IN ('D','DR','DEBIT')
                 OR UPPER(TRIM(tran_db_cr_flg)) LIKE 'D%'
-              )
-    ")->fetch_assoc();
+              )")->fetch_assoc();
 
     $completed = (int)($cRow['c'] ?? 0);
 
@@ -573,59 +569,73 @@ foreach ($all_months as $mlbl) {
         'total'     => $total_branches
     ];
 }
+/* ---------------- News Paper  ---------------- */
+$catNP = 'News Paper';
 
+$actuals[$catNP] = 0;
+$monthly_actual_breakdown[$catNP] = [];
 
+$budgets[$catNP] = 0;
+$monthly_budget_breakdown[$catNP] = [];
 
+$monthly_completion_breakdown[$catNP] = [];
 
-// News Paper 
-$actuals['News Paper'] = 0;
-$monthly_actual_breakdown['News Paper'] = [];
-
-$res = mysqli_query($conn, "
-  SELECT DATE_FORMAT(STR_TO_DATE(month_applicable, '%M %Y'), '%M %Y') AS month,
-         SUM(CAST(REPLACE(TRIM(total_amount), ',', '') AS DECIMAL(15,2))) AS total_amount
-  FROM tbl_admin_actual_newspaper
-  WHERE TRIM(total_amount) != ''
-  GROUP BY month
-");
-
-while ($row = mysqli_fetch_assoc($res)) {
-    $month  = $row['month'];
-    $amount = (float)$row['total_amount'];
-
-    // only count if month is selected
-    if (in_array($month, $selected_months_by_category['News Paper'] ?? [])) {
-        $monthly_actual_breakdown['News Paper'][$month] =
-            ($monthly_actual_breakdown['News Paper'][$month] ?? 0) + $amount;
-        $actuals['News Paper'] += $amount;
-    }
+/* total branches (denominator) from budget table */
+$total_np_branches = 0;
+$resTB = $conn->query("SELECT COUNT(DISTINCT branch_code) AS total
+    FROM tbl_admin_budget_newspaper_branch");
+if ($resTB && $rowTB = $resTB->fetch_assoc()) {
+    $total_np_branches = (int)($rowTB['total'] ?? 0);
 }
 
+foreach ($all_months as $mlbl) {
+    $mEsc = mysqli_real_escape_string($conn, $mlbl);
 
-// News Paper
-$budgets['News Paper'] = 0;
-$monthly_budget_breakdown['News Paper'] = [];
+    /* Budget: monthly total */
+    $bRow = $conn->query("SELECT COALESCE(SUM(budget_amount),0) AS b
+        FROM tbl_admin_budget_newspaper_branch
+        WHERE applicable_month = '{$mEsc}'")->fetch_assoc();
+    $budget = (float)($bRow['b'] ?? 0);
 
-$res = mysqli_query($conn, "
-  SELECT budget_year, SUM(amount) AS monthly_total
-  FROM tbl_admin_budget_newspaper
-  GROUP BY budget_year
-");
+    $monthly_budget_breakdown[$catNP][$mlbl] =
+        ($monthly_budget_breakdown[$catNP][$mlbl] ?? 0) + $budget;
 
-while ($row = mysqli_fetch_assoc($res)) {
-    $year          = $row['budget_year'];
-    $monthly_total = (float)$row['monthly_total'];
+    $budgets[$catNP] += $budget;
 
-    // Budget (Full Year)
-    $budgets['News Paper'] += ($monthly_total * 12);
+    /* Actuals: sum of debits (Debit-side only, robust flag handling) */
+    $aRow = $conn->query("SELECT COALESCE(SUM(debits),0) AS a
+        FROM tbl_admin_actual_branch_gl_newspaper
+        WHERE applicable_month = '{$mEsc}'
+          AND COALESCE(debits,0) <> 0
+          AND (
+                UPPER(TRIM(COALESCE(tran_db_cr_flg,''))) = 'D'
+                OR UPPER(TRIM(COALESCE(tran_db_cr_flg,''))) = 'DR'
+                OR UPPER(TRIM(COALESCE(tran_db_cr_flg,''))) = 'DEBIT'
+                OR UPPER(TRIM(COALESCE(tran_db_cr_flg,''))) LIKE 'D%'
+              )")->fetch_assoc();
+    $actual = (float)($aRow['a'] ?? 0);
 
-    // Budget (To Date) handled later via selected months
-    foreach ($all_months as $mlbl) {
-        if (strpos($mlbl, (string)$year) !== false) {
-            $monthly_budget_breakdown['News Paper'][$mlbl] =
-                ($monthly_budget_breakdown['News Paper'][$mlbl] ?? 0) + $monthly_total;
-        }
+    // ✅ keep same behavior: skip months with 0 actual, but keep negatives
+    if (abs($actual) < 0.005) {
+        continue;
     }
+
+    $monthly_actual_breakdown[$catNP][$mlbl] =
+        ($monthly_actual_breakdown[$catNP][$mlbl] ?? 0) + $actual;
+
+    $actuals[$catNP] += $actual;
+
+    /* Completion: branches having ANY actual (debits != 0) */
+    $cRow = $conn->query("SELECT COUNT(DISTINCT COALESCE(NULLIF(brn_code,''), enterd_brn)) AS c
+        FROM tbl_admin_actual_branch_gl_newspaper
+        WHERE applicable_month = '{$mEsc}'
+          AND COALESCE(debits,0) <> 0")->fetch_assoc();
+    $completed = (int)($cRow['c'] ?? 0);
+
+    $monthly_completion_breakdown[$catNP][$mlbl] = [
+        'completed' => $completed,
+        'total'     => $total_np_branches
+    ];
 }
 
 // Printing 
