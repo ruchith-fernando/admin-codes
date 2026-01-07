@@ -513,11 +513,9 @@ foreach ($all_months as $mlbl) {
     $mEsc = mysqli_real_escape_string($conn, $mlbl);
 
     /* Budget: month total */
-    $bRow = $conn->query("
-        SELECT COALESCE(SUM(budget_amount),0) AS b
+    $bRow = $conn->query("SELECT COALESCE(SUM(budget_amount),0) AS b
         FROM tbl_admin_budget_tea_branch
-        WHERE applicable_month = '{$mEsc}'
-    ")->fetch_assoc();
+        WHERE applicable_month = '{$mEsc}'")->fetch_assoc();
 
     $budget = (float)($bRow['b'] ?? 0);
 
@@ -637,56 +635,71 @@ foreach ($all_months as $mlbl) {
         'total'     => $total_np_branches
     ];
 }
+/* ---------------- Printing & Stationary ---------------- */
+$catP = 'Printing & Stationary';
 
-// Printing 
-$actuals['Printing & Stationary'] = 0;
-$monthly_actual_breakdown['Printing & Stationary'] = [];
+$actuals[$catP] = 0;
+$monthly_actual_breakdown[$catP] = [];
 
-$res = mysqli_query($conn, "
-  SELECT DATE_FORMAT(STR_TO_DATE(month_applicable, '%M %Y'), '%M %Y') AS month,
-         SUM(CAST(REPLACE(TRIM(total_amount), ',', '') AS DECIMAL(15,2))) AS total_amount
-  FROM tbl_admin_actual_printing
-  WHERE TRIM(total_amount) != ''
-  GROUP BY month
-");
+$budgets[$catP] = 0;
+$monthly_budget_breakdown[$catP] = [];
 
-while ($row = mysqli_fetch_assoc($res)) {
-    $month  = $row['month'];
-    $amount = (float)$row['total_amount'];
+// Optional: completion tracking (like other branch modules)
+$monthly_completion_breakdown[$catP] = [];
 
-    // only count if month is selected
-    if (in_array($month, $selected_months_by_category['Printing & Stationary'] ?? [])) {
-        $monthly_actual_breakdown['Printing & Stationary'][$month] =
-            ($monthly_actual_breakdown['Printing & Stationary'][$month] ?? 0) + $amount;
-        $actuals['Printing & Stationary'] += $amount;
-    }
+/* total branches (denominator) from master branch list */
+$total_print_branches = 0;
+$resTP = $conn->query("SELECT COUNT(DISTINCT branch_code) AS total FROM tbl_admin_branch_printing");
+if ($resTP && $rowTP = $resTP->fetch_assoc()) {
+    $total_print_branches = (int)($rowTP['total'] ?? 0);
 }
 
+foreach ($all_months as $mlbl) {
+    $mEsc = mysqli_real_escape_string($conn, $mlbl);
 
-// Printing
-$budgets['Printing & Stationary'] = 0;
-$monthly_budget_breakdown['Printing & Stationary'] = [];
+    /* Budget: sum(amount) for the month label (budget_year stores month text) */
+    $bRow = $conn->query("SELECT COALESCE(SUM(amount),0) AS b
+        FROM tbl_admin_budget_printing
+        WHERE budget_year = '{$mEsc}'")->fetch_assoc();
 
-$res = mysqli_query($conn, "
-  SELECT budget_year, SUM(amount) AS monthly_total
-  FROM tbl_admin_budget_printing
-  GROUP BY budget_year
-");
+    $budget = (float)($bRow['b'] ?? 0);
 
-while ($row = mysqli_fetch_assoc($res)) {
-    $year          = $row['budget_year'];
-    $monthly_total = (float)$row['monthly_total'];
+    $monthly_budget_breakdown[$catP][$mlbl] =
+        ($monthly_budget_breakdown[$catP][$mlbl] ?? 0) + $budget;
 
-    // Budget (Full Year)
-    $budgets['Printing & Stationary'] += ($monthly_total * 12);
+    $budgets[$catP] += $budget;
 
-    // Budget (To Date) handled later via selected months
-    foreach ($all_months as $mlbl) {
-        if (strpos($mlbl, (string)$year) !== false) {
-            $monthly_budget_breakdown['Printing & Stationary'][$mlbl] =
-                ($monthly_budget_breakdown['Printing & Stationary'][$mlbl] ?? 0) + $monthly_total;
-        }
-    }
+    /* Actual: sum(total_amount) for the month */
+    $aRow = $conn->query("SELECT COALESCE(
+            SUM(CAST(REPLACE(TRIM(COALESCE(total_amount,'0')), ',', '') AS DECIMAL(15,2))), 0
+        ) AS a
+        FROM tbl_admin_actual_printing
+        WHERE month_applicable = '{$mEsc}'
+          AND TRIM(COALESCE(total_amount,'')) <> ''")->fetch_assoc();
+
+    $actual = (float)($aRow['a'] ?? 0);
+
+    // ✅ match your module behavior: skip empty months (but keep negative if any)
+    if (abs($actual) < 0.005) continue;
+
+    $monthly_actual_breakdown[$catP][$mlbl] =
+        ($monthly_actual_breakdown[$catP][$mlbl] ?? 0) + $actual;
+
+    $actuals[$catP] += $actual;
+
+    /* Completion: distinct branches with actual rows (total_amount != 0) */
+    $cRow = $conn->query("SELECT COUNT(DISTINCT branch_code) AS c
+        FROM tbl_admin_actual_printing
+        WHERE month_applicable = '{$mEsc}'
+          AND TRIM(COALESCE(branch_code,'')) <> ''
+          AND CAST(REPLACE(TRIM(COALESCE(total_amount,'0')), ',', '') AS DECIMAL(15,2)) <> 0")->fetch_assoc();
+
+    $completed = (int)($cRow['c'] ?? 0);
+
+    $monthly_completion_breakdown[$catP][$mlbl] = [
+        'completed' => $completed,
+        'total'     => $total_print_branches
+    ];
 }
 
 
