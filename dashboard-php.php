@@ -386,55 +386,213 @@ foreach ($all_months as $mlbl) {
     }
 }
 
-// Water Actuals
-$actuals['Water'] = 0;
-$monthly_actual_breakdown['Water'] = [];
+/* ---------------- Water ---------------- */
+$catW = 'Water';
 
-$res = mysqli_query($conn, "
-  SELECT DATE_FORMAT(STR_TO_DATE(month_applicable, '%M %Y'), '%M %Y') AS month,
-         SUM(CAST(REPLACE(TRIM(total_amount), ',', '') AS DECIMAL(15,2))) AS total_amount
-  FROM tbl_admin_actual_water
-  WHERE TRIM(total_amount) != ''
-  GROUP BY month
-");
+$actuals[$catW] = 0;
+$monthly_actual_breakdown[$catW] = [];
 
-while ($row = mysqli_fetch_assoc($res)) {
-    $month  = $row['month'];
-    $amount = (float)$row['total_amount'];
+$budgets[$catW] = 0;
+$monthly_budget_breakdown[$catW] = [];
 
-    // only count if month is selected
-    if (in_array($month, $selected_months_by_category['Water'] ?? [])) {
-        $monthly_actual_breakdown['Water'][$month] =
-            ($monthly_actual_breakdown['Water'][$month] ?? 0) + $amount;
-        $actuals['Water'] += $amount;
+$monthly_completion_breakdown[$catW] = [];
+
+// FY label should match budget_year in tbl_admin_budget_water
+$currentFY = ((int)date('n') >= 4) ? (int)date('Y') : ((int)date('Y') - 1);
+$fy_label  = $currentFY;
+
+// FY months set (use your dashboard FY list)
+$fyMonths = array_flip($all_months);
+
+/* 0) Months that have any actual rows (keep table clean, optional but good) */
+$monthsWithRows = [];
+$resM = $conn->query("SELECT DISTINCT month_applicable
+    FROM tbl_admin_actual_water
+    WHERE month_applicable IS NOT NULL
+      AND TRIM(month_applicable) <> ''
+      AND approval_status IN ('approved','pending','rejected')");
+if ($resM) {
+    while ($r = $resM->fetch_assoc()) {
+        $mm = trim($r['month_applicable']);
+        if ($mm !== '' && isset($fyMonths[$mm])) {
+            $monthsWithRows[$mm] = true;
+        }
     }
 }
 
+/* 1) Master mapping (required connections per branch) */
+$master = [];
 
-// Water Budget
-$budgets['Water'] = 0;
-$monthly_budget_breakdown['Water'] = [];
+$map_sql = "SELECT bw.branch_code, bw.water_type_id, bw.connection_no
+    FROM tbl_admin_branch_water bw
+    INNER JOIN tbl_admin_water_types wt
+        ON wt.water_type_id = bw.water_type_id
+    WHERE wt.is_active = 1
+    ORDER BY bw.branch_code, bw.water_type_id, bw.connection_no";
+$map_res = $conn->query($map_sql);
+if ($map_res) {
+    while ($r = $map_res->fetch_assoc()) {
+        $code = trim((string)$r['branch_code']);
+        if ($code === '') continue;
 
-$res = mysqli_query($conn, "
-  SELECT budget_year, SUM(amount) AS monthly_total
-  FROM tbl_admin_budget_water
-  GROUP BY budget_year
-");
+        $tid  = (int)$r['water_type_id'];
+        $cno  = (int)($r['connection_no'] ?? 1);
+        if ($cno <= 0) $cno = 1;
 
-while ($row = mysqli_fetch_assoc($res)) {
-    $year          = $row['budget_year'];
-    $monthly_total = (float)$row['monthly_total'];
+        if (!isset($master[$code])) {
+            $master[$code] = ['required_keys' => []];
+        }
+        $master[$code]['required_keys'][] = $tid . '|' . $cno;
+    }
+}
+foreach ($master as $code => $mdata) {
+    $master[$code]['required_keys']  = array_values(array_unique($mdata['required_keys']));
+    $master[$code]['required_count'] = count($master[$code]['required_keys']);
+}
 
-    // Budget (Full Year)
-    $budgets['Water'] += ($monthly_total * 12);
+/* 2) Denominator branches: budget > 0 in FY AND in master mapping */
+$budgetBranches = [];
+$fyEsc = mysqli_real_escape_string($conn, (string)$fy_label);
 
-    // Budget (To Date) handled later via selected months
-    foreach ($all_months as $mlbl) {
-        if (strpos($mlbl, (string)$year) !== false) {
-            $monthly_budget_breakdown['Water'][$mlbl] =
-                ($monthly_budget_breakdown['Water'][$mlbl] ?? 0) + $monthly_total;
+$resBB = $conn->query("SELECT DISTINCT branch_code
+    FROM tbl_admin_budget_water
+    WHERE budget_year = '{$fyEsc}'
+      AND amount IS NOT NULL
+      AND amount > 0");
+if ($resBB) {
+    while ($r = $resBB->fetch_assoc()) {
+        $bc = trim((string)$r['branch_code']);
+        if ($bc !== '') $budgetBranches[$bc] = true;
+    }
+}
+
+$eligibleBranches = [];
+foreach ($master as $code => $mdata) {
+    if (isset($budgetBranches[$code])) {
+        $eligibleBranches[$code] = $mdata;
+    }
+}
+
+$total_branches = count($eligibleBranches);
+
+/* 3) Monthly budget total (this is the budget per month; full-year = x12) */
+$monthly_budget_total = 0.0;
+$budget_row = $conn->query("SELECT COALESCE(SUM(amount),0) AS monthly_total
+    FROM tbl_admin_budget_water
+    WHERE budget_year = '{$fyEsc}'");
+if ($budget_row && $b = $budget_row->fetch_assoc()) {
+    $monthly_budget_total = (float)($b['monthly_total'] ?? 0);
+}
+
+// Full-year budget (FY)
+$budgets[$catW] = $monthly_budget_total * 12;
+
+// Monthly budget breakdown (FY months)
+foreach ($all_months as $mlbl) {
+    $monthly_budget_breakdown[$catW][$mlbl] =
+        ($monthly_budget_breakdown[$catW][$mlbl] ?? 0) + $monthly_budget_total;
+}
+
+
+foreach ($all_months as $mName) {
+
+    if (!isset($monthsWithRows[$mName])) continue;
+
+    $month_esc = mysqli_real_escape_string($conn, $mName);
+
+    // Load actual rows for this month
+    $actualMap = [];
+    $resA = $conn->query("SELECT branch_code, water_type_id, connection_no, approval_status, total_amount
+        FROM tbl_admin_actual_water
+        WHERE month_applicable = '{$month_esc}'");
+    if ($resA) {
+        while ($a = $resA->fetch_assoc()) {
+            $code = trim((string)($a['branch_code'] ?? ''));
+            if ($code === '' || !isset($eligibleBranches[$code])) continue;
+
+            $tid = (int)($a['water_type_id'] ?? 0);
+            $cno = (int)($a['connection_no'] ?? 1);
+            if ($cno <= 0) $cno = 1;
+            $key = $tid . '|' . $cno;
+
+            $st = strtolower(trim((string)($a['approval_status'] ?? '')));
+
+            $raw = trim((string)($a['total_amount'] ?? ''));
+            $amt = null;
+            if ($raw !== '') {
+                $clean = str_replace(',', '', $raw);
+                if (is_numeric($clean)) $amt = (float)$clean;
+            }
+
+            if (!isset($actualMap[$code])) $actualMap[$code] = [];
+            $actualMap[$code][$key] = [
+                'status' => $st,
+                'amount' => $amt
+            ];
         }
     }
+
+    $completed = 0;
+    $actual_sum_completed = 0.0;
+
+    foreach ($eligibleBranches as $code => $mdata) {
+
+        $required = $mdata['required_keys'] ?? [];
+        $reqCount = (int)($mdata['required_count'] ?? 0);
+
+        $pendingCount = 0;
+        $missingCount = 0;
+        $approvedOk   = 0;
+        $sumApproved  = 0.0;
+
+        foreach ($required as $reqKey) {
+
+            $row = $actualMap[$code][$reqKey] ?? null;
+
+            if (!$row) { $missingCount++; continue; }
+
+            $st = $row['status'] ?? '';
+
+            if ($st === 'deleted') { $missingCount++; continue; }
+            if ($st === 'pending') { $pendingCount++; continue; }
+
+            if ($st === 'approved') {
+                $am = $row['amount'];
+                if ($am !== null && $am > 0) {
+                    $approvedOk++;
+                    $sumApproved += $am;
+                } else {
+                    $missingCount++;
+                }
+                continue;
+            }
+
+            $missingCount++;
+        }
+
+        $isFullyApproved = ($reqCount > 0 && $approvedOk === $reqCount && $pendingCount === 0 && $missingCount === 0);
+
+        if ($isFullyApproved) {
+            $completed++;
+            $actual_sum_completed += $sumApproved;
+        }
+    }
+
+    $actual = (float)$actual_sum_completed;
+
+    // Skip month if actual is 0 (same as fetch)
+    if ($actual <= 0) continue;
+
+    $monthly_actual_breakdown[$catW][$mName] =
+        ($monthly_actual_breakdown[$catW][$mName] ?? 0) + $actual;
+
+    $actuals[$catW] += $actual;
+
+    // Completion breakdown (optional for dashboard display)
+    $monthly_completion_breakdown[$catW][$mName] = [
+        'completed' => $completed,
+        'total'     => $total_branches
+    ];
 }
 
 
@@ -442,13 +600,11 @@ while ($row = mysqli_fetch_assoc($res)) {
 $actuals['Courier'] = 0;
 $monthly_actual_breakdown['Courier'] = [];
 
-$res = mysqli_query($conn, "
-  SELECT DATE_FORMAT(STR_TO_DATE(month_applicable, '%M %Y'), '%M %Y') AS month,
+$res = mysqli_query($conn, "SELECT DATE_FORMAT(STR_TO_DATE(month_applicable, '%M %Y'), '%M %Y') AS month,
          SUM(CAST(REPLACE(TRIM(total_amount), ',', '') AS DECIMAL(15,2))) AS total_amount
   FROM tbl_admin_actual_courier
   WHERE TRIM(total_amount) != ''
-  GROUP BY month
-");
+  GROUP BY month");
 
 while ($row = mysqli_fetch_assoc($res)) {
     $month  = $row['month'];
