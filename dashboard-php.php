@@ -702,46 +702,58 @@ foreach ($all_months as $mlbl) {
     ];
 }
 
+/* ---------------- Security VPN (dashboard - match security-vpn-budget-fetch.php) ---------------- */
 
-/* ---------------- Security VPN (fixed) ---------------- */
+$cat = 'Security VPN';
 
-$actuals['Security VPN'] = 0;
-$monthly_actual_breakdown['Security VPN'] = [];
+$actuals[$cat] = 0;
+$monthly_actual_breakdown[$cat] = [];
 
-$res = mysqli_query($conn, "
-    SELECT month_name AS month,
-           SUM(COALESCE(total_amount, 0)) AS total_amount
+$budgets[$cat] = 0;
+$monthly_budget_breakdown[$cat] = [];
+
+/* FY months (same as dashboard FY list) */
+$fyMonths = array_flip($all_months);
+
+/* 1) ACTUALS: sum by month_name, skip <= 0 (same behavior) */
+$resA = mysqli_query($conn, "SELECT month_name AS month,
+           SUM(total_amount) AS actual_amount
     FROM tbl_admin_actual_security_vpn
-    WHERE total_amount IS NOT NULL
-      AND total_amount <> 0
-    GROUP BY month_name
-");
-while ($row = mysqli_fetch_assoc($res)) {
-    $month  = $row['month'];
-    $amount = (float)$row['total_amount'];
+    GROUP BY month_name");
 
-    // only include if month selected for this category
-    if (in_array($month, $selected_months_by_category['Security VPN'] ?? [])) {
-        $monthly_actual_breakdown['Security VPN'][$month] = $amount;
-        $actuals['Security VPN'] += $amount;
-    }
+while ($row = mysqli_fetch_assoc($resA)) {
+    $month  = trim($row['month'] ?? '');
+    $actual = (float)($row['actual_amount'] ?? 0);
+
+    // keep only FY months
+    if ($month === '' || !isset($fyMonths[$month])) continue;
+
+    // same as fetch page: skip months with no actuals entered
+    if ($actual <= 0) continue;
+
+    $monthly_actual_breakdown[$cat][$month] =
+        ($monthly_actual_breakdown[$cat][$month] ?? 0) + $actual;
+
+    $actuals[$cat] += $actual;
 }
 
-$budgets['Security VPN'] = 0;
-$monthly_budget_breakdown['Security VPN'] = [];
+/* 2) BUDGET: monthly amount per month_name (same as fetch page) */
+$resB = mysqli_query($conn, "SELECT month_name AS month,
+           COALESCE(amount,0) AS budget_amount
+    FROM tbl_admin_budget_security_vpn");
 
-$res = mysqli_query($conn, "
-    SELECT month_name AS month,
-           COALESCE(amount, 0) AS amount
-    FROM tbl_admin_budget_security_vpn
-    WHERE amount IS NOT NULL
-");
-while ($row = mysqli_fetch_assoc($res)) {
-    $month  = $row['month'];
-    $amount = (float)$row['amount'];
+while ($row = mysqli_fetch_assoc($resB)) {
+    $month  = trim($row['month'] ?? '');
+    $budget = (float)($row['budget_amount'] ?? 0);
 
-    $budgets['Security VPN'] += $amount;
-    $monthly_budget_breakdown['Security VPN'][$month] = $amount;
+    // keep only FY months
+    if ($month === '' || !isset($fyMonths[$month])) continue;
+
+    $monthly_budget_breakdown[$cat][$month] =
+        ($monthly_budget_breakdown[$cat][$month] ?? 0) + $budget;
+
+    // Full-year budget is sum of FY months
+    $budgets[$cat] += $budget;
 }
 
 
