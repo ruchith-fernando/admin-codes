@@ -1,7 +1,10 @@
 <?php
 // upload-security-budget.php
-session_start();
 require_once "connections/connection.php";
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csv'])) {
     header("Content-Type: application/json");
