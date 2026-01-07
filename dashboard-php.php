@@ -909,39 +909,78 @@ while ($row = mysqli_fetch_assoc($res)) {
     $actuals['Staff Transport'] += $amount;
 }
 
-/* Postage & Stamps — CORRECT: use breakdown subtotals by entry_date month */
-$actuals['Postage & Stamps'] = 0;
-$fyMonths  = getCurrentFinancialYearMonths();
-$fyStartDt = DateTime::createFromFormat('F Y', $fyMonths[0]);
-$fyEndDt   = DateTime::createFromFormat('F Y', $fyMonths[count($fyMonths)-1]);
-$fyStartStr = $fyStartDt ? $fyStartDt->format('Y-m-01') : null;
-$fyEndStr   = $fyEndDt ? $fyEndDt->modify('+1 month')->format('Y-m-01') : null;
+/* ---------------- Postage & Stamps  ---------------- */
 
-$sqlPostage = "
-  SELECT
-    DATE_FORMAT(MIN(a.entry_date), '%M %Y') AS month,
-    SUM(COALESCE(b.subtotal, 0))           AS total_amount
-  FROM tbl_admin_postage_stamps_breakdown b
-  JOIN tbl_admin_actual_postage_stamps a
-    ON a.id = b.postage_id
-";
+$catPS = 'Postage & Stamps';
+
+$actuals[$catPS] = 0;
+$monthly_actual_breakdown[$catPS] = [];
+
+$budgets[$catPS] = 0;
+$monthly_budget_breakdown[$catPS] = [];
+
+// FY date range (same logic as page, but using dashboard FY months)
+$fyMonthsList = $all_months;
+$fyStartDt = DateTime::createFromFormat('F Y', $fyMonthsList[0]); // Apr
+$fyEndDt   = DateTime::createFromFormat('F Y', $fyMonthsList[count($fyMonthsList)-1]); // Mar
+
+$fyStartStr = $fyStartDt ? $fyStartDt->format('Y-m-01') : null;
+$fyEndStr   = $fyEndDt ? (clone $fyEndDt)->modify('+1 month')->format('Y-m-01') : null; // exclusive
+
+$fyMonthSet = array_flip($all_months);
+
 if ($fyStartStr && $fyEndStr) {
-  $sqlPostage .= " WHERE a.entry_date >= '".$conn->real_escape_string($fyStartStr)."'
-                    AND a.entry_date <  '".$conn->real_escape_string($fyEndStr)."' ";
+
+    $sqlA = "SELECT applicable_month AS month_year,
+        SUM(ABS(debits)) AS actual_amount
+      FROM tbl_admin_actual_branch_gl_postage
+      WHERE dateoftran >= '".$conn->real_escape_string($fyStartStr)."'
+        AND dateoftran <  '".$conn->real_escape_string($fyEndStr)."'
+        AND debits <> 0
+        AND UPPER(TRIM(COALESCE(tran_db_cr_flg,''))) = 'D'
+      GROUP BY applicable_month
+      HAVING SUM(ABS(debits)) > 0";
+
+    $resA = $conn->query($sqlA);
+    if ($resA) {
+        while ($r = $resA->fetch_assoc()) {
+            $month  = trim($r['month_year'] ?? '');
+            $actual = (float)($r['actual_amount'] ?? 0);
+
+            // keep only FY months (label must match "F Y")
+            if ($month === '' || !isset($fyMonthSet[$month])) continue;
+
+            // same rule: actual must be > 0
+            if ($actual <= 0) continue;
+
+            $monthly_actual_breakdown[$catPS][$month] =
+                ($monthly_actual_breakdown[$catPS][$month] ?? 0) + $actual;
+
+            $actuals[$catPS] += $actual;
+        }
+    }
 }
-$sqlPostage .= "
-  GROUP BY YEAR(a.entry_date), MONTH(a.entry_date)
-  ORDER BY YEAR(a.entry_date), MONTH(a.entry_date)
-";
-$res = mysqli_query($conn, $sqlPostage);
-while ($row = mysqli_fetch_assoc($res)) {
-    $month  = $row['month'];
-    $amount = (float)($row['total_amount'] ?? 0);
-    if ($amount == 0) continue;
-    $monthly_actual_breakdown['Postage & Stamps'][$month] =
-        ($monthly_actual_breakdown['Postage & Stamps'][$month] ?? 0) + $amount;
-    $actuals['Postage & Stamps'] += $amount;
+
+
+$sqlB = "SELECT applicable_month,
+    SUM(budget_amount) AS budget_amount
+  FROM tbl_admin_budget_postage
+  GROUP BY applicable_month";
+$resB = $conn->query($sqlB);
+if ($resB) {
+    while ($r = $resB->fetch_assoc()) {
+        $month  = trim($r['applicable_month'] ?? '');
+        $budget = (float)($r['budget_amount'] ?? 0);
+
+        if ($month === '' || !isset($fyMonthSet[$month])) continue;
+
+        $monthly_budget_breakdown[$catPS][$month] =
+            ($monthly_budget_breakdown[$catPS][$month] ?? 0) + $budget;
+
+        $budgets[$catPS] += $budget;
+    }
 }
+
 
 /* ---------------------- Combine (respect selections) ---------------------- */
 $combined = [];
