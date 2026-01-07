@@ -136,6 +136,16 @@ $masterSubMenus = [
             ['key'=>'security-branch-firm-map', 'file'=>'security-branch-firm-map.php', 'label'=>'Security - Add / Update Branch Information'],
         ]
     ],
+    [
+        'title' => 'Budget Uploads',
+        'id'    => 'collapseBudgetUploads',
+        'items' => [
+            ['key'=>'upload-printing-budget',   'file'=>'upload-printing-budget.php',   'label'=>'Upload Budget - Printing & Stationery'],
+            ['key'=>'upload-courier-budget',   'file'=>'upload-courier-budget.php',   'label'=>'Upload Budget - Courier'],
+            ['key'=>'upload-security-vpn-budget',  'file'=>'upload-security-vpn-budget.php',  'label'=>'Upload Budget - Security VPN'],
+        ]
+    ],
+    
 ];
 
 // Check if user can see at least one master item
@@ -232,8 +242,8 @@ $allMenus = [
         'title' => 'Printing & Stationary',
         'id' => 'collapsePrinting',
         'items' => [
-            ['key'=>'upload-printing-branches', 'file'=>'upload-printing-branches.php', 'label'=>'Upload Branch Details'],
-            ['key'=>'upload-printing-budget',   'file'=>'upload-printing-budget.php',   'label'=>'Upload Budget'],
+            // ['key'=>'upload-printing-branches', 'file'=>'upload-printing-branches.php', 'label'=>'Upload Branch Details'],
+            
             ['key'=>'upload-printing-actuals',  'file'=>'upload-printing-actuals.php',  'label'=>'Upload Actuals'],
             ['key'=>'printing-monthly-report',  'file'=>'printing-monthly-report.php',  'label'=>'Printing & Stationary Usage'],
             ['key'=>'printing-overview',        'file'=>'printing-overview.php',        'label'=>'Monthly Budget VS Actuals'],
@@ -499,7 +509,6 @@ $remainingMenus = [
         'id'    => 'collapseCourier',
         'items' => [
             ['key'=>'upload-courier-branches', 'file'=>'upload-courier-branches.php', 'label'=>'Upload Branch Details'],
-            ['key'=>'upload-courier-budget',   'file'=>'upload-courier-budget.php',   'label'=>'Upload Budget'],
             ['key'=>'upload-courier-actuals',  'file'=>'upload-courier-actuals.php',  'label'=>'Upload Actuals'],
             ['key'=>'courier-monthly-report',  'file'=>'courier-monthly-report.php',  'label'=>'Courier Monthly Cost'],
             ['key'=>'courier-overview',        'file'=>'courier-overview.php',        'label'=>'Monthly Budget VS Actuals'],
@@ -509,7 +518,7 @@ $remainingMenus = [
         'title' => 'Security VPN',
         'id' => 'collapseSecurityVPN',
         'items' => [
-            ['key'=>'upload-security-vpn-budget',  'file'=>'upload-security-vpn-budget.php',  'label'=>'Upload Budget'],
+            
             ['key'=>'upload-security-vpn-actuals', 'file'=>'upload-security-vpn-actuals.php', 'label'=>'Upload Actuals'],
             ['key'=>'security-vpn-monthly-report', 'file'=>'security-vpn-monthly-report.php', 'label'=>'Security VPN Usage'],
             ['key'=>'security-vpn-overview',       'file'=>'security-vpn-overview.php',       'label'=>'Monthly Budget VS Actuals'],
