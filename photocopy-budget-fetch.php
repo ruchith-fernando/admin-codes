@@ -4,34 +4,36 @@ include 'nocache.php';
 include 'connections/connection.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
-$user_id = isset($_SESSION['hris']) ? mysqli_real_escape_string($conn, $_SESSION['hris']) : '';
 
 $category = 'Photocopies';
+
+$user_id  = isset($_SESSION['hris']) ? $_SESSION['hris'] : '';
+$user_id_esc = mysqli_real_escape_string($conn, $user_id);
 
 // ✅ Fixed budget per month
 $monthly_budget = 750000.00;
 
-/* ---------------- FY detection (Apr -> Mar) ---------------- */
-$today = new DateTime();
-$year  = (int)$today->format('Y');
-$monthNum = (int)$today->format('m');
+// ✅ Financial Year (AUTO) - Apr to Mar (Sri Lanka style)
+$tz = new DateTimeZone('Asia/Colombo');
+$now = new DateTime('now', $tz);
 
-if ($monthNum >= 4) {
-    $fy_from = $year;
-    $fy_to   = $year + 1;
-} else {
-    $fy_from = $year - 1;
-    $fy_to   = $year;
-}
+$fyStartMonth = 4; // April
 
-$fy_start    = new DateTime($fy_from . "-04-01");
-$fy_end      = new DateTime($fy_to   . "-03-01");       // last month start in FY (March)
-$fy_end_excl = (clone $fy_end)->modify('+1 month');     // exclusive end boundary
+$fyStartYear = ((int)$now->format('n') >= $fyStartMonth)
+    ? (int)$now->format('Y')
+    : ((int)$now->format('Y') - 1);
 
-$fy_budget_year = $fy_from . "-04_to_" . $fy_to . "-03";
-$fy_display     = "FY " . $fy_from . "-" . substr($fy_to, -2);
+$fy_from = $fyStartYear;
+$fy_to   = $fyStartYear + 1;
 
-/* ---------------- Month list ---------------- */
+$fy_display = "FY " . $fy_from . "-" . substr((string)$fy_to, -2);
+
+// FY start = Apr 1, FY end = Mar 1 (start of last month), exclusive end = Apr 1
+$fy_start    = new DateTime($fy_from . "-04-01", $tz);
+$fy_end      = new DateTime($fy_to   . "-03-01", $tz);
+$fy_end_excl = (clone $fy_end)->modify('+1 month');
+
+// Month list with date boundaries (for date-range SUM queries)
 $months = [];
 $cursor = clone $fy_start;
 while ($cursor <= $fy_end) {
@@ -39,25 +41,30 @@ while ($cursor <= $fy_end) {
     $nextStart  = (clone $cursor)->modify('+1 month')->format('Y-m-01');
 
     $months[] = [
+        'label' => $cursor->format('F Y'),  // matches dashboard month_name format
         'start' => $monthStart,
         'next'  => $nextStart,
-        'label' => $cursor->format('F Y'),
     ];
 
     $cursor->modify('+1 month');
 }
 
-/* ---------------- helpers ---------------- */
-function fetchAssocOrEmpty($conn, $sql) {
-    $res = $conn->query($sql);
-    if (!$res) return [];
-    $row = $res->fetch_assoc();
-    return $row ? $row : [];
+// Helper: fetch a single numeric value
+function fetch_one_num($conn, $sql, $key) {
+    $q = mysqli_query($conn, $sql);
+    if (!$q) return 0;
+    $r = mysqli_fetch_assoc($q);
+    return isset($r[$key]) ? (float)$r[$key] : 0;
 }
 
-/* =========================================================
-   Months that have ANY actual rows in FY
-========================================================= */
+if (!function_exists('slugify_row')) {
+  function slugify_row($s){ return preg_replace('/[^a-z0-9]+/i','-', strtolower($s ?? '')); }
+}
+
+// ------------------------------------------------------------
+// Optional optimization: only consider months that have rows in FY
+// (using date boundaries, since photocopy month_applicable is a date)
+// ------------------------------------------------------------
 $fyStartSql   = mysqli_real_escape_string($conn, $fy_start->format('Y-m-01'));
 $fyEndExclSql = mysqli_real_escape_string($conn, $fy_end_excl->format('Y-m-01'));
 
@@ -74,79 +81,78 @@ if ($resM) {
     }
 }
 
-/* =========================================================
-   Month loop: fixed monthly budget vs monthly actual
-   ✅ Skip month if actual == 0
-========================================================= */
 $report = [];
 
 foreach ($months as $m) {
 
     $monthLabel = $m['label'];
+
+    // If there are no rows for this month in FY, skip (keeps table clean)
     if (!isset($monthsWithRows[$monthLabel])) continue;
 
     $monthStartEsc = mysqli_real_escape_string($conn, $m['start']);
     $monthNextEsc  = mysqli_real_escape_string($conn, $m['next']);
 
-    /* ---------------- Monthly Actual ---------------- */
-    $actual = 0.0;
-    $aSumRes = $conn->query("
-        SELECT SUM(total_amount) AS actual_amount
+    // ------------------------------------------------------------
+    // Actual total (date range)
+    // ------------------------------------------------------------
+    $actual = fetch_one_num($conn, "
+        SELECT COALESCE(SUM(total_amount), 0) AS actual_amount
         FROM tbl_admin_actual_photocopy
         WHERE month_applicable >= '{$monthStartEsc}'
           AND month_applicable <  '{$monthNextEsc}'
-    ");
-    if ($aSumRes && $a = $aSumRes->fetch_assoc()) {
-        $actual = (float)($a['actual_amount'] ?? 0);
-    }
+    ", 'actual_amount');
 
-    // ✅ Skip month if actual is 0.00
+    // If no actual at all, skip this month (same as Security behavior)
     if ($actual <= 0) continue;
 
-    /* ---------------- Fixed Budget ---------------- */
+    // ------------------------------------------------------------
+    // Fixed budget
+    // ------------------------------------------------------------
     $budget = (float)$monthly_budget;
 
-    /* ---------------- Variance ---------------- */
     $difference = $budget - $actual;
     $variance   = ($budget > 0) ? round(($difference / $budget) * 100) : null;
 
-    /* ---------------- checkbox selection state ---------------- */
-    $monthLabelEsc = mysqli_real_escape_string($conn, $monthLabel);
-    $sel_row = fetchAssocOrEmpty($conn, "
+    // ------------------------------------------------------------
+    // Selection (per-user) - EXACTLY like Security
+    // ------------------------------------------------------------
+    $month_esc    = mysqli_real_escape_string($conn, $monthLabel);
+    $category_esc = mysqli_real_escape_string($conn, $category);
+
+    $selected_row = $conn->query("
         SELECT is_selected
         FROM tbl_admin_dashboard_month_selection
-        WHERE category='" . mysqli_real_escape_string($conn, $category) . "'
-          AND month_name='{$monthLabelEsc}'
-          AND user_id='{$user_id}'
+        WHERE category   = '{$category_esc}'
+          AND month_name = '{$month_esc}'
+          AND user_id    = '{$user_id_esc}'
         LIMIT 1
     ");
-    $selected = (($sel_row['is_selected'] ?? '') === 'yes') ? 'checked' : '';
+    $selected_assoc = $selected_row ? $selected_row->fetch_assoc() : null;
+    $selected = (($selected_assoc['is_selected'] ?? '') === 'yes') ? 'checked' : '';
 
     $report[] = [
-        'month'       => $monthLabel,
-        'budget'      => $budget,
-        'actual'      => $actual,
-        'difference'  => $difference,
-        'variance'    => $variance,
-        'checked'     => $selected,
-        'over_budget' => ($budget > 0 && $actual > $budget),
+        'month'      => $monthLabel,
+        'budget'     => $budget,
+        'actual'     => $actual,
+        'difference' => $difference,
+        'variance'   => $variance,
+        'checked'    => $selected,
+        'over_budget'=> ($budget > 0 && $actual > $budget),
     ];
 }
 
-/* =========================================================
-   ✅ Totals (calculated once, always works)
-========================================================= */
-$month_count = count($report);
-
-$total_budget = $month_count * (float)$monthly_budget;
-
+// Totals (same style as Security)
+$total_budget = 0.0;
 $total_actual = 0.0;
-foreach ($report as $r) {
-    $total_actual += (float)($r['actual'] ?? 0);
-}
+$total_difference = 0.0;
 
-$total_difference = $total_budget - $total_actual;
-$overall_variance = ($total_budget > 0) ? round(($total_difference / $total_budget) * 100) : null;
+foreach ($report as $r) {
+    $total_budget     += (float)$r['budget'];
+    $total_actual     += (float)$r['actual'];
+    $total_difference += (float)$r['difference'];
+}
+$total_variance = ($total_budget > 0) ? round(($total_difference / $total_budget) * 100) : null;
 ?>
 
 <style>
@@ -154,13 +160,22 @@ $overall_variance = ($total_budget > 0) ? round(($total_difference / $total_budg
 .form-switch .form-check-input { width: 2.6em; height: 1.3em; cursor: pointer; }
 .toggle-cell .toggle-wrap { display: inline-flex; align-items: center; gap: .5rem; }
 .wide-table { min-width: 980px; }
+
 .photocopy-summary-table tbody tr.over-budget-row > * { background-color: #ffecec !important; }
+
+.report-row.row-focus{
+  background:#fff8d1 !important;
+  animation:rowPulse 1.8s ease-out 0s 2;
+}
+@keyframes rowPulse{
+  0%{ box-shadow:0 0 0 0 rgba(255,193,7,.55); }
+  70%{ box-shadow:0 0 0 10px rgba(255,193,7,0); }
+  100%{ box-shadow:0 0 0 0 rgba(255,193,7,0); }
+}
 </style>
 
 <div class="mb-2">
   <h5 class="text-primary fw-bold mb-4"><?= htmlspecialchars($fy_display) ?> Photocopies Budget Summary</h5>
-  <!-- <div class="text-muted small">Budget Year Key: <strong><?= htmlspecialchars($fy_budget_year) ?></strong></div>
-  <div class="text-muted small">Fixed Monthly Budget: <strong>Rs <?= number_format($monthly_budget, 2) ?></strong></div> -->
 </div>
 
 <div class="table-responsive">
@@ -177,15 +192,18 @@ $overall_variance = ($total_budget > 0) ? round(($total_difference / $total_budg
       </tr>
     </thead>
     <tbody>
+      <?php $i = 1; foreach ($report as $row): ?>
       <?php
-      $i = 1;
-      foreach ($report as $row):
         $trClass = "report-row";
         if (!empty($row['over_budget'])) $trClass .= " over-budget-row";
+        $switchId = 'month_switch_' . str_replace(' ', '_', $row['month']); // same pattern as Security
       ?>
-      <tr class="<?= $trClass ?>"
-          data-category="<?= htmlspecialchars($category) ?>"
-          data-record="<?= htmlspecialchars($row['month']) ?>">
+      <tr
+        class="<?= $trClass ?>"
+        data-category="<?= htmlspecialchars($category) ?>"
+        data-record="<?= htmlspecialchars($row['month']) ?>"
+        id="row-<?= slugify_row($category.'-'.$row['month']) ?>"
+      >
         <td><?= $i++ ?></td>
         <td><?= htmlspecialchars($row['month']) ?></td>
         <td><?= number_format($row['budget'], 2) ?></td>
@@ -199,35 +217,42 @@ $overall_variance = ($total_budget > 0) ? round(($total_difference / $total_budg
 
         <td class="toggle-cell">
           <div class="toggle-wrap">
-            <div class="form-check form-switch">
-              <input class="form-check-input month-checkbox" type="checkbox"
-                     data-month="<?= htmlspecialchars($row['month']) ?>"
-                     data-category="<?= htmlspecialchars($category) ?>"
-                     <?= $row['checked'] ?>>
+            <div class="form-check form-switch m-0">
+              <input
+                type="checkbox"
+                class="form-check-input month-checkbox"
+                role="switch"
+                id="<?= htmlspecialchars($switchId) ?>"
+                data-category="<?= htmlspecialchars($category) ?>"
+                data-month="<?= htmlspecialchars($row['month']) ?>"
+                <?= $row['checked'] ?>>
             </div>
-            <button class="btn btn-sm btn-outline-primary open-remarks"
+
+            <button class="btn btn-sm btn-outline-secondary open-remarks"
                     data-category="<?= htmlspecialchars($category) ?>"
-                    data-record="<?= htmlspecialchars($row['month']) ?>">
-              💬
-            </button>
+                    data-record="<?= htmlspecialchars($row['month']) ?>">💬</button>
           </div>
         </td>
       </tr>
       <?php endforeach; ?>
 
       <tr class="fw-bold table-light">
-        <td colspan="2">Total</td>
+        <td colspan="2" class="text-end">Total</td>
         <td><?= number_format($total_budget, 2) ?></td>
         <td><?= number_format($total_actual, 2) ?></td>
-        <td class="<?= $total_difference < 0 ? 'text-danger' : '' ?>"><?= number_format($total_difference, 2) ?></td>
-        <td colspan="2"></td>
+        <td class="<?= $total_difference < 0 ? 'text-danger' : '' ?>">
+          <?= number_format($total_difference, 2) ?>
+        </td>
+        <td></td>
+        <td></td>
       </tr>
 
       <tr class="fw-bold table-light">
-        <td colspan="2">Overall Variance</td>
-        <td colspan="5" class="<?= ($overall_variance !== null && $overall_variance < 0) ? 'text-danger' : '' ?>">
-          <?= $overall_variance !== null ? $overall_variance.'%' : 'N/A' ?>
+        <td colspan="5" class="text-end">Total Variance (%)</td>
+        <td class="<?= ($total_variance !== null && $total_variance < 0) ? 'text-danger' : '' ?>">
+          <?= $total_variance !== null ? $total_variance.'%' : 'N/A' ?>
         </td>
+        <td></td>
       </tr>
     </tbody>
   </table>
