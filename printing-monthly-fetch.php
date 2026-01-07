@@ -18,11 +18,9 @@ $budget_key = $month;
 $actuals = [];
 $provisions = [];
 
-$actual_sql = "
-    SELECT branch_code, branch, total_amount, is_provision, provision_reason
+$actual_sql = "SELECT branch_code, branch, total_amount, is_provision, provision_reason
     FROM tbl_admin_actual_printing
-    WHERE month_applicable = '" . mysqli_real_escape_string($conn, $month) . "'
-";
+    WHERE month_applicable = '" . mysqli_real_escape_string($conn, $month) . "'";
 $actual_res = mysqli_query($conn, $actual_sql);
 
 if ($actual_res) {
@@ -40,11 +38,9 @@ if ($actual_res) {
 ------------------------ */
 $budget = [];
 
-$budget_sql = "
-    SELECT branch_code, branch_name, amount AS monthly_amount
+$budget_sql = "SELECT branch_code, branch_name, amount AS monthly_amount
     FROM tbl_admin_budget_printing
-    WHERE budget_year = '" . mysqli_real_escape_string($conn, $budget_key) . "'
-";
+    WHERE budget_year = '" . mysqli_real_escape_string($conn, $budget_key) . "'";
 $budget_res = mysqli_query($conn, $budget_sql);
 
 if ($budget_res) {
