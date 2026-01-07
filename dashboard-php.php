@@ -272,16 +272,50 @@ foreach ($all_months as $mlbl) {
     $actuals['Photocopy'] += $actual;
 }
 
-/* Tea Service */
+/* Tea Service - Head Office */
 $actuals['Tea Service - Head Office'] = 0;
-$res = mysqli_query($conn, "SELECT month_year AS month, total_price FROM tbl_admin_tea_service");
-while ($row = mysqli_fetch_assoc($res)) {
-    $month  = $row['month'];
-    $amount = (float)$row['total_price'];
-    $monthly_actual_breakdown['Tea Service - Head Office'][$month] =
-        ($monthly_actual_breakdown['Tea Service - Head Office'][$month] ?? 0) + $amount;
-    $actuals['Tea Service - Head Office'] += $amount;
+$monthly_actual_breakdown['Tea Service - Head Office'] = [];
+$monthly_completion_breakdown['Tea Service - Head Office'] = []; // optional if you want completion in dashboard table
+
+$categoryTea = 'Tea Service - Head Office';
+$ot_floor_id = 12;
+
+// denominator: active floors excluding OT
+$floorRow = $conn->query("SELECT COUNT(*) AS c FROM tbl_admin_floors
+    WHERE is_active=1 AND id <> $ot_floor_id")->fetch_assoc();
+$total_floors = (int)($floorRow['c'] ?? 0);
+
+// month loop to stay inside FY and keep keys consistent ("F Y")
+foreach ($all_months as $mlbl) {
+    $month_esc = mysqli_real_escape_string($conn, $mlbl);
+
+    // Actuals + approved floors 
+    $approved_row = $conn->query("SELECT COALESCE(SUM(grand_total),0) AS actual_amount,
+            COUNT(DISTINCT floor_id) AS approved_floors_all,
+            COUNT(DISTINCT CASE WHEN floor_id <> $ot_floor_id THEN floor_id END) AS approved_floors_no_ot
+        FROM tbl_admin_tea_service_hdr
+        WHERE month_year = '$month_esc'
+        AND approval_status = 'approved'")->fetch_assoc();
+
+    $actual            = (float)($approved_row['actual_amount'] ?? 0);
+    $approvedFloorsAll = (int)($approved_row['approved_floors_all'] ?? 0);
+    $approvedFloors    = (int)($approved_row['approved_floors_no_ot'] ?? 0);
+
+    // ✅ only show/use months that have ANY approved records (even OT-only)
+    if ($approvedFloorsAll <= 0) continue;
+
+    $monthly_actual_breakdown[$categoryTea][$mlbl] =
+        ($monthly_actual_breakdown[$categoryTea][$mlbl] ?? 0) + $actual;
+    $actuals[$categoryTea] += $actual;
+
+    // optional: store completion text/numbers if you want to show it
+    $monthly_completion_breakdown[$categoryTea][$mlbl] = [
+        'approved_no_ot' => $approvedFloors,
+        'total_no_ot'    => $total_floors
+    ];
 }
+
+
 
 /* ------------------ Telephone Bills (Corrected) ------------------ */
 $actuals['Telephone Bills'] = 0;
