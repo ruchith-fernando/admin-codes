@@ -92,4 +92,4 @@ while ($r = mysqli_fetch_assoc($q)) $data_months[] = $r['month_applicable'];
     </div>
   </div>
 </div>
-<script src="printing-monthly-report.js"></script>
+<script src="printing-monthly-report.js?v=1"></script>
