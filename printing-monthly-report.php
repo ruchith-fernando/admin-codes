@@ -13,8 +13,7 @@ while ($start <= $end) {
 
 // Months with actual total_amount > 0
 $data_months = [];
-$q = mysqli_query($conn, "
-  SELECT DISTINCT month_applicable 
+$q = mysqli_query($conn, "SELECT DISTINCT month_applicable 
   FROM tbl_admin_actual_printing 
   WHERE total_amount IS NOT NULL AND TRIM(total_amount) <> '' AND total_amount <> '0'
 ");
