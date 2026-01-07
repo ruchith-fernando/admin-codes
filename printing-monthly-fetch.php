@@ -3,14 +3,14 @@
 require_once 'connections/connection.php';
 header('Content-Type: application/json; charset=UTF-8');
 
-$month = isset($_POST['month']) ? trim($_POST['month']) : '';
+$month = trim($_POST['month'] ?? '');
 if ($month === '') {
     echo json_encode(['error' => 'No month selected']);
     exit;
 }
 
-// Extract budget year from selected month (e.g. "June 2025" → 2025)
-$budget_year = date("Y", strtotime("1 " . $month));
+// In this module, tbl_admin_budget_printing.budget_year stores values like "April 2025"
+$budget_key = $month;
 
 /* -----------------------
    Actual data
@@ -30,20 +30,20 @@ if ($actual_res) {
         $actuals[$row['branch_code']] = $row;
 
         if (strtolower(trim($row['is_provision'] ?? 'no')) === 'yes') {
-            $provisions[] = $row['branch'] . " (" . $row['branch_code'] . ")";
+            $provisions[] = ($row['branch'] ?? '') . " (" . ($row['branch_code'] ?? '') . ")";
         }
     }
 }
 
 /* -----------------------
-   Budget data
+   Budget data (match month text)
 ------------------------ */
 $budget = [];
 
 $budget_sql = "
-    SELECT branch_code, branch_name, (amount) AS monthly_amount
+    SELECT branch_code, branch_name, amount AS monthly_amount
     FROM tbl_admin_budget_printing
-    WHERE budget_year = '" . mysqli_real_escape_string($conn, $budget_year) . "'
+    WHERE budget_year = '" . mysqli_real_escape_string($conn, $budget_key) . "'
 ";
 $budget_res = mysqli_query($conn, $budget_sql);
 
@@ -78,42 +78,91 @@ $branches = array_unique(array_merge(
 sort($branches);
 
 /* -----------------------
-   Build report table HTML
+   Build report table HTML + totals row
+   - highlight rows where Actual > Budget
+   - show negative variance in parentheses
 ------------------------ */
+
+function fmt_money($n) {
+    return number_format((float)$n, 2);
+}
+
+// Variance shown as (x.xx) when Actual > Budget, else normal positive number
+function fmt_variance($budget, $actual) {
+    $budget = (float)$budget;
+    $actual = (float)$actual;
+
+    if ($actual > $budget) {
+        $diff = $actual - $budget;
+        return "<span class='text-danger fw-bold'>(" . fmt_money($diff) . ")</span>";
+    }
+    $diff = $budget - $actual; // remaining budget
+    return fmt_money($diff);
+}
+
 $table_html = '';
+$total_budget = 0.0;
+$total_actual = 0.0;
+
+// light red row style
+$table_css = "
+<style>
+  .printing-report-table tr.over-budget-row > * {
+    background-color: #ffecec !important; /* light red */
+  }
+</style>
+";
 
 if (!empty($branches)) {
-    $table_html .= "<table class='table table-bordered table-striped'>";
+
+    $table_html .= $table_css;
+    $table_html .= "<table class='table table-bordered table-striped printing-report-table'>";
     $table_html .= "<thead class='table-light'>
         <tr>
             <th>Branch Code</th>
             <th>Branch Name</th>
-            <th>Budget (Monthly)</th>
-            <th>Actual</th>
-            <th>Variance</th>
+            <th class='text-end'>Budget (Monthly)</th>
+            <th class='text-end'>Actual</th>
+            <th class='text-end'>Variance</th>
             <th>Provision?</th>
         </tr>
     </thead><tbody>";
 
     foreach ($branches as $code) {
+
         $branch_name = $master[$code]
             ?? ($budget[$code]['branch_name'] ?? ($actuals[$code]['branch'] ?? '-'));
 
-        $b_amt   = isset($budget[$code])  ? (float)$budget[$code]['monthly_amount'] : 0;
-        $a_amt   = isset($actuals[$code]) ? (float)$actuals[$code]['total_amount'] : 0;
-        $is_prov = isset($actuals[$code]) ? $actuals[$code]['is_provision'] : 'no';
+        $b_amt   = isset($budget[$code])  ? (float)($budget[$code]['monthly_amount'] ?? 0) : 0;
+        $a_amt   = isset($actuals[$code]) ? (float)($actuals[$code]['total_amount'] ?? 0) : 0;
+        $is_prov = isset($actuals[$code]) ? ($actuals[$code]['is_provision'] ?? 'no') : 'no';
 
-        $variance = $a_amt - $b_amt;
+        $total_budget += $b_amt;
+        $total_actual += $a_amt;
 
-        $table_html .= "<tr>";
+        $overBudget = ($a_amt > $b_amt);
+        $rowClass   = $overBudget ? "over-budget-row" : "";
+
+        $table_html .= "<tr class='{$rowClass}'>";
         $table_html .= "<td>" . htmlspecialchars($code) . "</td>";
         $table_html .= "<td>" . htmlspecialchars($branch_name) . "</td>";
-        $table_html .= "<td class='text-end'>" . number_format($b_amt, 2) . "</td>";
-        $table_html .= "<td class='text-end'>" . number_format($a_amt, 2) . "</td>";
-        $table_html .= "<td class='text-end'>" . number_format($variance, 2) . "</td>";
+        $table_html .= "<td class='text-end'>" . fmt_money($b_amt) . "</td>";
+        $table_html .= "<td class='text-end'>" . fmt_money($a_amt) . "</td>";
+        $table_html .= "<td class='text-end'>" . fmt_variance($b_amt, $a_amt) . "</td>";
         $table_html .= "<td>" . (strtolower($is_prov) === 'yes' ? 'Yes' : 'No') . "</td>";
         $table_html .= "</tr>";
     }
+
+    // totals row (same variance style)
+    $table_html .= "
+        <tr class='table-secondary fw-bold'>
+            <td colspan='2'>Total</td>
+            <td class='text-end'>" . fmt_money($total_budget) . "</td>
+            <td class='text-end'>" . fmt_money($total_actual) . "</td>
+            <td class='text-end'>" . fmt_variance($total_budget, $total_actual) . "</td>
+            <td></td>
+        </tr>
+    ";
 
     $table_html .= "</tbody></table>";
 }
@@ -124,7 +173,7 @@ if (!empty($branches)) {
 $missing = [];
 
 foreach ($master as $code => $bname) {
-    if (!isset($actuals[$code]) || (float)$actuals[$code]['total_amount'] <= 0) {
+    if (!isset($actuals[$code]) || (float)($actuals[$code]['total_amount'] ?? 0) <= 0) {
         $missing[] = $bname . " (" . $code . ")";
     }
 }
