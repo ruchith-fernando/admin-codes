@@ -192,14 +192,40 @@ $actuals = [];
 
 /* Security Charges */
 $actuals['Security Charges'] = 0;
-$res = mysqli_query($conn, "SELECT month_applicable AS month, total_amount FROM tbl_admin_actual_security");
-while ($row = mysqli_fetch_assoc($res)) {
-    $month  = $row['month'];
-    $amount = (float)$row['total_amount'];
-    $monthly_actual_breakdown['Security Charges'][$month] =
-        ($monthly_actual_breakdown['Security Charges'][$month] ?? 0) + $amount;
-    $actuals['Security Charges'] += $amount;
+$monthly_actual_breakdown['Security Charges'] = [];
+
+foreach ($all_months as $mlbl) {
+    $month_esc = mysqli_real_escape_string($conn, $mlbl);
+
+    // NON-2000 (approved) excluding active 2000 branches
+    $row1 = $conn->query("
+        SELECT COALESCE(SUM(a.total_amount),0) AS s
+        FROM tbl_admin_actual_security_firmwise a
+        LEFT JOIN tbl_admin_security_2000_branches s
+               ON s.branch_code = a.branch_code
+              AND s.active = 'yes'
+        WHERE a.month_applicable = '{$month_esc}'
+          AND a.approval_status = 'approved'
+          AND s.branch_code IS NULL
+    ")->fetch_assoc();
+    $actual_non2000 = (float)($row1['s'] ?? 0);
+
+    // 2000 invoices (approved)
+    $row2 = $conn->query("SELECT COALESCE(SUM(i.amount),0) AS s
+        FROM tbl_admin_actual_security_2000_invoices i
+        WHERE i.month_applicable = '{$month_esc}'
+          AND i.approval_status = 'approved'")->fetch_assoc();
+    $actual_2000 = (float)($row2['s'] ?? 0);
+
+    $actual = $actual_non2000 + $actual_2000;
+
+    if ($actual > 0) {
+        $monthly_actual_breakdown['Security Charges'][$mlbl] =
+            ($monthly_actual_breakdown['Security Charges'][$mlbl] ?? 0) + $actual;
+        $actuals['Security Charges'] += $actual;
+    }
 }
+
 
 /* Electricity */
 $actuals['Electricity Charges'] = 0;
