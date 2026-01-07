@@ -1,8 +1,6 @@
 <?php
 // ajax-vehicle-maintenance-report-body.php
 
-// We don’t want browsers (or proxies) caching this fragment, because the
-// dashboard “selected months” + totals can change per user.
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Cache-Control: post-check=0, pre-check=0', false);
 header('Pragma: no-cache');
@@ -12,8 +10,6 @@ require_once 'connections/connection.php';
 
 $category = 'Vehicle Maintenance';
 
-// This report supports user-specific month selections, so we read the logged-in HRIS id.
-// If no session/user, it falls back to “global” selection (no user filter).
 if (session_status() !== PHP_SESSION_ACTIVE) {
   session_start();
 }
@@ -29,17 +25,7 @@ if ($user_id !== '') {
 $fyStart = new DateTime('2025-04-01');
 $fyEnd   = new DateTime('2026-03-31');
 
-/*
-  How the numbers are calculated (matching your current report logic):
-  - Month grouping is based on report_date (not created_at / applicable_month etc.)
-  - Tire amount comes from tire-items table if available; otherwise falls back to vm.price
-  - Wheel alignment is counted separately (wheel_alignment_amount)
-  - “Running Repairs” supports both legacy label 'Other' and the newer 'Running Repairs'
-  - Actual totals are the sum of: tire + alignment + battery + ac + running_repairs + service + licensing
-*/
-
-$sql = "
-SELECT
+$sql = "SELECT
   m.month_name AS Month,
   COALESCE(b.budget_amount, 0) AS budget_amount,
   COALESCE(a.tire, 0) AS tire,
