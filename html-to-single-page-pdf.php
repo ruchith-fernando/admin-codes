@@ -39,11 +39,19 @@ function safe_dir($path){
 }
 
 // -------- inputs
-$mode      = strtolower($_REQUEST['mode']  ?? 'long');     // long | a4
-$scale     = (float)($_REQUEST['scale'] ?? 1);             // A4 mode scale
-$media     = strtolower($_REQUEST['media'] ?? 'screen');   // screen | print
-$hPtParam  = isset($_REQUEST['h']) ? (int)$_REQUEST['h'] : null;
-$wPxParam  = isset($_REQUEST['w']) ? (int)$_REQUEST['w'] : null; // NEW: page width (px) for long mode
+// $mode      = strtolower($_REQUEST['mode']  ?? 'long');     // long | a4
+// $scale     = (float)($_REQUEST['scale'] ?? 1);             // A4 mode scale
+// $media     = strtolower($_REQUEST['media'] ?? 'screen');   // screen | print
+// $hPtParam  = isset($_REQUEST['h']) ? (int)$_REQUEST['h'] : null;
+// $wPxParam  = isset($_REQUEST['w']) ? (int)$_REQUEST['w'] : null; // NEW: page width (px) for long mode
+
+// -------- inputs (force fixed values)
+$mode     = 'long';
+$scale    = 1.0;
+$media    = 'screen';
+$hPtParam = 48000;
+$wPxParam = 900;
+
 
 $IS_AJAX   = (strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest') || isset($_REQUEST['ajax']);
 $PROCESS   = (isset($_REQUEST['do']) && $_REQUEST['do']==='1');
@@ -112,34 +120,42 @@ if (!$PROCESS):
         <div class="mb-3" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
           <div>
             <label class="form-label" for="mode">Mode</label>
-            <select id="mode" name="mode" class="form-control">
-              <option value="long" <?php echo $LOW_MEM?'':'selected'; ?>>One very tall page (no breaks)</option>
-              <option value="a4"   <?php echo $LOW_MEM?'selected':''; ?>>Fit onto one A4 sheet (scaled)</option>
+            <select id="mode" class="form-control" disabled>
+              <option value="long" selected>One very tall page (no breaks)</option>
+              <option value="a4">Fit onto one A4 sheet (scaled)</option>
             </select>
-            <?php if ($LOW_MEM): ?>
-              <div class="mt-2 muted">Server memory_limit is <?php echo htmlspecialchars(ini_get('memory_limit')); ?> — using A4 by default.</div>
-            <?php endif; ?>
+            <!-- disabled select won't submit; hidden input will -->
+            <input type="hidden" name="mode" value="long">
           </div>
+
           <div>
             <label class="form-label" for="scale">Scale (A4 mode)</label>
-            <input class="form-control" type="number" step="0.01" min="0.50" max="1.00" id="scale" name="scale" value="<?php echo htmlspecialchars((string)$scale ?: '1'); ?>">
+            <input class="form-control" type="number" step="0.01" id="scale" value="1.00" readonly>
+            <input type="hidden" name="scale" value="1.00">
           </div>
+
           <div>
             <label class="form-label" for="media">Media</label>
-            <select id="media" name="media" class="form-control">
-              <option value="screen" <?php echo $media==='screen'?'selected':''; ?>>screen</option>
-              <option value="print"  <?php echo $media==='print'?'selected':''; ?>>print</option>
+            <select id="media" class="form-control" disabled>
+              <option value="screen" selected>screen</option>
+              <option value="print">print</option>
             </select>
+            <input type="hidden" name="media" value="screen">
           </div>
+
           <div>
             <label class="form-label" for="h">Tall height (px, long mode)</label>
-            <input class="form-control" type="number" min="10000" step="1000" id="h" name="h" placeholder="e.g. 48000" value="<?php echo isset($_REQUEST['h'])?htmlspecialchars((string)$_REQUEST['h']):''; ?>">
+            <input class="form-control" type="number" id="h" value="48000" readonly>
+            <input type="hidden" name="h" value="48000">
           </div>
+
           <div>
             <label class="form-label" for="w">Page width (px, long mode)</label>
-            <input class="form-control" type="number" min="600" max="2400" step="10" id="w" name="w" placeholder="e.g. 900" value="<?php echo isset($_REQUEST['w'])?htmlspecialchars((string)$_REQUEST['w']):'900'; ?>">
+            <input class="form-control" type="number" id="w" value="900" readonly>
+            <input type="hidden" name="w" value="900">
           </div>
         </div>
+
 
         <button type="submit" class="btn btn-success">Create PDF</button>
 
@@ -365,6 +381,7 @@ if (file_put_contents($absPath, $pdfBytes) === false) {
 }
 
 $noteParts = [];
+
 if ($requested_mode==='long' && $mode==='a4') { $noteParts[] = 'Long mode disabled due to low PHP memory_limit; rendered A4 instead'; }
 if ($mode==='long') { $noteParts[] = 'Width used: '.$wPx.'px'; }
 $note = $noteParts ? implode(' · ', $noteParts) : null;
