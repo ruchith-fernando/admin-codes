@@ -133,7 +133,7 @@ if (!$PROCESS):
           </div>
           <div>
             <label class="form-label" for="h">Tall height (px, long mode)</label>
-            <input class="form-control" type="number" min="10000" step="1000" id="h" name="h" placeholder="e.g. 24000" value="<?php echo isset($_REQUEST['h'])?htmlspecialchars((string)$_REQUEST['h']):''; ?>">
+            <input class="form-control" type="number" min="10000" step="1000" id="h" name="h" placeholder="e.g. 48000" value="<?php echo isset($_REQUEST['h'])?htmlspecialchars((string)$_REQUEST['h']):''; ?>">
           </div>
           <div>
             <label class="form-label" for="w">Page width (px, long mode)</label>
