@@ -135,8 +135,7 @@ try {
     }
 
     // ✅ Populate Summary Table with allocation logic
-    $sql_summary = "
-        INSERT IGNORE INTO tbl_admin_hr_report_dialog_summary (
+    $sql_summary = "INSERT IGNORE INTO tbl_admin_hr_report_dialog_summary (
             invoice_id,
             billing_month,
             mobile_number,
