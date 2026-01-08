@@ -21,20 +21,22 @@ $hris_id = $_SESSION['hris'] ?? '';
 
 /* ✅ Mark completed modules here (menu group keys) */
 $completedModules = [
-  'master',
-  'security',
-  'water',
-  'tea',
-  'postage',
-  'newspaper',
-  'telecom',
-  'photocopy',
-  'employee',
-  'admin',
-  'vehicle',
-  'securityvpn',
-  'printing',
-
+//   'master',
+//   'security',
+//   'water',
+//   'tea',
+//   'postage',
+//   'newspaper',
+//   'telecom',
+//   'photocopy',
+//   'employee',
+//   'admin',
+//   'vehicle',
+//   'securityvpn',
+//   'printing',
+    'courier',
+    'staff-transport',
+    'electricity',
   // If you want to mark these completed too, just uncomment:
   // 'electricity',
   // 'printing',
@@ -73,7 +75,7 @@ function renderMenuButton($title, $targetId, $menuKey, $completedModules){
 <style>
 /* highlight completed accordion headers */
 .accordion-button.menu-completed{
-  background: #198754 !important;   /* bootstrap success */
+  background: #f90606ff !important;   /* bootstrap success */
   color: #fff !important;
   font-weight: 700;
 }
