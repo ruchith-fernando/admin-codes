@@ -14,14 +14,29 @@ function write_log($content) {
 }
 
 function logSummaryEntry($conn, $hris, $action, $file_name, $month, $snapshot = null) {
+
+    // ---- Normalize action types to match DB enum('insert','update','resign') ----
+    $action = strtolower(trim((string)$action));
+    if ($action === 'inserted') $action = 'insert';
+    if ($action === 'updated')  $action = 'update';
+    if ($action === 'resigned') $action = 'resign';
+
+    // Fallback safety
+    if (!in_array($action, ['insert','update','resign'], true)) {
+        $action = 'update';
+    }
+
     // Existing summary table (unchanged)
+    // NOTE: your upload_log table enum is ('inserted','updated') so we convert back for that table
+    $uploadLogAction = ($action === 'insert') ? 'inserted' : (($action === 'update') ? 'updated' : 'updated');
+
     $stmt = $conn->prepare("INSERT INTO tbl_admin_employee_upload_log 
         (hris, action_type, file_name, upload_month) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $hris, $action, $file_name, $month);
+    $stmt->bind_param("ssss", $hris, $uploadLogAction, $file_name, $month);
     $stmt->execute();
     $stmt->close();
 
-    // NEW: Insert into history table
+    // History insert
     if ($snapshot !== null) {
         $stmt2 = $conn->prepare("INSERT INTO tbl_admin_employee_history 
             (hris, action_type, snapshot) VALUES (?, ?, ?)");
