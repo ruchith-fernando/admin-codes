@@ -308,6 +308,7 @@ $telecomSubMenus = [
             ['key'=>'upload-employee-data',  'file'=>'upload-employee-data.php',  'label'=>'Upload Staff Info - Active'],
             ['key'=>'upload-issues',         'file'=>'upload-issues.php',         'label'=>'Upload New Dialog Issues'],
             ['key'=>'assign-mobile',         'file'=>'assign-mobile.php',         'label'=>'Assign New HRIS -> Connection'],
+            ['key'=>'mobile-allocation-entry', 'file'=>'mobile-allocation-entry.php', 'label'=>'Issue New Dialog Connection'],
             ['key'=>'upload-invoice',        'file'=>'upload-invoice.php',        'label'=>'Upload Dialog Invoice'],
             ['key'=>'update-contribution',   'file'=>'update-contribution.php',   'label'=>'Update Company Contribution - Individual'],
             ['key'=>'view-employee-details', 'file'=>'view-employee-details.php', 'label'=>'View Staff Information'],
