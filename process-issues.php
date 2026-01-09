@@ -14,6 +14,112 @@ include 'connections/connection.php';
  * -----------------------------
  */
 
+function normalizeContributionAmount($val) {
+    // Allow numbers like "1,500.00" or "1500"
+    $v = trim((string)$val);
+    if ($v === '') return null;
+    $v = str_replace([',', ' '], '', $v);
+    return is_numeric($v) ? (float)$v : null;
+}
+
+function upsertContributionVersioned($conn, $hris, $mobile, $amountRaw, $effectiveFrom, &$stats) {
+
+    $hris   = trim((string)$hris);
+    $mobile = normalizeMobile($mobile);
+    $amount = normalizeContributionAmount($amountRaw);
+
+    if ($hris === '' || empty($mobile) || $amount === null) {
+        $stats['skipped']++;
+        return true; // not an error, just nothing to do
+    }
+
+    if (empty($effectiveFrom)) $effectiveFrom = date('Y-m-d');
+
+    // Find current active contribution
+    $stmt = $conn->prepare("SELECT id, contribution_amount, effective_from
+        FROM tbl_admin_hris_contributions
+        WHERE hris_no = ?
+          AND mobile_no = ?
+          AND effective_to IS NULL
+        ORDER BY effective_from DESC, id DESC
+        LIMIT 1");
+    if (!$stmt) {
+        $stats['failed']++;
+        return false;
+    }
+
+    $stmt->bind_param("ss", $hris, $mobile);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $cur = $res->fetch_assoc();
+    $stmt->close();
+
+    // If there is an active record and amount is the same -> no change
+    if ($cur) {
+        $curAmount = (float)$cur['contribution_amount'];
+
+        // Use a small tolerance for decimals
+        if (abs($curAmount - $amount) < 0.0001) {
+            $stats['unchanged']++;
+            return true;
+        }
+
+        // Close the existing record yesterday
+        $prevTo = date('Y-m-d', strtotime($effectiveFrom . ' -1 day'));
+
+        // Safety: don't close to a date earlier than its effective_from
+        $curFrom = $cur['effective_from'];
+        if (!empty($curFrom) && $prevTo < $curFrom) {
+            // If someone tries to backdate in future, just close on same day
+            $prevTo = $effectiveFrom;
+        }
+
+        $upd = $conn->prepare("
+            UPDATE tbl_admin_hris_contributions
+            SET effective_to = ?
+            WHERE id = ?
+        ");
+        if (!$upd) {
+            $stats['failed']++;
+            return false;
+        }
+        $id = (int)$cur['id'];
+        $upd->bind_param("si", $prevTo, $id);
+        $ok = $upd->execute();
+        $upd->close();
+
+        if (!$ok) {
+            $stats['failed']++;
+            return false;
+        }
+
+        $stats['closed_old']++;
+    }
+
+    // Insert new active record
+    $ins = $conn->prepare("
+        INSERT INTO tbl_admin_hris_contributions
+          (hris_no, mobile_no, contribution_amount, effective_from, effective_to)
+        VALUES (?, ?, ?, ?, NULL)
+    ");
+    if (!$ins) {
+        $stats['failed']++;
+        return false;
+    }
+
+    $ins->bind_param("ssds", $hris, $mobile, $amount, $effectiveFrom);
+    $ok2 = $ins->execute();
+    $ins->close();
+
+    if ($ok2) {
+        $stats['inserted']++;
+        return true;
+    }
+
+    $stats['failed']++;
+    return false;
+}
+
 function normalizeMobile($m) {
     $m = strtoupper(trim((string)$m));
     $m = preg_replace('/\s+/', '', $m);
