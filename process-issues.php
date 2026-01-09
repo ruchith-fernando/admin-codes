@@ -191,14 +191,6 @@ function insertNewAllocation($conn, $mobile, $hris, $owner, $effectiveFrom) {
     return $ok;
 }
 
-/**
- * Applies allocation rules per CSV row:
- * - Disconnected: close active allocation (effective_to = effectiveDate)
- * - Connected:
- *    - if no active allocation -> insert
- *    - if same HRIS -> do nothing
- *    - if different HRIS -> close old yesterday, insert new today (prevents overlap trigger errors)
- */
 function applyAllocationFromCsv($conn, $mobileRaw, $hrisRaw, $ownerNameRaw, $connStatusRaw, $effectiveDate) {
 
     $mobile = normalizeMobile($mobileRaw);
@@ -399,21 +391,27 @@ while (($data = fgetcsv($handle, 1000, ",")) !== false) {
         if ($stmt->execute()) {
             $inserted++;
 
-            // --- Contribution insert (unchanged for now; Step 3 will version this) ---
-            if (!empty($company_contribution) && !empty($hris_no)) {
-                $contrib_stmt = $conn->prepare("
-                    INSERT INTO tbl_admin_hris_contributions (
-                        hris_no, mobile_no, contribution_amount, effective_from
-                    ) VALUES (?, ?, ?, ?)
-                ");
-                if ($contrib_stmt) {
-                    $contrib_stmt->bind_param("ssds", $hris_no, $mobile_no, $company_contribution, $today);
-                    if ($contrib_stmt->execute()) {
-                        $contribs++;
-                    }
-                    $contrib_stmt->close();
-                }
+            
+            // Versioned contributions (no rewriting history)
+            if (!isset($contribStats)) {
+                $contribStats = [
+                    'inserted' => 0,
+                    'unchanged' => 0,
+                    'closed_old' => 0,
+                    'skipped' => 0,
+                    'failed' => 0
+                ];
             }
+
+            upsertContributionVersioned(
+                $conn,
+                $hris_no,
+                $mobile_no,
+                $company_contribution,
+                $today,
+                $contribStats
+            );
+
 
         } else {
             $skipped++;
@@ -432,11 +430,16 @@ $conn->close();
 echo "
 <div class='alert alert-success fw-bold'>✅ CSV Upload Complete</div>
 <div class='result-block'>
-  <div><b>File Name:</b> " . htmlspecialchars($uploadedFileName) . "</div>
-  <div><b>Total Records Inserted:</b> $inserted</div>
-  <div><b>Skipped Rows:</b> $skipped</div>
-  <div><b>Allocations Updated:</b> $alloc_ok</div>
-  <div><b>Allocation Failures:</b> $alloc_failed</div>
-  <div><b>HRIS Contributions Added:</b> $contribs</div>
+    <div><b>File Name:</b> " . htmlspecialchars($uploadedFileName) . "</div>
+    <div><b>Total Records Inserted:</b> $inserted</div>
+    <div><b>Skipped Rows:</b> $skipped</div>
+    <div><b>Allocations Updated:</b> $alloc_ok</div>
+    <div><b>Allocation Failures:</b> $alloc_failed</div>
+    <div><b>Contributions Inserted:</b> " . ($contribStats['inserted'] ?? 0) . "</div>
+    <div><b>Contributions Unchanged:</b> " . ($contribStats['unchanged'] ?? 0) . "</div>
+    <div><b>Old Contributions Closed:</b> " . ($contribStats['closed_old'] ?? 0) . "</div>
+    <div><b>Contributions Skipped:</b> " . ($contribStats['skipped'] ?? 0) . "</div>
+    <div><b>Contributions Failed:</b> " . ($contribStats['failed'] ?? 0) . "</div>
+
 </div>";
 ?>
