@@ -12,8 +12,7 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $limit  = (int)$limit;
 $offset = (int)$offset;
 
-$sql = "
-    SELECT 
+$sql = "SELECT 
         billing_month,
         hris_no,
         employee_name,
@@ -55,8 +54,7 @@ $stmt->bind_param("sssssss", $search, $search, $search, $search, $search, $searc
 $stmt->execute();
 $result = $stmt->get_result();
 
-$count_sql = "
-    SELECT COUNT(*) AS total
+$count_sql = "SELECT COUNT(*) AS total
     FROM tbl_admin_hr_report_dialog_summary
     WHERE (
         ? = '' OR 
