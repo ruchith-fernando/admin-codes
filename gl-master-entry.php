@@ -35,6 +35,24 @@ date_default_timezone_set('Asia/Colombo');
 
       <div class="mt-3" id="glCodeBox"></div>
       <div class="mt-3" id="glResult"></div>
+
+      <hr class="my-4">
+
+      <div class="d-flex flex-wrap gap-2 align-items-end justify-content-between">
+        <div>
+          <h6 class="text-secondary mb-1">Saved GLs</h6>
+          <div class="text-muted small">Search + pagination (10 per page)</div>
+        </div>
+
+        <div class="input-group" style="max-width: 420px;">
+          <span class="input-group-text">Search</span>
+          <input type="text" id="glSearch" class="form-control" placeholder="Type code or name...">
+          <button class="btn btn-outline-secondary" id="btnGlSearchClear" type="button">Clear</button>
+        </div>
+      </div>
+
+      <div class="mt-3" id="glListBox"></div>
+
     </div>
   </div>
 </div>
@@ -44,6 +62,9 @@ date_default_timezone_set('Asia/Colombo');
   'use strict';
 
   let glCodeAvailable = false;
+  let glPage = 1;
+  const glPerPage = 10;
+  let tSearch = null;
 
   function bsAlert(type,msg){
     return `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
@@ -98,6 +119,18 @@ date_default_timezone_set('Asia/Colombo');
     });
   }
 
+  function loadList(page){
+    glPage = page || 1;
+    const q = ($('#glSearch').val()||'').trim();
+
+    $('#glListBox').html('<div class="text-muted">Loading...</div>');
+    $.post('gl-master-list.php', { q: q, page: glPage, per_page: glPerPage }, function(html){
+      $('#glListBox').html(html);
+    }).fail(function(xhr){
+      $('#glListBox').html(bsAlert('danger','Server error: ' + xhr.status));
+    });
+  }
+
   function submitGl(){
     const p = payload();
 
@@ -106,7 +139,7 @@ date_default_timezone_set('Asia/Colombo');
 
     $('#glResult').html('<div class="text-muted">Saving...</div>');
 
-    // ensure we always validate code before save
+    // enforce a fresh check before save
     $.ajax({
       url: 'gl-master-check-code.php',
       method: 'POST',
@@ -128,9 +161,8 @@ date_default_timezone_set('Asia/Colombo');
 
       $.post('gl-master-save.php', p, function(html){
         $('#glResult').html(html);
-        // optional clear
-        // $('#glCode,#glName,#glNote').val('');
-        // $('#glCodeBox').html('');
+        // refresh list (go to page 1 so user sees the newly added GL)
+        loadList(1);
       }).fail(function(xhr){
         $('#glResult').html(bsAlert('danger','Server error: ' + xhr.status));
       });
@@ -140,8 +172,32 @@ date_default_timezone_set('Asia/Colombo');
     });
   }
 
+  // events
   $('#glCode').on('blur', function(){ setTimeout(checkCode, 120); });
   $('#btnGlSubmit').on('click', submitGl);
+
+  // keystroke search (debounced)
+  $('#glSearch').on('keyup', function(){
+    clearTimeout(tSearch);
+    tSearch = setTimeout(function(){
+      loadList(1);
+    }, 250);
+  });
+
+  $('#btnGlSearchClear').on('click', function(){
+    $('#glSearch').val('');
+    loadList(1);
+  });
+
+  // pagination click (event delegation)
+  $(document).on('click', '.gl-page-link', function(e){
+    e.preventDefault();
+    const p = parseInt($(this).data('page'), 10);
+    if (!isNaN(p) && p > 0) loadList(p);
+  });
+
+  // initial list load
+  loadList(1);
 
 })(jQuery);
 </script>
