@@ -16,7 +16,6 @@ if (!$mysqli) { http_response_code(500); echo ''; exit; }
 
 $sql = "SELECT gl_id, gl_code, gl_name
         FROM tbl_admin_gl_account
-        WHERE record_status = 'APPROVED'
         ORDER BY gl_code ASC";
 $res = $mysqli->query($sql);
 if (!$res) { echo ''; exit; }
