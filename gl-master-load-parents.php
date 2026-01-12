@@ -1,4 +1,5 @@
 <?php
+// gl-master-load-parents.php
 require_once 'connections/connection.php';
 require_once 'includes/userlog.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
