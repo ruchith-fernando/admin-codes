@@ -1,7 +1,9 @@
 <?php
+// gl-master-check-code.php
 require_once 'connections/connection.php';
 require_once 'includes/userlog.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
+header('Content-Type: application/json; charset=utf-8');
 
 function db() {
   global $conn, $con, $mysqli;
@@ -19,18 +21,25 @@ function alertHtml($type, $msg){
 $mysqli = db();
 $gl_code = strtoupper(trim($_POST['gl_code'] ?? ''));
 
-if (!$mysqli) { http_response_code(500); echo alertHtml('danger','DB connection not found.'); exit; }
-if ($gl_code === '') { echo ''; exit; }
+if (!$mysqli) { echo json_encode(['ok'=>false,'error'=>'DB connection not found.']); exit; }
+if ($gl_code === '') { echo json_encode(['ok'=>true,'available'=>false,'html'=>'']); exit; }
 
-$stmt = $mysqli->prepare("SELECT gl_id, gl_name, record_status FROM tbl_admin_gl_account WHERE gl_code = ? LIMIT 1");
+$stmt = $mysqli->prepare("SELECT gl_id, gl_name FROM tbl_admin_gl_account WHERE gl_code=? LIMIT 1");
 $stmt->bind_param("s", $gl_code);
 $stmt->execute();
-$res = $stmt->get_result();
+$row = $stmt->get_result()->fetch_assoc();
 
-if ($row = $res->fetch_assoc()) {
-  $status = htmlspecialchars($row['record_status']);
+if ($row) {
   $name = htmlspecialchars($row['gl_name']);
-  echo alertHtml('warning', "GL Code <b>{$gl_code}</b> already exists: <b>{$name}</b> (Status: <b>{$status}</b>).");
+  echo json_encode([
+    'ok' => true,
+    'available' => false,
+    'html' => alertHtml('warning', "GL Code <b>{$gl_code}</b> already exists: <b>{$name}</b>.")
+  ]);
 } else {
-  echo alertHtml('success', "GL Code <b>{$gl_code}</b> is available.");
+  echo json_encode([
+    'ok' => true,
+    'available' => true,
+    'html' => alertHtml('success', "GL Code <b>{$gl_code}</b> is available.")
+  ]);
 }
