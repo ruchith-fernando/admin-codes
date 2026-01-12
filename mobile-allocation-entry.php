@@ -40,8 +40,8 @@ date_default_timezone_set('Asia/Colombo');
         </div>
 
         <div class="col-md-6 d-flex align-items-end justify-content-end gap-2">
-          <button class="btn btn-outline-secondary" id="btnCheckMobile" type="button">Check Mobile</button>
-          <button class="btn btn-outline-secondary" id="btnCheckHris" type="button">Check HRIS</button>
+          <!-- <button class="btn btn-outline-secondary" id="btnCheckMobile" type="button">Check Mobile</button>
+          <button class="btn btn-outline-secondary" id="btnCheckHris" type="button">Check HRIS</button> -->
           <button class="btn btn-success" id="btnSaveAlloc" type="button">Save</button>
         </div>
 
