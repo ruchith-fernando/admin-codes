@@ -41,7 +41,6 @@ date_default_timezone_set('Asia/Colombo');
       <div class="d-flex flex-wrap gap-2 align-items-end justify-content-between">
         <div>
           <h6 class="text-secondary mb-1">Saved GLs</h6>
-          <div class="text-muted small">Search + pagination (10 per page)</div>
         </div>
 
         <div class="input-group" style="max-width: 420px;">
