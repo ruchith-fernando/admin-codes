@@ -1,4 +1,5 @@
 <?php
+// gl-master-save.php
 require_once 'connections/connection.php';
 require_once 'includes/userlog.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
@@ -25,65 +26,50 @@ function alertHtml($type, $msg){
 $mysqli = db();
 if (!$mysqli) { http_response_code(500); echo alertHtml('danger','DB connection not found.'); exit; }
 
-$action = strtoupper(trim($_POST['action'] ?? 'DRAFT'));
 $gl_code = strtoupper(trim($_POST['gl_code'] ?? ''));
 $gl_name = trim($_POST['gl_name'] ?? '');
-$parent_gl_id = trim($_POST['parent_gl_id'] ?? '');
-$maker_note = trim($_POST['maker_note'] ?? '');
+$gl_note = trim($_POST['gl_note'] ?? '');
+$uid = currentUserId();
 
-if ($gl_code === '' || $gl_name === '') { echo alertHtml('danger','GL Code and GL Name are required.'); exit; }
-if (!in_array($action, ['DRAFT','SUBMIT'], true)) $action = 'DRAFT';
-
-$record_status = ($action === 'SUBMIT') ? 'PENDING' : 'DRAFT';
-$maker_user_id = currentUserId();
-$parent_id = ($parent_gl_id === '') ? null : (int)$parent_gl_id;
+if ($gl_code === '' || $gl_name === '') {
+  echo alertHtml('danger','GL Code and GL Name are required.');
+  exit;
+}
 
 $mysqli->begin_transaction();
-
 try {
-  // check exists
-  $stmt = $mysqli->prepare("SELECT gl_id, record_status FROM tbl_admin_gl_account WHERE gl_code = ? LIMIT 1");
-  $stmt->bind_param("s", $gl_code);
-  $stmt->execute();
-  $res = $stmt->get_result();
-
-  if ($row = $res->fetch_assoc()) {
-    $gl_id = (int)$row['gl_id'];
-    $existing_status = $row['record_status'];
-
-    // block if already pending/approved
-    if (in_array($existing_status, ['PENDING','APPROVED'], true)) {
-      $mysqli->rollback();
-      echo alertHtml('danger', "Cannot edit GL <b>{$gl_code}</b>. Current status is <b>{$existing_status}</b>.");
-      exit;
-    }
-
-    // update
-    $stmt2 = $mysqli->prepare("UPDATE tbl_admin_gl_account
-      SET gl_name = ?, parent_gl_id = ?, record_status = ?,
-          maker_user_id = ?, maker_at = NOW(), maker_note = ?,
-          checker_user_id = NULL, checker_at = NULL, checker_note = NULL
-      WHERE gl_id = ?");
-    $stmt2->bind_param("sisisi", $gl_name, $parent_id, $record_status, $maker_user_id, $maker_note, $gl_id);
-    $stmt2->execute();
-
-    $mysqli->commit();
-    echo alertHtml('success', "GL <b>{$gl_code}</b> updated. Status: <b>{$record_status}</b>.");
+  // duplicate code
+  $st1 = $mysqli->prepare("SELECT gl_id FROM tbl_admin_gl_account WHERE gl_code=? LIMIT 1");
+  $st1->bind_param("s", $gl_code);
+  $st1->execute();
+  if ($st1->get_result()->fetch_assoc()) {
+    $mysqli->rollback();
+    echo alertHtml('danger', "GL Code <b>{$gl_code}</b> already exists.");
     exit;
-  } else {
-    // insert
-    $stmt3 = $mysqli->prepare("INSERT INTO tbl_admin_gl_account
-      (gl_code, gl_name, parent_gl_id, record_status, maker_user_id, maker_at, maker_note)
-      VALUES (?,?,?,?,NOW(),?)");
-    // fix bind: maker_at is NOW() so parameters should match
-    // We'll rewrite correctly:
-    $stmt3 = $mysqli->prepare("INSERT INTO tbl_admin_gl_account
-      (gl_code, gl_name, parent_gl_id, record_status, maker_user_id, maker_at, maker_note)
-      VALUES (?,?,?,?,?,NOW(),?)");
-    $stmt3->bind_param("sss sis", $gl_code, $gl_name, $parent_gl_id, $record_status, $maker_user_id, $maker_note);
   }
+
+  // duplicate name (because table has uk_gl_name)
+  $st2 = $mysqli->prepare("SELECT gl_id, gl_code FROM tbl_admin_gl_account WHERE gl_name=? LIMIT 1");
+  $st2->bind_param("s", $gl_name);
+  $st2->execute();
+  if ($r = $st2->get_result()->fetch_assoc()) {
+    $mysqli->rollback();
+    echo alertHtml('danger', "GL Name already exists (Code: <b>".htmlspecialchars($r['gl_code'])."</b>).");
+    exit;
+  }
+
+  $ins = $mysqli->prepare("INSERT INTO tbl_admin_gl_account
+    (gl_code, gl_name, gl_note, created_user_id, created_at)
+    VALUES (?,?,?,?,NOW())");
+  $ins->bind_param("sssi", $gl_code, $gl_name, $gl_note, $uid);
+  $ins->execute();
+
+  $mysqli->commit();
+  echo alertHtml('success', "GL <b>{$gl_code}</b> saved successfully.");
+  exit;
+
 } catch (Throwable $e) {
   $mysqli->rollback();
-  echo alertHtml('danger', 'Save failed: ' . htmlspecialchars($e->getMessage()));
+  echo alertHtml('danger','Save failed: '.htmlspecialchars($e->getMessage()));
   exit;
 }
