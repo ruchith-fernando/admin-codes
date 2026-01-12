@@ -1,30 +1,27 @@
 <?php
-// mobile-allocation-entry.php
+// mobile-allocation-new.php
 require_once 'connections/connection.php';
 require_once 'includes/userlog.php';
+require_once 'includes/helpers.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 date_default_timezone_set('Asia/Colombo');
 ?>
 <div class="content font-size">
   <div class="container-fluid">
     <div class="card shadow bg-white rounded p-4">
-
-      <h5 class="mb-3 text-primary">Mobile Allocation — New Connection</h5>
-
-      <div id="maAlert"></div>
+      <h5 class="mb-3 text-primary">Mobile Allocation — Initiate New Connection</h5>
 
       <div class="row g-3">
-
         <div class="col-md-4">
           <label class="form-label fw-bold">Mobile Number</label>
           <input type="text" id="maMobile" class="form-control" placeholder="e.g. 0765455585 or 765455585">
-          <div class="form-text">System will auto-convert 076xxxxxxx → 76xxxxxxx (9 digits).</div>
+          <div class="form-text">System converts 076xxxxxxx → 76xxxxxxx (9 digits).</div>
         </div>
 
         <div class="col-md-4">
           <label class="form-label fw-bold">HRIS No</label>
           <input type="text" id="maHris" class="form-control" placeholder="e.g. 6428 / 006428 / Police-01">
-          <div class="form-text">Numeric HRIS must become 6 digits. Only <b>Active</b> employees allowed.</div>
+          <div class="form-text">Numeric HRIS becomes 6 digits. Only <b>Active</b> employees allowed.</div>
         </div>
 
         <div class="col-md-4">
@@ -33,8 +30,8 @@ date_default_timezone_set('Asia/Colombo');
         </div>
 
         <div class="col-md-6">
-          <label class="form-label fw-bold">Owner Name</label>
-          <input type="text" id="maOwner" class="form-control" placeholder="Auto-filled when HRIS is Active">
+          <label class="form-label fw-bold">Owner Name (auto)</label>
+          <input type="text" id="maOwner" class="form-control" readonly>
         </div>
 
         <div class="col-md-3">
@@ -45,53 +42,34 @@ date_default_timezone_set('Asia/Colombo');
             <option value="Data">Data</option>
             <option value="Voice+Data">Voice+Data</option>
           </select>
+          <div class="form-text">Can be changed by approver.</div>
         </div>
 
         <div class="col-md-3">
           <label class="form-label fw-bold">Connection Status</label>
-          <select id="maConnStatus" class="form-select">
-            <option value="Connected" selected>Connected</option>
-            <option value="Disconnected">Disconnected</option>
-          </select>
+          <input type="text" class="form-control" value="Connected" readonly>
         </div>
 
         <div class="col-md-6">
-          <label class="form-label fw-bold">Company Hierarchy (Division)</label>
-          <input type="text" id="maHierarchy" class="form-control" placeholder="Auto-filled when HRIS is Active">
+          <label class="form-label fw-bold">Company Hierarchy (auto)</label>
+          <input type="text" id="maHierarchy" class="form-control" readonly>
         </div>
 
         <div class="col-md-6">
-          <label class="form-label fw-bold">NIC No</label>
-          <input type="text" id="maNic" class="form-control" placeholder="Auto-filled when HRIS is Active">
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-bold">Company Contribution</label>
-          <input type="text" id="maContribution" class="form-control" placeholder="e.g. 250.00">
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-bold">Remarks</label>
-          <textarea id="maRemarks" class="form-control" rows="2"></textarea>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label fw-bold">Remarks on Branch Operational lines</label>
-          <textarea id="maBranchRemarks" class="form-control" rows="2"></textarea>
+          <label class="form-label fw-bold">NIC No (auto)</label>
+          <input type="text" id="maNic" class="form-control" readonly>
         </div>
 
         <div class="col-md-12 d-flex gap-2 justify-content-end">
           <button class="btn btn-outline-secondary" id="btnCheckMobile" type="button">Check Mobile</button>
           <button class="btn btn-outline-secondary" id="btnCheckHris" type="button">Check HRIS</button>
-          <button class="btn btn-success" id="btnSaveAlloc" type="button">Save</button>
+          <button class="btn btn-success" id="btnInitiate" type="button">Initiate (Pending)</button>
         </div>
-
       </div>
 
       <div class="mt-3" id="maMobileBox"></div>
       <div class="mt-2" id="maHrisBox"></div>
       <div class="mt-3" id="maResult"></div>
-
     </div>
   </div>
 </div>
@@ -99,61 +77,38 @@ date_default_timezone_set('Asia/Colombo');
 <script>
 (function($){
   'use strict';
-
   let hrisLocked = false;
 
   function normalizeMobile(v){
     let d = (v||'').toString().replace(/\D+/g,'');
-    // if 10 digits and starts with 0 => drop leading 0
     if (d.length === 10 && d.startsWith('0')) d = d.substring(1);
     return d;
   }
-
   function normalizeHris(v){
     let t = (v||'').toString().trim();
-    // if numeric: pad to 6 digits (6428 -> 006428)
     if (/^\d+$/.test(t)) t = t.padStart(6,'0');
     return t;
   }
-
   function bsAlert(type,msg){
     return `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
-      ${msg}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>`;
+      ${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
   }
-
   function payload(){
     const mobile = normalizeMobile($('#maMobile').val());
     const hris = normalizeHris($('#maHris').val());
-
     $('#maMobile').val(mobile);
     $('#maHris').val(hris);
-
     return {
       mobile,
       hris,
       effective_from: ($('#maEff').val()||'').trim(),
-
-      owner: ($('#maOwner').val()||'').trim(),
-      voice_data: ($('#maVoiceData').val()||'').trim(),
-      connection_status: ($('#maConnStatus').val()||'').trim(),
-      company_hierarchy: ($('#maHierarchy').val()||'').trim(),
-      nic_no: ($('#maNic').val()||'').trim(),
-      company_contribution: ($('#maContribution').val()||'').trim(),
-      remarks: ($('#maRemarks').val()||'').trim(),
-      branch_operational_remarks: ($('#maBranchRemarks').val()||'').trim()
+      voice_data: ($('#maVoiceData').val()||'').trim()
     };
-  }
-
-  function setSaveEnabled(on){
-    $('#btnSaveAlloc').prop('disabled', !on);
   }
 
   function doCheckMobile(){
     const p = payload();
     if (!p.mobile) { $('#maMobileBox').html(''); return; }
-
     $('#maMobileBox').html('<div class="text-muted">Checking mobile...</div>');
     $.post('mobile-allocation-check-mobile.php', { mobile: p.mobile }, function(html){
       $('#maMobileBox').html(html);
@@ -165,7 +120,6 @@ date_default_timezone_set('Asia/Colombo');
   function doCheckHris(){
     const p = payload();
     if (!p.hris) { $('#maHrisBox').html(''); return; }
-
     $('#maHrisBox').html('<div class="text-muted">Checking HRIS...</div>');
     $.ajax({
       url: 'mobile-allocation-check-hris.php',
@@ -176,58 +130,44 @@ date_default_timezone_set('Asia/Colombo');
     .done(function(res){
       if (!res || !res.ok) {
         hrisLocked = true;
-        setSaveEnabled(false);
         $('#maHrisBox').html(bsAlert('danger', (res && res.error) ? res.error : 'HRIS check failed.'));
         return;
       }
-
       hrisLocked = !!res.locked;
-      setSaveEnabled(!hrisLocked);
       $('#maHrisBox').html(res.html || '');
-
-      // auto-fill from employee details
       if (res.emp) {
-        if (res.emp.name && !($('#maOwner').val()||'').trim()) $('#maOwner').val(res.emp.name);
-        if (res.emp.nic && !($('#maNic').val()||'').trim()) $('#maNic').val(res.emp.nic);
-        if (res.emp.hierarchy && !($('#maHierarchy').val()||'').trim()) $('#maHierarchy').val(res.emp.hierarchy);
+        $('#maOwner').val(res.emp.name || '');
+        $('#maNic').val(res.emp.nic || '');
+        $('#maHierarchy').val(res.emp.hierarchy || '');
       }
     })
     .fail(function(xhr){
       hrisLocked = true;
-      setSaveEnabled(false);
       $('#maHrisBox').html(bsAlert('danger', 'Server error: ' + xhr.status));
     });
   }
 
-  function doSave(){
-    if (hrisLocked) {
-      $('#maResult').html(bsAlert('danger', 'HRIS is not Active. Please change HRIS.'));
-      return;
-    }
-
+  function doInitiate(){
     const p = payload();
-
+    if (hrisLocked) { $('#maResult').html(bsAlert('danger','HRIS is not Active.')); return; }
     if (!/^\d{9}$/.test(p.mobile)) { $('#maResult').html(bsAlert('danger','Mobile must be 9 digits.')); return; }
     if (!p.hris) { $('#maResult').html(bsAlert('danger','HRIS is required.')); return; }
     if (!p.effective_from) { $('#maResult').html(bsAlert('danger','Effective From is required.')); return; }
     if (!p.voice_data) { $('#maResult').html(bsAlert('danger','Voice/Data is required.')); return; }
 
-    $('#maResult').html('<div class="text-muted">Saving...</div>');
-    $.post('mobile-allocation-save.php', p, function(html){
+    $('#maResult').html('<div class="text-muted">Initiating...</div>');
+    $.post('mobile-allocation-initiate-save.php', p, function(html){
       $('#maResult').html(html);
-      // re-check mobile after save to show new status
-      doCheckMobile();
+      doCheckMobile(); doCheckHris();
     }).fail(function(xhr){
-      $('#maResult').html(bsAlert('danger', 'Server error: ' + xhr.status));
+      $('#maResult').html(bsAlert('danger','Server error: ' + xhr.status));
     });
   }
 
-  // buttons
   $('#btnCheckMobile').on('click', doCheckMobile);
   $('#btnCheckHris').on('click', doCheckHris);
-  $('#btnSaveAlloc').on('click', doSave);
+  $('#btnInitiate').on('click', doInitiate);
 
-  // blur triggers
   let tMob=null, tHris=null;
   $('#maMobile').on('blur', function(){ clearTimeout(tMob); tMob=setTimeout(doCheckMobile, 150); });
   $('#maHris').on('blur', function(){ clearTimeout(tHris); tHris=setTimeout(doCheckHris, 150); });
