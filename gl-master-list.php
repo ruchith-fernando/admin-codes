@@ -4,6 +4,10 @@ require_once 'connections/connection.php';
 require_once 'includes/userlog.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 
+// TEMP DEBUG (remove later if you want)
+// ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+
 function db() {
   global $conn, $con, $mysqli;
   if (isset($conn) && $conn instanceof mysqli) return $conn;
@@ -21,44 +25,46 @@ $perPage = (int)($_POST['per_page'] ?? 10);
 
 if ($page < 1) $page = 1;
 if ($perPage < 1) $perPage = 10;
-if ($perPage > 50) $perPage = 50; // safety
+if ($perPage > 50) $perPage = 50;
 
 $offset = ($page - 1) * $perPage;
 
 $where = "";
-$params = [];
-$types = "";
+$like1 = null;
+$like2 = null;
 
 if ($q !== "") {
   $where = " WHERE gl_code LIKE ? OR gl_name LIKE ? ";
-  $like = "%".$q."%";
-  $params = [$like, $like];
-  $types = "ss";
+  $like1 = "%".$q."%";
+  $like2 = "%".$q."%";
 }
 
-// count total
+/* COUNT */
 $sqlCount = "SELECT COUNT(*) AS cnt FROM tbl_admin_gl_account" . $where;
 $stCount = $mysqli->prepare($sqlCount);
-if ($q !== "") $stCount->bind_param($types, ...$params);
+if (!$stCount) { http_response_code(500); echo '<div class="alert alert-danger">Prepare failed (count).</div>'; exit; }
+
+if ($q !== "") {
+  $stCount->bind_param("ss", $like1, $like2);
+}
 $stCount->execute();
 $total = (int)($stCount->get_result()->fetch_assoc()['cnt'] ?? 0);
 
 $totalPages = (int)ceil($total / $perPage);
 if ($totalPages < 1) $totalPages = 1;
-if ($page > $totalPages) { $page = $totalPages; $offset = ($page-1)*$perPage; }
+if ($page > $totalPages) { $page = $totalPages; $offset = ($page - 1) * $perPage; }
 
-// fetch page
+/* DATA */
 $sql = "SELECT gl_id, gl_code, gl_name, gl_note, created_at
         FROM tbl_admin_gl_account
         $where
         ORDER BY gl_code ASC
         LIMIT ? OFFSET ?";
 $st = $mysqli->prepare($sql);
+if (!$st) { http_response_code(500); echo '<div class="alert alert-danger">Prepare failed (list).</div>'; exit; }
 
 if ($q !== "") {
-  // add limit/offset
-  $types2 = $types . "ii";
-  $st->bind_param($types2, ...$params, $perPage, $offset);
+  $st->bind_param("ssii", $like1, $like2, $perPage, $offset);
 } else {
   $st->bind_param("ii", $perPage, $offset);
 }
@@ -66,7 +72,7 @@ if ($q !== "") {
 $st->execute();
 $res = $st->get_result();
 
-// header
+/* HEADER */
 echo '<div class="d-flex justify-content-between align-items-center mb-2">';
 echo '<div class="text-muted small">Showing <b>'.($total===0?0:($offset+1)).'</b> to <b>'.min($offset+$perPage,$total).'</b> of <b>'.$total.'</b></div>';
 echo '<div class="text-muted small">Page <b>'.$page.'</b> / <b>'.$totalPages.'</b></div>';
@@ -77,7 +83,7 @@ if ($total === 0) {
   exit;
 }
 
-// table
+/* TABLE */
 echo '<div class="table-responsive">';
 echo '<table class="table table-sm table-bordered align-middle mb-2">';
 echo '<thead class="table-light"><tr>
@@ -102,12 +108,11 @@ while ($r = $res->fetch_assoc()) {
 echo '</tbody></table>';
 echo '</div>';
 
-// pagination window
-$window = 2; // show +/-2 around current
+/* PAGINATION */
+$window = 2;
 $start = max(1, $page - $window);
 $end = min($totalPages, $page + $window);
 
-// ensure first/last presence
 echo '<nav aria-label="GL pagination">';
 echo '<ul class="pagination pagination-sm mb-0 justify-content-end">';
 
