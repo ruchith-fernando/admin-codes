@@ -36,9 +36,11 @@ if ($action === 'LIST') {
       a.id, a.item_name, a.item_code, a.status,
       a.created_by_hris, a.created_by_name, a.created_at,
       a.approved_by_hris, a.approved_by_name, a.approved_at,
+      t.type_name,
       c.category_name, c.category_code,
       b.budget_name, b.budget_code
     FROM tbl_admin_assets a
+    JOIN tbl_admin_asset_types t ON t.id = a.asset_type_id
     JOIN tbl_admin_categories c ON c.id = a.category_id
     JOIN tbl_admin_budgets b ON b.id = a.budget_id
     WHERE a.status IN ('PENDING','APPROVED','REJECTED')
@@ -58,13 +60,11 @@ if ($action === 'LIST') {
           <th>ID</th>
           <th>Item</th>
           <th>Code</th>
-          <th>Status</th>
+          <th>Asset Type</th>
           <th>Category</th>
           <th>Budget</th>
           <th>Maker HRIS</th>
-          <th>Created</th>
           <th>Approver HRIS</th>
-          <th>Approved</th>
           <th class="text-end">Actions</th>
         </tr></thead><tbody>';
 
@@ -75,35 +75,47 @@ if ($action === 'LIST') {
     $isMaker = ($session_hris !== '' && $row_hris !== '' && $session_hris === $row_hris);
     $isPending = ($r['status'] === 'PENDING');
 
+    // Tooltips: include Name + Date (HTML tooltip)
     $makerHris = htmlspecialchars($r['created_by_hris'] ?? '');
-    $makerName = htmlspecialchars($r['created_by_name'] ?? '');
-    $makerCell = $makerHris ? "<span data-bs-toggle=\"tooltip\" title=\"{$makerName}\">{$makerHris}</span>" : "";
+    $makerTip  = htmlspecialchars($r['created_by_name'] ?? '');
+    $makerDate = htmlspecialchars($r['created_at'] ?? '');
+
+    $makerTitle = $makerTip;
+    if ($makerDate) $makerTitle .= "<br><small>Created: {$makerDate}</small>";
+
+    $makerCell = $makerHris
+      ? "<span data-bs-toggle=\"tooltip\" data-bs-html=\"true\" title=\"{$makerTitle}\">{$makerHris}</span>"
+      : "";
 
     $approverHris = htmlspecialchars($r['approved_by_hris'] ?? '');
-    $approverName = htmlspecialchars($r['approved_by_name'] ?? '');
-    $approverCell = $approverHris ? "<span data-bs-toggle=\"tooltip\" title=\"{$approverName}\">{$approverHris}</span>" : "";
+    $approverTip  = htmlspecialchars($r['approved_by_name'] ?? '');
+    $approverDate = htmlspecialchars($r['approved_at'] ?? '');
+
+    $approverTitle = $approverTip;
+    if ($approverDate) $approverTitle .= "<br><small>Approved: {$approverDate}</small>";
+
+    $approverCell = $approverHris
+      ? "<span data-bs-toggle=\"tooltip\" data-bs-html=\"true\" title=\"{$approverTitle}\">{$approverHris}</span>"
+      : "<span class=\"text-muted\">—</span>";
 
     echo '<tr>
       <td>'.$id.'</td>
       <td>'.htmlspecialchars($r['item_name']).'</td>
       <td><span class="fw-bold">'.htmlspecialchars($r['item_code']).'</span></td>
-      <td>'.htmlspecialchars($r['status']).'</td>
+      <td>'.htmlspecialchars($r['type_name']).'</td>
       <td>'.htmlspecialchars($r['category_name']).' ('.htmlspecialchars($r['category_code']).')</td>
       <td>'.htmlspecialchars($r['budget_name']).' ('.htmlspecialchars($r['budget_code']).')</td>
       <td>'.$makerCell.'</td>
-      <td>'.htmlspecialchars($r['created_at']).'</td>
       <td>'.$approverCell.'</td>
-      <td>'.htmlspecialchars($r['approved_at'] ?? '').'</td>
       <td class="text-end">';
 
-    // Actions column rules
     if ($r['status'] === 'APPROVED') {
       echo '<span class="badge bg-success">Approved</span>';
     } elseif ($r['status'] === 'REJECTED') {
       echo '<span class="badge bg-danger">Rejected</span>';
     } else {
       // PENDING
-      if (!$isMaker) {
+      if ($isPending && !$isMaker) {
         echo '<button type="button" class="btn btn-sm btn-success btn-approve" data-id="'.$id.'">Approve</button>
               <button type="button" class="btn btn-sm btn-danger btn-reject" data-id="'.$id.'">Reject</button>';
       } else {
