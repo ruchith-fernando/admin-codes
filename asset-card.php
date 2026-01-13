@@ -71,12 +71,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
 
       <div class="row g-3">
 
-        <div class="col-md-12">
-          <label class="form-label fw-bold">Item Name (Unique)</label>
-          <input type="text" id="acItemName" class="form-control"
-                 placeholder="e.g. 30th Anniversary Mugs / Blue Pens">
-          <div class="form-text">Must be unique (system-wide).</div>
-        </div>
+        
 
         <div class="col-md-4">
           <label class="form-label fw-bold">Asset Type</label>
@@ -111,7 +106,12 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
             <?php endforeach; ?>
           </select>
         </div>
-
+        <div class="col-md-12">
+          <label class="form-label fw-bold">Item Name (Unique)</label>
+          <input type="text" id="acItemName" class="form-control"
+                 placeholder="e.g. 30th Anniversary Mugs / Blue Pens">
+          <div class="form-text">Must be unique (system-wide).</div>
+        </div>
         <div class="col-md-8">
           <label class="form-label fw-bold">Maker Note</label>
           <textarea id="acMakerNote" class="form-control" rows="2"></textarea>
