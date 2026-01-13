@@ -110,7 +110,10 @@ if ($action === 'LIST') {
       <td class="text-end">';
 
     if ($r['status'] === 'APPROVED') {
-      echo '<span class="badge bg-success">Approved</span>';
+      echo '<span class="badge bg-success me-2">Approved</span>
+      <a class="btn btn-sm btn-outline-primary" target="_blank"
+         href="asset-card-print.php?id='.$id.'">Print</a>';
+
     } elseif ($r['status'] === 'REJECTED') {
       echo '<span class="badge bg-danger">Rejected</span>';
     } else {
