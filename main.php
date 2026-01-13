@@ -107,6 +107,7 @@ if (!isset($_SESSION['loggedin']) || !$_SESSION['loggedin']) {
   <script src="assets/js/bootstrap-datepicker.min.js"></script>
   <script src="assets/litepicker/litepicker.js"></script>
   <script src="assets/js/select2.min.js"></script>
+  <script src="assets/js/JsBarcode.all.min.js"></script>
 
   <!-- 0) Silence ONLY the legacy "Blocked nested #contentArea.load(...)" spam -->
   <script>
