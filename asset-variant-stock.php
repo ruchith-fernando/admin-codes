@@ -23,7 +23,6 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
 ?>
 
 <style>
-/* select2 height match bootstrap */
 .select2-container .select2-selection--single{
   height: calc(2.375rem + 2px) !important;
   border: 1px solid #ced4da !important;
@@ -38,24 +37,17 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
   height: calc(2.375rem + 2px) !important;
 }
 
-/* attribute inputs */
+/* attribute rows */
 .attr-row .form-control{ height: calc(2.375rem + 2px); }
 
-/* barcode responsive */
-.barcode-box{
-  width: 100%;
-  overflow: hidden;
-}
-#vBarcode{
-  width: 100%;
-  height: 56px;
-}
+/* barcode */
+.barcode-box{ width:100%; overflow:hidden; }
+#vBarcode{ width:100%; height:56px; }
 </style>
 
 <div class="content font-size">
   <div class="container-fluid">
 
-    <!-- VARIANT MAKER -->
     <div class="card shadow bg-white rounded p-4 mb-4">
       <h5 class="mb-3 text-primary">Variants (SKU) — New / Submit</h5>
       <div id="vAlert"></div>
@@ -65,24 +57,23 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
 
       <div class="row g-3">
 
+        <!-- MASTER ITEM (AJAX SELECT2) -->
         <div class="col-md-12">
           <label class="form-label fw-bold">Master Item (Approved)</label>
-
-          <!-- FULL DROPDOWN (AJAX SELECT2) -->
           <select id="vAssetId" class="form-select" style="width:100%">
             <option value="">-- Select Item --</option>
           </select>
-
-          <div class="form-text">Type to search (Select2 AJAX).</div>
+          <div class="form-text">Type to search (fast dropdown).</div>
         </div>
 
+        <!-- ATTRIBUTES -->
         <div class="col-md-12">
           <label class="form-label fw-bold">Variant Attributes (optional)</label>
 
           <div class="border rounded p-3 bg-light">
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
               <div class="text-muted small me-2">
-                Example: COLOR=BLUE, SIZE=XL, GENDER=MALE, SLEEVE=SHORT, COLLAR_SIZE=15
+                Pick attribute key, then value from dropdown. Example: COLOR=Black, SIZE=XL.
               </div>
               <button class="btn btn-sm btn-outline-primary" type="button" id="btnAddAttr">+ Add Attribute</button>
             </div>
@@ -90,11 +81,12 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
             <div id="attrBox"></div>
 
             <div class="form-text mt-2">
-              Mugs can have zero attributes (just submit). Shirts/t-shirts can have many.
+              Mugs can have zero attributes. Apparel can have many.
             </div>
           </div>
         </div>
 
+        <!-- Variant name / code -->
         <div class="col-md-6">
           <label class="form-label fw-bold">Variant Name (Auto)</label>
           <input type="text" id="vName" class="form-control" readonly>
@@ -105,6 +97,59 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
           <label class="form-label fw-bold">Variant Code</label>
           <input type="text" id="vCodeShow" class="form-control" readonly>
           <div class="form-text">Generated before submit.</div>
+        </div>
+
+        <!-- EXPIRY / SERIAL / WARRANTY -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Expiry Date?</label>
+          <select id="vHasExpiry" class="form-select">
+            <option value="0" selected>No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+
+        <div class="col-md-4" id="boxExpiryDate" style="display:none;">
+          <label class="form-label fw-bold">Expiry Date</label>
+          <input type="date" id="vExpiryDate" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Serial Number?</label>
+          <select id="vHasSerial" class="form-select">
+            <option value="0" selected>No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+
+        <div class="col-md-6" id="boxSerialNo" style="display:none;">
+          <label class="form-label fw-bold">Serial Number (Manual)</label>
+          <input type="text" id="vSerialNo" class="form-control" placeholder="Enter serial number">
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Warranty?</label>
+          <select id="vHasWarranty" class="form-select">
+            <option value="0" selected>No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+
+        <div class="col-md-4" id="boxWarrantyMode" style="display:none;">
+          <label class="form-label fw-bold">Warranty Type</label>
+          <select id="vWarrantyMode" class="form-select">
+            <option value="DATE" selected>Warranty Date</option>
+            <option value="TEXT">Warranty Text</option>
+          </select>
+        </div>
+
+        <div class="col-md-4" id="boxWarrantyDate" style="display:none;">
+          <label class="form-label fw-bold">Warranty Date</label>
+          <input type="date" id="vWarrantyDate" class="form-control">
+        </div>
+
+        <div class="col-md-6" id="boxWarrantyText" style="display:none;">
+          <label class="form-label fw-bold">Warranty Text</label>
+          <input type="text" id="vWarrantyText" class="form-control" placeholder="e.g. 1500 km warranty / 6 months">
         </div>
 
         <!-- BARCODE -->
@@ -125,7 +170,7 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
       <div class="mt-3" id="vResult"></div>
     </div>
 
-    <!-- VARIANT APPROVALS -->
+    <!-- APPROVALS -->
     <div class="card shadow bg-white rounded p-4 mb-4">
       <h5 class="mb-3 text-primary">Variant Approvals (Dual Control)</h5>
       <div id="vApAlert"></div>
@@ -182,43 +227,178 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
       .replace(/[^A-Z0-9_]/g,'');
   }
 
-  function addAttrRow(k,v){
+  // ---------- Extras (Expiry/Serial/Warranty) ----------
+  function toggleExtras(){
+    const hasExpiry = ($('#vHasExpiry').val() === '1');
+    $('#boxExpiryDate').toggle(hasExpiry);
+    if (!hasExpiry) $('#vExpiryDate').val('');
+
+    const hasSerial = ($('#vHasSerial').val() === '1');
+    $('#boxSerialNo').toggle(hasSerial);
+    if (!hasSerial) $('#vSerialNo').val('');
+
+    const hasWarranty = ($('#vHasWarranty').val() === '1');
+    $('#boxWarrantyMode').toggle(hasWarranty);
+
+    if (!hasWarranty){
+      $('#boxWarrantyDate').hide();
+      $('#boxWarrantyText').hide();
+      $('#vWarrantyDate').val('');
+      $('#vWarrantyText').val('');
+      return;
+    }
+
+    const mode = ($('#vWarrantyMode').val() || 'DATE');
+    if (mode === 'DATE'){
+      $('#boxWarrantyDate').show();
+      $('#boxWarrantyText').hide();
+      $('#vWarrantyText').val('');
+    } else {
+      $('#boxWarrantyText').show();
+      $('#boxWarrantyDate').hide();
+      $('#vWarrantyDate').val('');
+    }
+  }
+
+  function resetExtras(){
+    $('#vHasExpiry').val('0');
+    $('#vExpiryDate').val('');
+    $('#vHasSerial').val('0');
+    $('#vSerialNo').val('');
+    $('#vHasWarranty').val('0');
+    $('#vWarrantyMode').val('DATE');
+    $('#vWarrantyDate').val('');
+    $('#vWarrantyText').val('');
+    toggleExtras();
+  }
+
+  // ---------- Attribute Rows (KEY dropdown + VALUE dropdown) ----------
+  function addAttrRow(prefKey){
     const id = 'ar'+Math.random().toString(16).slice(2);
     const row = `
       <div class="row g-2 align-items-center attr-row mb-2" data-row="${id}">
         <div class="col-md-4">
-          <input class="form-control attr-key" placeholder="KEY (e.g. SIZE)" value="${k?String(k):''}">
+          <select class="form-select attr-key" data-row="${id}" style="width:100%"></select>
         </div>
         <div class="col-md-7">
-          <input class="form-control attr-val" placeholder="VALUE (e.g. XL)" value="${v?String(v):''}">
+          <select class="form-select attr-val" data-row="${id}" style="width:100%"></select>
         </div>
         <div class="col-md-1 text-end">
           <button type="button" class="btn btn-outline-danger btn-sm btn-del-attr" data-row="${id}">×</button>
         </div>
       </div>`;
     $('#attrBox').append(row);
+
+    initAttrKeySelect(id, prefKey || '');
+    initAttrValSelect(id, prefKey || '', 'Select value');
+  }
+
+  function initAttrKeySelect(rowId, presetKey){
+    const $key = $(`.attr-key[data-row="${rowId}"]`);
+    if ($key.data('select2')) $key.select2('destroy');
+
+    $key.select2({
+      width:'100%',
+      placeholder:'Select KEY (e.g. COLOR)',
+      allowClear:true,
+      minimumInputLength: 0,
+      ajax:{
+        url:'asset-variant-api.php',
+        type:'POST',
+        dataType:'json',
+        delay:200,
+        cache:true,
+        data:function(params){
+          return { action:'ATTR_KEY_SEARCH', q: params.term || '', page: params.page || 1 };
+        },
+        processResults:function(data, params){
+          params.page = params.page || 1;
+          return { results: data.results || [], pagination:{ more: !!data.more } };
+        }
+      }
+    });
+
+    if (presetKey){
+      // set preset key immediately
+      const k = normKey(presetKey);
+      const opt = new Option(k, k, true, true);
+      $key.append(opt).trigger('change');
+    }
+  }
+
+  function initAttrValSelect(rowId, key, placeholderText){
+    const $val = $(`.attr-val[data-row="${rowId}"]`);
+    if ($val.data('select2')) $val.select2('destroy');
+
+    $val.select2({
+      width:'100%',
+      placeholder: placeholderText || 'Select value',
+      allowClear:true,
+      tags:true, // allow typing new values if needed
+      minimumInputLength: 0,
+      ajax:{
+        url:'asset-variant-api.php',
+        type:'POST',
+        dataType:'json',
+        delay:200,
+        cache:true,
+        data:function(params){
+          return {
+            action:'ATTR_VALUE_SEARCH',
+            attr_key: normKey(key || ''),
+            q: params.term || '',
+            page: params.page || 1
+          };
+        },
+        processResults:function(data, params){
+          params.page = params.page || 1;
+          return { results: data.results || [], pagination:{ more: !!data.more } };
+        }
+      }
+    });
+  }
+
+  function updateValPlaceholder(rowId, key){
+    key = normKey(key || '');
+    if (!key){
+      initAttrValSelect(rowId, '', 'Select value');
+      return;
+    }
+
+    $.post('asset-variant-api.php', { action:'ATTR_VALUE_HINT', attr_key: key }, function(resp){
+      let r; try{ r = JSON.parse(resp); }catch(e){ r = null; }
+      const hint = (r && r.hint) ? r.hint : '';
+      const ph = hint ? ('e.g. ' + hint) : 'Select value';
+      initAttrValSelect(rowId, key, ph);
+      buildVariantName();
+    });
   }
 
   function getAttrs(){
     const map = {};
     const ordered = [];
+
     $('#attrBox .attr-row').each(function(){
-      const kRaw = $(this).find('.attr-key').val();
-      const vRaw = $(this).find('.attr-val').val();
+      const rowId = $(this).data('row');
+      const kRaw = $(`.attr-key[data-row="${rowId}"]`).val() || '';
+      const vRaw = $(`.attr-val[data-row="${rowId}"]`).val() || '';
+
       const k = normKey(kRaw);
       const v = (vRaw||'').toString().trim();
       if (!k || !v) return;
       if (map[k]) return;
-      map[k]=v;
+
+      map[k] = v;
       ordered.push({key:k, value:v});
-      $(this).find('.attr-key').val(k);
     });
+
     return ordered;
   }
 
   function buildVariantName(){
     const assetText = $('#vAssetId option:selected').text() || '';
     if (!assetText) { $('#vName').val(''); return; }
+
     const base = assetText.split('[')[0].trim();
     const attrs = getAttrs();
 
@@ -226,10 +406,12 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
       $('#vName').val(base);
       return;
     }
+
     const parts = attrs.map(a => `${a.key} ${a.value}`);
     $('#vName').val(base + ', ' + parts.join(', '));
   }
 
+  // ---------- Reserve / Submit ----------
   function reserveVariantCode(){
     const asset_id = ($('#vAssetId').val()||'').trim();
     if (!asset_id) return;
@@ -256,11 +438,24 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
 
   function submitVariant(){
     buildVariantName();
+
     const asset_id = ($('#vAssetId').val()||'').trim();
     const res_id = ($('#vResId').val()||'').trim();
     const vcode = ($('#vVariantCode').val()||'').trim();
     const vname = ($('#vName').val()||'').trim();
     const attrs = getAttrs();
+
+    // extras
+    const has_expiry = ($('#vHasExpiry').val()==='1') ? 1 : 0;
+    const expiry_date = ($('#vExpiryDate').val() || '').trim();
+
+    const has_serial = ($('#vHasSerial').val()==='1') ? 1 : 0;
+    const serial_no = ($('#vSerialNo').val() || '').trim();
+
+    const has_warranty = ($('#vHasWarranty').val()==='1') ? 1 : 0;
+    const warranty_mode = ($('#vWarrantyMode').val() || 'DATE').trim();
+    const warranty_date = ($('#vWarrantyDate').val() || '').trim();
+    const warranty_text = ($('#vWarrantyText').val() || '').trim();
 
     if (!asset_id) { $('#vResult').html(bsAlert('danger','Select Master Item.')); return; }
     if (!res_id || !vcode) { $('#vResult').html(bsAlert('danger','Generate Variant Code first.')); return; }
@@ -271,7 +466,18 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
       asset_id: asset_id,
       reservation_id: res_id,
       variant_name: vname,
-      attrs_json: JSON.stringify(attrs)
+      attrs_json: JSON.stringify(attrs),
+
+      has_expiry: has_expiry,
+      expiry_date: expiry_date,
+
+      has_serial: has_serial,
+      serial_no: serial_no,
+
+      has_warranty: has_warranty,
+      warranty_mode: warranty_mode,
+      warranty_date: warranty_date,
+      warranty_text: warranty_text
     }, function(resp){
       let r; try{ r=JSON.parse(resp);}catch(e){
         $('#vResult').html(bsAlert('danger','Invalid submit response.'));
@@ -293,12 +499,13 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
       $('#attrBox').empty();
       $('#vName').val('');
 
-      // convenience rows again
-      addAttrRow('COLOR','');
-      addAttrRow('SIZE','');
-      buildVariantName();
+      resetExtras();
 
-      // generate next code for next variant (same master)
+      // start again with common rows
+      addAttrRow('COLOR');
+      addAttrRow('SIZE');
+
+      // next code for same master
       reserveVariantCode();
       loadVariantPending();
     }).fail(function(xhr){
@@ -313,6 +520,37 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
       initTooltips();
     });
   }
+
+  // ---------- Events ----------
+  $('#btnAddAttr').on('click', function(){ addAttrRow(''); });
+
+  $(document).on('click', '.btn-del-attr', function(){
+    const row = $(this).data('row');
+    $(`.attr-row[data-row="${row}"]`).remove();
+    buildVariantName();
+  });
+
+  // when KEY changes -> update value dropdown + placeholder
+  $(document).on('change', '.attr-key', function(){
+    const rowId = $(this).data('row');
+    const key = $(this).val() || '';
+    // clear current value selection
+    const $val = $(`.attr-val[data-row="${rowId}"]`);
+    if ($val.length){
+      $val.val(null).trigger('change');
+    }
+    updateValPlaceholder(rowId, key);
+  });
+
+  // when VALUE changes -> update name
+  $(document).on('change', '.attr-val', function(){
+    buildVariantName();
+  });
+
+  $('#btnVariantSubmit').on('click', submitVariant);
+
+  // Extras toggles
+  $('#vHasExpiry,#vHasSerial,#vHasWarranty,#vWarrantyMode').on('change', toggleExtras);
 
   // approvals
   $(document).on('click', '.btn-v-approve', function(){
@@ -335,22 +573,7 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
     });
   });
 
-  // attribute UI
-  $('#btnAddAttr').on('click', function(){ addAttrRow('',''); });
-
-  $(document).on('click', '.btn-del-attr', function(){
-    const row = $(this).data('row');
-    $(`.attr-row[data-row="${row}"]`).remove();
-    buildVariantName();
-  });
-
-  $(document).on('blur change', '.attr-key,.attr-val', function(){
-    buildVariantName();
-  });
-
-  $('#btnVariantSubmit').on('click', submitVariant);
-
-  // ✅ FULL DROPDOWN (AJAX SELECT2)
+  // MASTER SELECT2 (AJAX)
   if ($.fn.select2){
     $('#vAssetId').select2({
       width: '100%',
@@ -380,7 +603,6 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
       }
     });
 
-    // on select -> reset + build name + reserve code
     $('#vAssetId').on('select2:select', function(){
       $('#vResId').val('');
       $('#vVariantCode').val('');
@@ -390,8 +612,11 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
       $('#attrBox').empty();
       $('#vName').val('');
 
-      addAttrRow('COLOR','');
-      addAttrRow('SIZE','');
+      resetExtras();
+
+      // common attrs
+      addAttrRow('COLOR');
+      addAttrRow('SIZE');
 
       buildVariantName();
       reserveVariantCode();
@@ -405,13 +630,14 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
       $('#vAlert').html('');
       $('#attrBox').empty();
       $('#vName').val('');
+      resetExtras();
     });
   }
 
-  // start with 2 rows as convenience (before selecting master too)
-  addAttrRow('COLOR','');
-  addAttrRow('SIZE','');
-
+  // initial
+  resetExtras();
+  addAttrRow('COLOR');
+  addAttrRow('SIZE');
   loadVariantPending();
 
 })(jQuery);
