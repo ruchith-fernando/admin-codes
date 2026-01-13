@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
   $cookie = session_get_cookie_params();
   session_set_cookie_params([
     'lifetime' => $cookie['lifetime'],
-    'path'     => '/', // IMPORTANT
+    'path'     => '/',
     'domain'   => $cookie['domain'],
     'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
     'httponly' => true,
@@ -18,7 +18,6 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
-// login session keys
 $uid = (int)($_SESSION['id'] ?? 0);
 $logged = !empty($_SESSION['loggedin']);
 if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
@@ -42,6 +41,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
   $stmt->close();
 }
 ?>
+
 <div class="content font-size">
   <div class="container-fluid">
 
@@ -136,6 +136,27 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
   </div>
 </div>
 
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reject Asset Card</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="rejAssetId" value="">
+        <label class="form-label fw-bold">Reject Reason</label>
+        <textarea id="rejReason" class="form-control" rows="3" placeholder="Type reason..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" type="button" id="btnDoReject">Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Your local JsBarcode -->
 <script src="assets/js/JsBarcode.all.min.js"></script>
 
@@ -150,6 +171,8 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
 
   function initTooltips(){
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el){
+      // prevent duplicates
+      if (bootstrap.Tooltip.getInstance(el)) return;
       new bootstrap.Tooltip(el);
     });
   }
@@ -213,7 +236,6 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
 
     const item_name     = ($('#acItemName').val()||'').trim();
     const asset_type_id = ($('#acAssetType').val()||'').trim();
-    const maker_note    = ($('#acMakerNote').val()||'').trim();
 
     if (!reservation_id || !item_code) {
       $('#acResult').html(bsAlert('danger','Select Category + Budget to generate Item Code.'));
@@ -234,8 +256,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       action: 'SUBMIT',
       reservation_id: reservation_id,
       item_name: item_name,
-      asset_type_id: asset_type_id,
-      maker_note: maker_note
+      asset_type_id: asset_type_id
     }, function(resp){
       let r;
       try { r = JSON.parse(resp); } catch(e){
@@ -254,7 +275,6 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       $('#acItemCode').val('');
       $('#acItemName').val('');
       $('#acAssetType').val('');
-      $('#acMakerNote').val('');
       $('#acCategory').val('').trigger('change');
       $('#acBudget').val('').trigger('change');
       $('#acBarcode').empty();
@@ -276,6 +296,44 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       $('#pendingBox').html(bsAlert('danger','Server error: '+xhr.status));
     });
   }
+
+  // ===== Approve (delegated, because table is loaded via AJAX) =====
+  $(document).on('click', '.btn-approve', function(){
+    const id = $(this).data('id');
+    $('#apAlert').html('<div class="text-muted">Approving...</div>');
+
+    $.post('asset-card-approve.php', { action:'APPROVE', id:id }, function(html){
+      $('#apAlert').html(html);
+      loadList();
+    }).fail(function(xhr){
+      $('#apAlert').html(bsAlert('danger','Server error: '+xhr.status));
+    });
+  });
+
+  // ===== Reject open modal =====
+  $(document).on('click', '.btn-reject', function(){
+    const id = $(this).data('id');
+    $('#rejAssetId').val(id);
+    $('#rejReason').val('');
+    new bootstrap.Modal(document.getElementById('rejectModal')).show();
+  });
+
+  // ===== Reject confirm =====
+  $('#btnDoReject').on('click', function(){
+    const id = ($('#rejAssetId').val()||'').trim();
+    const reason = ($('#rejReason').val()||'').trim();
+    if (!reason) { alert('Reject reason is required.'); return; }
+
+    $('#apAlert').html('<div class="text-muted">Rejecting...</div>');
+
+    $.post('asset-card-approve.php', { action:'REJECT', id:id, reject_reason: reason }, function(html){
+      $('#apAlert').html(html);
+      loadList();
+      bootstrap.Modal.getInstance(document.getElementById('rejectModal')).hide();
+    }).fail(function(xhr){
+      $('#apAlert').html(bsAlert('danger','Server error: '+xhr.status));
+    });
+  });
 
   // Reserve code on Category/Budget change
   $('#acCategory, #acBudget').on('change', reserveCode);
