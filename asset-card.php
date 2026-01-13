@@ -42,6 +42,23 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
 }
 ?>
 
+<style>
+/* Make Select2 height match Bootstrap .form-select height */
+.select2-container .select2-selection--single{
+  height: calc(2.375rem + 2px) !important; /* Bootstrap form control height */
+  border: 1px solid #ced4da !important;
+  border-radius: .375rem !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+  line-height: calc(2.375rem + 2px) !important;
+  padding-left: .75rem !important;
+  padding-right: 2rem !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+  height: calc(2.375rem + 2px) !important;
+}
+</style>
+
 <div class="content font-size">
   <div class="container-fluid">
 
@@ -171,9 +188,9 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
 
   function initTooltips(){
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el){
-      // prevent duplicates
-      if (bootstrap.Tooltip.getInstance(el)) return;
-      new bootstrap.Tooltip(el);
+      const inst = bootstrap.Tooltip.getInstance(el);
+      if (inst) inst.dispose();
+      new bootstrap.Tooltip(el, { html:true });
     });
   }
 
@@ -297,11 +314,10 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     });
   }
 
-  // ===== Approve (delegated, because table is loaded via AJAX) =====
+  // Approve
   $(document).on('click', '.btn-approve', function(){
     const id = $(this).data('id');
     $('#apAlert').html('<div class="text-muted">Approving...</div>');
-
     $.post('asset-card-approve.php', { action:'APPROVE', id:id }, function(html){
       $('#apAlert').html(html);
       loadList();
@@ -310,7 +326,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     });
   });
 
-  // ===== Reject open modal =====
+  // Reject open modal
   $(document).on('click', '.btn-reject', function(){
     const id = $(this).data('id');
     $('#rejAssetId').val(id);
@@ -318,14 +334,13 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     new bootstrap.Modal(document.getElementById('rejectModal')).show();
   });
 
-  // ===== Reject confirm =====
+  // Reject confirm
   $('#btnDoReject').on('click', function(){
     const id = ($('#rejAssetId').val()||'').trim();
     const reason = ($('#rejReason').val()||'').trim();
     if (!reason) { alert('Reject reason is required.'); return; }
 
     $('#apAlert').html('<div class="text-muted">Rejecting...</div>');
-
     $.post('asset-card-approve.php', { action:'REJECT', id:id, reject_reason: reason }, function(html){
       $('#apAlert').html(html);
       loadList();
