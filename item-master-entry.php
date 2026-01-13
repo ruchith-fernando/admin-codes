@@ -32,8 +32,10 @@ $item_id = isset($_GET['item_id']) ? (int)$_GET['item_id'] : 0;
 
         <div class="col-md-4">
           <label class="form-label fw-bold">UOM</label>
-          <input type="text" id="itUom" class="form-control" placeholder="PCS / REAM / ROLL" value="PCS">
-          <div class="form-text">UOM = Unit of Measure (PCS, BOX, REAM, ROLL...)</div>
+          <select id="itUom" class="form-select">
+            <option value="">Loading...</option>
+          </select>
+          <div class="form-text">UOM = Unit of Measure</div>
         </div>
 
         <div class="col-md-8">
@@ -47,6 +49,14 @@ $item_id = isset($_GET['item_id']) ? (int)$_GET['item_id'] : 0;
           <select id="itType" class="form-select">
             <option value="">Loading...</option>
           </select>
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label fw-bold">Barcode Preview</label>
+          <div class="border rounded p-2 bg-light">
+            <svg id="itBarcodeSvg"></svg>
+          </div>
+          <div class="form-text">Barcode generated from Item Code and stored for printing later.</div>
         </div>
 
         <div class="col-md-6">
@@ -71,6 +81,10 @@ $item_id = isset($_GET['item_id']) ? (int)$_GET['item_id'] : 0;
     </div>
   </div>
 </div>
+
+<!-- Use local OR CDN (pick one) -->
+<script src="assets/js/JsBarcode.all.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script> -->
 
 <script>
 (function($){
@@ -101,33 +115,90 @@ $item_id = isset($_GET['item_id']) ? (int)$_GET['item_id'] : 0;
     };
   }
 
-  function loadLists(selectedGlId, selectedTypeId){
-    // GL list
+  function renderBarcode(value){
+    const v = (value||'').toString().trim();
+    if (!v) { $('#itBarcodeSvg').empty(); return; }
+    try{
+      JsBarcode('#itBarcodeSvg', v, { format:'CODE128', displayValue:true, height:55, margin:5 });
+    }catch(e){
+      $('#itBarcodeSvg').replaceWith('<div class="text-danger">Barcode render failed</div>');
+    }
+  }
+
+  function saveBarcodeSvgToDb(itemId){
+    const svgEl = document.querySelector('#itBarcodeSvg');
+    if (!svgEl || !itemId) return;
+    const svg = svgEl.outerHTML;
+    $.post('item-barcode-save-svg.php', { item_id: itemId, barcode_svg: svg }, function(){}, 'json');
+  }
+
+  function loadGLs(selectedGlId){
+    const d = $.Deferred();
     $('#itGl').html('<option value="">Loading...</option>');
     $.get('item-master-load-gls.php', function(html){
       $('#itGl').html('<option value="">-- Select GL --</option>' + html);
       if (selectedGlId) $('#itGl').val(String(selectedGlId)).trigger('change');
+      d.resolve();
     }).fail(function(xhr){
       $('#itGl').html('<option value="">-- Select GL --</option>');
       $('#itAlert').html(bsAlert('danger','Server error loading GLs: ' + xhr.status));
+      d.resolve();
     });
+    return d.promise();
+  }
 
-    // Type list
+  function loadUoms(selectedUom){
+    const d = $.Deferred();
+    $('#itUom').html('<option value="">Loading...</option>');
+    $.get('item-master-load-uoms.php', function(html){
+      $('#itUom').html(html);
+      const u = (selectedUom||'').toString().trim().toUpperCase();
+      if (u) $('#itUom').val(u);
+      else if ($('#itUom option[value="PCS"]').length) $('#itUom').val('PCS');
+      d.resolve();
+    }).fail(function(){
+      $('#itUom').html('<option value="PCS">Pieces (PCS)</option><option value="PACK">Packs (PACK)</option>');
+      const u = (selectedUom||'').toString().trim().toUpperCase();
+      $('#itUom').val(u || 'PCS');
+      d.resolve();
+    });
+    return d.promise();
+  }
+
+  function loadTypes(selectedTypeId){
+    const d = $.Deferred();
     $('#itType').html('<option value="">Loading...</option>');
     $.get('item-master-load-types.php', function(html){
       $('#itType').html('<option value="">-- None (simple item) --</option>' + html);
       if (selectedTypeId !== null && selectedTypeId !== undefined && selectedTypeId !== '') {
         $('#itType').val(String(selectedTypeId));
       }
+      d.resolve();
     }).fail(function(xhr){
       $('#itType').html('<option value="">-- None (simple item) --</option>');
       $('#itAlert').html(bsAlert('danger','Server error loading types: ' + xhr.status));
+      d.resolve();
     });
+    return d.promise();
+  }
+
+  function loadLists(opts){
+    opts = opts || {};
+    $.when(
+      loadGLs(opts.gl_id || ''),
+      loadUoms(opts.uom || ''),
+      loadTypes(opts.item_type_id || '')
+    ).done(function(){});
   }
 
   function loadForEdit(){
     const id = parseInt($('#itId').val()||'0', 10);
-    if (!id) { loadLists(); return; }
+
+    if (!id) {
+      loadLists({ uom:'PCS' });
+      renderBarcode('');
+      return;
+    }
 
     $('#itResult').html('<div class="text-muted">Loading item...</div>');
     $.ajax({
@@ -138,28 +209,31 @@ $item_id = isset($_GET['item_id']) ? (int)$_GET['item_id'] : 0;
     }).done(function(res){
       if (!res || !res.ok || !res.item) {
         $('#itResult').html(bsAlert('danger', (res && res.error) ? res.error : 'Item load failed.'));
-        loadLists();
+        loadLists({ uom:'PCS' });
         return;
       }
+
       $('#itCode').val(res.item.item_code || '');
       $('#itName').val(res.item.item_name || '');
-      $('#itUom').val(res.item.uom || 'PCS');
       $('#itActive').val(String(res.item.is_active || 1));
       $('#itMakerNote').val(res.item.maker_note || '');
 
-      loadLists(res.item.gl_id, res.item.item_type_id);
+      loadLists({ gl_id:res.item.gl_id, uom:res.item.uom, item_type_id:res.item.item_type_id });
+
       $('#itResult').html('');
+      renderBarcode(res.item.item_code || '');
 
       setTimeout(function(){ checkCode(); checkName(); }, 250);
     }).fail(function(xhr){
       $('#itResult').html(bsAlert('danger','Server error: ' + xhr.status));
-      loadLists();
+      loadLists({ uom:'PCS' });
     });
   }
 
   function checkCode(){
     const p = payload();
-    if (!p.item_code) { $('#itCodeBox').html(''); return; }
+    if (!p.item_code) { $('#itCodeBox').html(''); renderBarcode(''); return; }
+    renderBarcode(p.item_code);
     $('#itCodeBox').html('<div class="text-muted">Checking item code...</div>');
     $.post('item-master-check-code.php', { item_code: p.item_code, item_id: p.item_id }, function(html){
       $('#itCodeBox').html(html);
@@ -189,8 +263,15 @@ $item_id = isset($_GET['item_id']) ? (int)$_GET['item_id'] : 0;
     $('#itResult').html('<div class="text-muted">Saving...</div>');
     $.post('item-master-save.php', p, function(html){
       $('#itResult').html(html);
+
       const newId = $('#itResult').find('[data-saved-item-id]').data('saved-item-id');
       if (newId) $('#itId').val(String(newId));
+
+      const bcVal = ($('#itResult').find('[data-barcode-value]').data('barcode-value')) || ($('#itCode').val()||'');
+      renderBarcode(bcVal);
+
+      if (newId) saveBarcodeSvgToDb(newId);
+
       checkCode(); checkName();
     }).fail(function(xhr){
       $('#itResult').html(bsAlert('danger','Server error: ' + xhr.status));
@@ -210,5 +291,6 @@ $item_id = isset($_GET['item_id']) ? (int)$_GET['item_id'] : 0;
   $('#btnItSubmit').on('click', save);
 
   loadForEdit();
+
 })(jQuery);
 </script>

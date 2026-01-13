@@ -1,6 +1,5 @@
 <?php
 require_once 'connections/connection.php';
-require_once 'includes/userlog.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 function db() {
@@ -10,7 +9,6 @@ function db() {
   if (isset($mysqli) && $mysqli instanceof mysqli) return $mysqli;
   return null;
 }
-
 $mysqli = db();
 if (!$mysqli) { http_response_code(500); echo ''; exit; }
 

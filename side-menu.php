@@ -147,7 +147,22 @@ $masterSubMenus = [
             ['key'=>'upload-security-vpn-budget',  'file'=>'upload-security-vpn-budget.php',  'label'=>'Upload Budget - Security VPN'],
         ]
     ],
-    
+    [
+        'title' => 'GL - Master',
+        'id'    => 'collapseGiftsGL',
+        'items' => [
+            ['key'=>'gl-master-entry',   'file'=>'gl-master-entry.php',   'label'=>'GL Master'],
+            ['key'=>'category-master',   'file'=>'category-master.php',   'label'=>'Category Master'],
+            ['key'=>'attribute-master',   'file'=>'attribute-master.php',   'label'=>'Attribute Master'],
+            ['key'=>'item-master-entry',   'file'=>'item-master-entry.php',   'label'=>'Item Master'],
+            ['key'=>'item-variant-entry',  'file'=>'item-variant-entry.php',  'label'=>'Item Variants (SKU)'],
+            ['key'=>'item-type-entry',            'file'=>'item-type-entry.php',            'label'=>'Item Types'],
+            ['key'=>'attribute-master-entry',     'file'=>'attribute-master-entry.php',     'label'=>'Attributes'],
+            ['key'=>'attribute-option-entry',     'file'=>'attribute-option-entry.php',     'label'=>'Attribute Options'],
+            ['key'=>'type-attribute-map-entry',   'file'=>'type-attribute-map-entry.php',   'label'=>'Type → Attribute Mapping'],
+            ['key'=>'gifts-approvals',            'file'=>'gifts-approvals.php',            'label'=>'Approvals (Maker/Checker)'],
+        ]
+    ],
 ];
 
 // Check if user can see at least one master item
@@ -655,6 +670,14 @@ $remainingMenus += [
             ['key'=>'stationary-request',          'file'=>'stationary-request.php',          'label'=>'Test Request'],
             ['key'=>'boic-requests',               'file'=>'boic-requests.php',               'label'=>'BOIC Approval'],
             ['key'=>'approval-orders',             'file'=>'approval-orders.php',             'label'=>'Store Keeper'],
+        ]
+    ],
+    'gifts' => [
+        'title' => 'Gifts',
+        'id' => 'collapseGifts',
+        'items' => [
+            ['key'=>'stock-in',                    'file'=>'stock-in.php',                    'label'=>'Stocks In'],
+            
         ]
     ],
 ];

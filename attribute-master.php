@@ -46,17 +46,13 @@ date_default_timezone_set('Asia/Colombo');
             </div>
 
             <div class="col-md-3">
-              <label class="form-label fw-bold">Input Type</label>
+              <label class="form-label fw-bold">Data Type</label>
               <select id="aType" class="form-select">
-                <option value="SELECT" selected>SELECT</option>
+                <option value="OPTION" selected>OPTION</option>
                 <option value="TEXT">TEXT</option>
                 <option value="NUMBER">NUMBER</option>
               </select>
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label fw-bold">Sort Order</label>
-              <input type="number" id="aSort" class="form-control" value="0" min="0">
+              <div class="form-text">OPTION = dropdown options list</div>
             </div>
 
             <div class="col-md-3">
@@ -67,8 +63,13 @@ date_default_timezone_set('Asia/Colombo');
               </select>
             </div>
 
-            <div class="col-md-6 d-flex align-items-end justify-content-end">
-              <button class="btn btn-success w-100" id="btnAttrSubmit" type="button">Submit</button>
+            <div class="col-md-9">
+              <label class="form-label fw-bold">Maker Note</label>
+              <textarea id="aMakerNote" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="col-md-12 d-flex align-items-end justify-content-end">
+              <button class="btn btn-success" style="min-width:200px;" id="btnAttrSubmit" type="button">Submit</button>
             </div>
           </div>
 
@@ -96,13 +97,12 @@ date_default_timezone_set('Asia/Colombo');
                   <th style="width:160px;">Code</th>
                   <th>Name</th>
                   <th style="width:120px;">Type</th>
-                  <th style="width:90px;">Sort</th>
                   <th style="width:80px;">Active</th>
                   <th style="width:110px;">Action</th>
                 </tr>
               </thead>
               <tbody id="aTbody">
-                <tr><td colspan="7" class="text-center text-muted">Loading...</td></tr>
+                <tr><td colspan="6" class="text-center text-muted">Loading...</td></tr>
               </tbody>
             </table>
           </div>
@@ -128,11 +128,11 @@ date_default_timezone_set('Asia/Colombo');
               <select id="oAttr" class="form-select">
                 <option value="">Loading...</option>
               </select>
-              <div class="form-text">Select attribute first (Color / Size / Gender...).</div>
+              <div class="form-text">Only Active attributes appear.</div>
             </div>
 
             <div class="col-md-3">
-              <label class="form-label fw-bold">Option Code (optional)</label>
+              <label class="form-label fw-bold">Option Code</label>
               <input type="text" id="oCode" class="form-control" placeholder="e.g. BLK / WHT / M / L">
               <div class="mt-2" id="oCodeBox"></div>
             </div>
@@ -156,8 +156,13 @@ date_default_timezone_set('Asia/Colombo');
               </select>
             </div>
 
-            <div class="col-md-6 d-flex align-items-end justify-content-end">
-              <button class="btn btn-success w-100" id="btnOptSubmit" type="button">Submit</button>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Maker Note</label>
+              <textarea id="oMakerNote" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="col-md-12 d-flex align-items-end justify-content-end">
+              <button class="btn btn-success" style="min-width:200px;" id="btnOptSubmit" type="button">Submit</button>
             </div>
           </div>
 
@@ -182,7 +187,7 @@ date_default_timezone_set('Asia/Colombo');
               <thead class="table-light">
                 <tr>
                   <th style="width:80px;">ID</th>
-                  <th style="width:180px;">Attribute</th>
+                  <th style="width:220px;">Attribute</th>
                   <th style="width:140px;">Code</th>
                   <th>Option Name</th>
                   <th style="width:90px;">Sort</th>
@@ -235,7 +240,7 @@ date_default_timezone_set('Asia/Colombo');
     ));
   }
 
-  /* ===================== ATTR STATE ===================== */
+  /* ===================== ATTRIBUTES ===================== */
   let aPage=1, aPages=1, aLoading=false;
   let taSearch=null, taCode=null, taName=null;
 
@@ -243,9 +248,9 @@ date_default_timezone_set('Asia/Colombo');
     $('#aId').val('0');
     $('#aCode').val('');
     $('#aName').val('');
-    $('#aType').val('SELECT');
-    $('#aSort').val('0');
+    $('#aType').val('OPTION');
     $('#aActive').val('1');
+    $('#aMakerNote').val('');
     $('#aCodeBox').html('');
     $('#aNameBox').html('');
   }
@@ -256,9 +261,9 @@ date_default_timezone_set('Asia/Colombo');
       attribute_id: ($('#aId').val()||'0').trim(),
       attribute_code: code,
       attribute_name: ($('#aName').val()||'').trim(),
-      input_type: ($('#aType').val()||'SELECT').trim(),
-      sort_order: ($('#aSort').val()||'0').trim(),
-      is_active: ($('#aActive').val()||'1').trim()
+      data_type: ($('#aType').val()||'OPTION').trim(),
+      is_active: ($('#aActive').val()||'1').trim(),
+      maker_note: ($('#aMakerNote').val()||'').trim()
     };
   }
   function aCheckCode(){
@@ -288,14 +293,10 @@ date_default_timezone_set('Asia/Colombo');
         $('#attrAlert').html(html);
         aLoadList(1);
         aClear();
-        oLoadAttrDropdown();
+        oLoadAttrDropdown(); // refresh option attribute list
       })
-      .fail(function(xhr, t, e){
-        failBox($('#attrAlert'), xhr, t, e);
-      })
-      .always(function(){
-        $('#btnAttrSubmit').prop('disabled', false).text('Submit');
-      });
+      .fail(function(xhr, t, e){ failBox($('#attrAlert'), xhr, t, e); })
+      .always(function(){ $('#btnAttrSubmit').prop('disabled', false).text('Submit'); });
   }
   function aLoadOne(id){
     $('#attrAlert').html('<div class="text-muted">Loading attribute...</div>');
@@ -313,14 +314,12 @@ date_default_timezone_set('Asia/Colombo');
       $('#aId').val(String(a.attribute_id||0));
       $('#aCode').val(a.attribute_code||'');
       $('#aName').val(a.attribute_name||'');
-      $('#aType').val(a.input_type||'SELECT');
-      $('#aSort').val(String(a.sort_order||0));
+      $('#aType').val(a.data_type||'OPTION');
       $('#aActive').val(String(a.is_active||1));
+      $('#aMakerNote').val(a.maker_note||'');
       setTimeout(function(){ aCheckCode(); aCheckName(); }, 150);
       $('#attrAlert').html(bsAlert('success','Loaded for editing. Change fields and Submit.'));
-    }).fail(function(xhr, t, e){
-      failBox($('#attrAlert'), xhr, t, e);
-    });
+    }).fail(function(xhr, t, e){ failBox($('#attrAlert'), xhr, t, e); });
   }
   function aLoadList(goPage){
     if (aLoading) return;
@@ -330,7 +329,7 @@ date_default_timezone_set('Asia/Colombo');
     const per=parseInt($('#aPerPage').val()||'10',10);
     aPage=goPage || aPage;
 
-    $('#aTbody').html('<tr><td colspan="7" class="text-center text-muted">Loading...</td></tr>');
+    $('#aTbody').html('<tr><td colspan="6" class="text-center text-muted">Loading...</td></tr>');
     $.ajax({
       url:'attribute-master-api.php',
       method:'POST',
@@ -339,7 +338,7 @@ date_default_timezone_set('Asia/Colombo');
     }).done(function(res){
       if (!res || !res.ok) {
         $('#aListAlert').html(bsAlert('danger', (res && res.error)?esc(res.error):'List failed.'));
-        $('#aTbody').html('<tr><td colspan="7" class="text-center text-muted">—</td></tr>');
+        $('#aTbody').html('<tr><td colspan="6" class="text-center text-muted">—</td></tr>');
         return;
       }
       $('#aListAlert').html('');
@@ -347,7 +346,7 @@ date_default_timezone_set('Asia/Colombo');
 
       const rows=res.rows||[];
       if (!rows.length){
-        $('#aTbody').html('<tr><td colspan="7" class="text-center text-muted">No attributes</td></tr>');
+        $('#aTbody').html('<tr><td colspan="6" class="text-center text-muted">No attributes</td></tr>');
       } else {
         $('#aTbody').html(rows.map(r=>{
           const act = String(r.is_active)==='1' ? 'Yes' : 'No';
@@ -355,8 +354,7 @@ date_default_timezone_set('Asia/Colombo');
             <td>${r.attribute_id}</td>
             <td>${esc(r.attribute_code)}</td>
             <td>${esc(r.attribute_name)}</td>
-            <td>${esc(r.input_type)}</td>
-            <td>${r.sort_order}</td>
+            <td>${esc(r.data_type||'')}</td>
             <td>${act}</td>
             <td><button class="btn btn-sm btn-outline-primary btnAttrEdit" data-id="${r.attribute_id}" type="button">Edit</button></td>
           </tr>`;
@@ -367,13 +365,13 @@ date_default_timezone_set('Asia/Colombo');
       $('#aNext').prop('disabled', aPage>=aPages);
     }).fail(function(xhr, t, e){
       failBox($('#aListAlert'), xhr, t, e);
-      $('#aTbody').html('<tr><td colspan="7" class="text-center text-muted">Failed</td></tr>');
+      $('#aTbody').html('<tr><td colspan="6" class="text-center text-muted">Failed</td></tr>');
     }).always(function(){ aLoading=false; });
   }
 
-  /* ===================== OPTIONS STATE ===================== */
+  /* ===================== OPTIONS ===================== */
   let oPage=1, oPages=1, oLoading=false;
-  let toSearch=null, toName=null, toCode=null;
+  let toSearch=null, toCode=null, toName=null;
 
   function oClear(){
     $('#oId').val('0');
@@ -381,6 +379,7 @@ date_default_timezone_set('Asia/Colombo');
     $('#oName').val('');
     $('#oSort').val('0');
     $('#oActive').val('1');
+    $('#oMakerNote').val('');
     $('#oCodeBox').html('');
     $('#oNameBox').html('');
   }
@@ -393,7 +392,8 @@ date_default_timezone_set('Asia/Colombo');
       option_code: code,
       option_name: ($('#oName').val()||'').trim(),
       sort_order: ($('#oSort').val()||'0').trim(),
-      is_active: ($('#oActive').val()||'1').trim()
+      is_active: ($('#oActive').val()||'1').trim(),
+      maker_note: ($('#oMakerNote').val()||'').trim()
     };
   }
   function oLoadAttrDropdown(selected){
@@ -408,14 +408,6 @@ date_default_timezone_set('Asia/Colombo');
         $('#oAttr').html('<option value="">-- Select Attribute --</option>');
       });
   }
-  function oCheckName(){
-    const p=oPayload();
-    if (!p.attribute_id || !p.option_name) { $('#oNameBox').html(''); return; }
-    $('#oNameBox').html('<div class="text-muted">Checking option name...</div>');
-    $.post('attribute-master-api.php', {action:'opt_check_name', option_id:p.option_id, attribute_id:p.attribute_id, option_name:p.option_name})
-      .done(function(html){ $('#oNameBox').html(html); })
-      .fail(function(xhr, t, e){ failBox($('#oNameBox'), xhr, t, e); });
-  }
   function oCheckCode(){
     const p=oPayload();
     if (!p.attribute_id || !p.option_code) { $('#oCodeBox').html(''); return; }
@@ -424,9 +416,18 @@ date_default_timezone_set('Asia/Colombo');
       .done(function(html){ $('#oCodeBox').html(html); })
       .fail(function(xhr, t, e){ failBox($('#oCodeBox'), xhr, t, e); });
   }
+  function oCheckName(){
+    const p=oPayload();
+    if (!p.attribute_id || !p.option_name) { $('#oNameBox').html(''); return; }
+    $('#oNameBox').html('<div class="text-muted">Checking option name...</div>');
+    $.post('attribute-master-api.php', {action:'opt_check_name', option_id:p.option_id, attribute_id:p.attribute_id, option_name:p.option_name})
+      .done(function(html){ $('#oNameBox').html(html); })
+      .fail(function(xhr, t, e){ failBox($('#oNameBox'), xhr, t, e); });
+  }
   function oSave(){
     const p=oPayload();
-    if (!p.attribute_id) { $('#attrAlert').html(bsAlert('danger','Attribute is required for options.')); return; }
+    if (!p.attribute_id) { $('#attrAlert').html(bsAlert('danger','Attribute is required.')); return; }
+    if (!p.option_code) { $('#attrAlert').html(bsAlert('danger','Option Code is required.')); return; }
     if (!p.option_name) { $('#attrAlert').html(bsAlert('danger','Option Name is required.')); return; }
 
     $('#btnOptSubmit').prop('disabled', true).text('Saving...');
@@ -436,12 +437,8 @@ date_default_timezone_set('Asia/Colombo');
         oLoadList(1);
         oClear();
       })
-      .fail(function(xhr, t, e){
-        failBox($('#attrAlert'), xhr, t, e);
-      })
-      .always(function(){
-        $('#btnOptSubmit').prop('disabled', false).text('Submit');
-      });
+      .fail(function(xhr, t, e){ failBox($('#attrAlert'), xhr, t, e); })
+      .always(function(){ $('#btnOptSubmit').prop('disabled', false).text('Submit'); });
   }
   function oLoadOne(id){
     $('#attrAlert').html('<div class="text-muted">Loading option...</div>');
@@ -458,16 +455,14 @@ date_default_timezone_set('Asia/Colombo');
       const o=res.option;
       $('#oId').val(String(o.option_id||0));
       oLoadAttrDropdown(o.attribute_id);
-      setTimeout(function(){ $('#oAttr').val(String(o.attribute_id||'')); },150);
       $('#oCode').val(o.option_code||'');
       $('#oName').val(o.option_name||'');
       $('#oSort').val(String(o.sort_order||0));
       $('#oActive').val(String(o.is_active||1));
+      $('#oMakerNote').val(o.maker_note||'');
       setTimeout(function(){ oCheckCode(); oCheckName(); }, 200);
       $('#attrAlert').html(bsAlert('success','Loaded for editing. Change fields and Submit.'));
-    }).fail(function(xhr, t, e){
-      failBox($('#attrAlert'), xhr, t, e);
-    });
+    }).fail(function(xhr, t, e){ failBox($('#attrAlert'), xhr, t, e); });
   }
   function oLoadList(goPage){
     if (oLoading) return;
@@ -518,11 +513,20 @@ date_default_timezone_set('Asia/Colombo');
     }).always(function(){ oLoading=false; });
   }
 
-  /* ===================== EVENTS (blur only) ===================== */
+  // blur checks
   $('#aCode').on('blur', function(){ clearTimeout(taCode); taCode=setTimeout(aCheckCode, 120); });
   $('#aName').on('blur', function(){ clearTimeout(taName); taName=setTimeout(aCheckName, 120); });
   $('#btnAttrSubmit').on('click', aSave);
 
+  $('#oCode').on('blur', function(){ clearTimeout(toCode); toCode=setTimeout(oCheckCode, 120); });
+  $('#oName').on('blur', function(){ clearTimeout(toName); toName=setTimeout(oCheckName, 120); });
+  $('#oAttr').on('change', function(){
+    if ($('#oCode').val().trim()) oCheckCode();
+    if ($('#oName').val().trim()) oCheckName();
+  });
+  $('#btnOptSubmit').on('click', oSave);
+
+  // search + paging
   $('#aSearch').on('input', function(){ clearTimeout(taSearch); taSearch=setTimeout(()=>aLoadList(1), 250); });
   $('#aPerPage').on('change', function(){ aLoadList(1); });
   $('#aPrev').on('click', function(){ if (aPage>1) aLoadList(aPage-1); });
@@ -530,14 +534,6 @@ date_default_timezone_set('Asia/Colombo');
   $(document).on('click', '.btnAttrEdit', function(){
     const id=parseInt($(this).data('id')||'0',10); if (id>0) aLoadOne(id);
   });
-
-  $('#oAttr').on('change', function(){
-    if ($('#oCode').val().trim()) oCheckCode();
-    if ($('#oName').val().trim()) oCheckName();
-  });
-  $('#oCode').on('blur', function(){ clearTimeout(toCode); toCode=setTimeout(oCheckCode, 120); });
-  $('#oName').on('blur', function(){ clearTimeout(toName); toName=setTimeout(oCheckName, 120); });
-  $('#btnOptSubmit').on('click', oSave);
 
   $('#oSearch').on('input', function(){ clearTimeout(toSearch); toSearch=setTimeout(()=>oLoadList(1), 250); });
   $('#oPerPage').on('change', function(){ oLoadList(1); });
@@ -547,7 +543,7 @@ date_default_timezone_set('Asia/Colombo');
     const id=parseInt($(this).data('id')||'0',10); if (id>0) oLoadOne(id);
   });
 
-  /* init */
+  // init
   aLoadList(1);
   oLoadAttrDropdown();
   oLoadList(1);

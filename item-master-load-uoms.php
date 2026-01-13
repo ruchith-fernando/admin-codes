@@ -12,14 +12,17 @@ function db() {
 $mysqli = db();
 if (!$mysqli) { http_response_code(500); echo ''; exit; }
 
-$sql = "SELECT item_type_id, type_code, type_name
-        FROM tbl_admin_item_type
-        ORDER BY type_name ASC";
+$sql = "SELECT uom, uom_name
+        FROM tbl_admin_uom
+        WHERE is_active=1
+        ORDER BY uom_name ASC";
 $res = $mysqli->query($sql);
 if (!$res) { echo ''; exit; }
 
 while ($row = $res->fetch_assoc()) {
-  $id = (int)$row['item_type_id'];
-  $label = htmlspecialchars($row['type_name'].' ('.$row['type_code'].')');
-  echo "<option value=\"{$id}\">{$label}</option>";
+  $uom = strtoupper(trim($row['uom']));
+  $name = $row['uom_name'];
+  $uomH = htmlspecialchars($uom);
+  $nameH = htmlspecialchars($name);
+  echo "<option value=\"{$uomH}\">{$nameH} ({$uomH})</option>";
 }
