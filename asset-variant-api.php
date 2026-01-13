@@ -37,19 +37,18 @@ function norm_key($k){
 }
 
 function build_fingerprint(array $attrs): string {
-  // canonical: sort by key, then "KEY=VALUE"
   $pairs = [];
   foreach ($attrs as $a){
     $k = norm_key($a['key'] ?? '');
     $v = trim((string)($a['value'] ?? ''));
     if ($k !== '' && $v !== ''){
-      $pairs[$k] = $v; // unique per key
+      $pairs[$k] = $v;
     }
   }
   ksort($pairs);
   $flat = [];
   foreach($pairs as $k=>$v) $flat[] = $k.'='.$v;
-  return sha1(implode('|',$flat)); // empty attrs -> sha1('')
+  return sha1(implode('|',$flat)); // 40 chars
 }
 
 function build_variant_name(mysqli $conn, int $asset_id, array $attrs): string {
@@ -58,6 +57,7 @@ function build_variant_name(mysqli $conn, int $asset_id, array $attrs): string {
   $stmt->execute();
   $base = $stmt->get_result()->fetch_assoc()['item_name'] ?? '';
   $stmt->close();
+
   $base = trim((string)$base);
   if ($base === '') $base = 'ITEM';
 
@@ -73,6 +73,192 @@ function build_variant_name(mysqli $conn, int $asset_id, array $attrs): string {
 
 $action = strtoupper(trim($_POST['action'] ?? ''));
 
+//
+// ---------- ASSET SEARCH (Master dropdown) ----------
+//
+if ($action === 'ASSET_SEARCH') {
+  header('Content-Type: application/json; charset=utf-8');
+
+  $q = trim((string)($_POST['q'] ?? ''));
+  $page = max(1, (int)($_POST['page'] ?? 1));
+  $perPage = 20;
+  $offset = ($page - 1) * $perPage;
+
+  $like = '%' . $q . '%';
+  $limit = $perPage + 1;
+
+  $sql = "
+    SELECT a.id, a.item_name, a.item_code,
+           t.type_name, c.category_code, b.budget_code
+    FROM tbl_admin_assets a
+    JOIN tbl_admin_asset_types t ON t.id=a.asset_type_id
+    JOIN tbl_admin_categories c ON c.id=a.category_id
+    JOIN tbl_admin_budgets b ON b.id=a.budget_id
+    WHERE a.status='APPROVED'
+      AND (
+        a.item_name LIKE ?
+        OR a.item_code LIKE ?
+        OR t.type_name LIKE ?
+        OR c.category_code LIKE ?
+        OR b.budget_code LIKE ?
+      )
+    ORDER BY a.id DESC
+    LIMIT ? OFFSET ?
+  ";
+
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("sssssii", $like, $like, $like, $like, $like, $limit, $offset);
+  $stmt->execute();
+  $res = $stmt->get_result();
+
+  $rows = [];
+  while($r = $res->fetch_assoc()) $rows[] = $r;
+  $stmt->close();
+
+  $more = false;
+  if (count($rows) > $perPage) { $more = true; array_pop($rows); }
+
+  $results = [];
+  foreach($rows as $r){
+    $text =
+      trim($r['item_name']) . " [" . trim($r['item_code']) . "]" .
+      " • " . trim($r['type_name']) .
+      " • " . trim($r['category_code']) . "/" . trim($r['budget_code']);
+    $results[] = ['id'=>(int)$r['id'], 'text'=>$text];
+  }
+
+  echo json_encode(['results'=>$results, 'more'=>$more]);
+  exit;
+}
+
+//
+// ---------- ATTRIBUTE KEY SEARCH ----------
+//
+if ($action === 'ATTR_KEY_SEARCH') {
+  header('Content-Type: application/json; charset=utf-8');
+
+  $q = strtoupper(trim((string)($_POST['q'] ?? '')));
+  $page = max(1, (int)($_POST['page'] ?? 1));
+  $perPage = 20;
+  $offset = ($page - 1) * $perPage;
+  $limit = $perPage + 1;
+
+  $like = '%' . $q . '%';
+
+  $sql = "
+    SELECT DISTINCT attr_key
+    FROM tbl_admin_variant_attr_options
+    WHERE is_active=1
+      AND attr_key LIKE ?
+    ORDER BY attr_key ASC
+    LIMIT ? OFFSET ?
+  ";
+
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("sii", $like, $limit, $offset);
+  $stmt->execute();
+  $res = $stmt->get_result();
+
+  $rows = [];
+  while($r = $res->fetch_assoc()) $rows[] = $r;
+  $stmt->close();
+
+  $more = false;
+  if (count($rows) > $perPage) { $more = true; array_pop($rows); }
+
+  $results = [];
+  foreach($rows as $r){
+    $k = norm_key($r['attr_key'] ?? '');
+    if ($k === '') continue;
+    $results[] = ['id'=>$k, 'text'=>$k];
+  }
+
+  echo json_encode(['results'=>$results, 'more'=>$more]);
+  exit;
+}
+
+//
+// ---------- ATTRIBUTE VALUE SEARCH ----------
+//
+if ($action === 'ATTR_VALUE_SEARCH') {
+  header('Content-Type: application/json; charset=utf-8');
+
+  $key = norm_key($_POST['attr_key'] ?? '');
+  $q = trim((string)($_POST['q'] ?? ''));
+  $page = max(1, (int)($_POST['page'] ?? 1));
+  $perPage = 20;
+  $offset = ($page - 1) * $perPage;
+  $limit = $perPage + 1;
+
+  if ($key === '') { echo json_encode(['results'=>[], 'more'=>false]); exit; }
+
+  $like = '%' . $q . '%';
+
+  $sql = "
+    SELECT attr_value
+    FROM tbl_admin_variant_attr_options
+    WHERE is_active=1 AND attr_key=?
+      AND attr_value LIKE ?
+    ORDER BY sort_order ASC, attr_value ASC
+    LIMIT ? OFFSET ?
+  ";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("ssii", $key, $like, $limit, $offset);
+  $stmt->execute();
+  $res = $stmt->get_result();
+
+  $rows = [];
+  while($r=$res->fetch_assoc()) $rows[]=$r;
+  $stmt->close();
+
+  $more = false;
+  if (count($rows) > $perPage) { $more = true; array_pop($rows); }
+
+  $results = [];
+  foreach($rows as $r){
+    $v = trim((string)($r['attr_value'] ?? ''));
+    if ($v === '') continue;
+    $results[] = ['id'=>$v, 'text'=>$v];
+  }
+
+  echo json_encode(['results'=>$results, 'more'=>$more]);
+  exit;
+}
+
+//
+// ---------- ATTRIBUTE VALUE HINT (for placeholder) ----------
+//
+if ($action === 'ATTR_VALUE_HINT') {
+  header('Content-Type: application/json; charset=utf-8');
+
+  $key = norm_key($_POST['attr_key'] ?? '');
+  if ($key === '') { echo json_encode(['hint'=>'']); exit; }
+
+  $sql = "
+    SELECT attr_value
+    FROM tbl_admin_variant_attr_options
+    WHERE is_active=1 AND attr_key=?
+    ORDER BY sort_order ASC, attr_value ASC
+    LIMIT 3
+  ";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("s", $key);
+  $stmt->execute();
+  $res = $stmt->get_result();
+  $vals = [];
+  while($r=$res->fetch_assoc()){
+    $v = trim((string)$r['attr_value']);
+    if ($v !== '') $vals[] = $v;
+  }
+  $stmt->close();
+
+  echo json_encode(['hint'=>implode(', ', $vals)]);
+  exit;
+}
+
+//
+// ---------- RESERVE ----------
+//
 if ($action === 'RESERVE') {
   $asset_id = (int)($_POST['asset_id'] ?? 0);
   if (!$asset_id) { echo json_encode(['ok'=>false,'msg'=>'Asset required']); exit; }
@@ -117,6 +303,9 @@ if ($action === 'RESERVE') {
   }
 }
 
+//
+// ---------- SUBMIT ----------
+//
 if ($action === 'SUBMIT') {
   $asset_id = (int)($_POST['asset_id'] ?? 0);
   $reservation_id = (int)($_POST['reservation_id'] ?? 0);
@@ -127,7 +316,49 @@ if ($action === 'SUBMIT') {
   $attrs = json_decode($attrs_json, true);
   if (!is_array($attrs)) $attrs = [];
 
-  // Rebuild variant_code from parent item_code + reservation_id
+  // extras
+  $has_expiry = (int)($_POST['has_expiry'] ?? 0);
+  $expiry_date = trim((string)($_POST['expiry_date'] ?? ''));
+
+  $has_serial = (int)($_POST['has_serial'] ?? 0);
+  $serial_no = trim((string)($_POST['serial_no'] ?? ''));
+
+  $has_warranty = (int)($_POST['has_warranty'] ?? 0);
+  $warranty_mode = strtoupper(trim((string)($_POST['warranty_mode'] ?? '')));
+  $warranty_date = trim((string)($_POST['warranty_date'] ?? ''));
+  $warranty_text = trim((string)($_POST['warranty_text'] ?? ''));
+
+  // validations
+  if ($has_expiry === 1) {
+    if ($expiry_date === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $expiry_date)) {
+      echo json_encode(['ok'=>false,'msg'=>'Expiry date required (YYYY-MM-DD).']); exit;
+    }
+  } else { $expiry_date = null; }
+
+  if ($has_serial === 1) {
+    if ($serial_no === '') { echo json_encode(['ok'=>false,'msg'=>'Serial number is required.']); exit; }
+    if (mb_strlen($serial_no) > 100) { echo json_encode(['ok'=>false,'msg'=>'Serial number too long (max 100).']); exit; }
+  } else { $serial_no = null; }
+
+  if ($has_warranty === 1) {
+    if ($warranty_mode !== 'DATE' && $warranty_mode !== 'TEXT') $warranty_mode = 'DATE';
+    if ($warranty_mode === 'DATE') {
+      if ($warranty_date === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $warranty_date)) {
+        echo json_encode(['ok'=>false,'msg'=>'Warranty date required (YYYY-MM-DD).']); exit;
+      }
+      $warranty_text = null;
+    } else {
+      if ($warranty_text === '') { echo json_encode(['ok'=>false,'msg'=>'Warranty text required (e.g. 1500 km warranty).']); exit; }
+      if (mb_strlen($warranty_text) > 255) { echo json_encode(['ok'=>false,'msg'=>'Warranty text too long (max 255).']); exit; }
+      $warranty_date = null;
+    }
+  } else {
+    $warranty_mode = null;
+    $warranty_date = null;
+    $warranty_text = null;
+  }
+
+  // parent item_code
   $stmt = $conn->prepare("SELECT item_code FROM tbl_admin_assets WHERE id=? LIMIT 1");
   $stmt->bind_param("i",$asset_id);
   $stmt->execute();
@@ -137,50 +368,42 @@ if ($action === 'SUBMIT') {
 
   $variant_code = $parent_code . '-' . str_pad((string)$reservation_id, 3, '0', STR_PAD_LEFT);
 
-  // fingerprint for duplicate prevention per asset_id
   $fingerprint = build_fingerprint($attrs);
   $variant_name = build_variant_name($conn, $asset_id, $attrs);
 
   $conn->begin_transaction();
   try {
-    // insert variant header
     $stmt = $conn->prepare("
       INSERT INTO tbl_admin_asset_variants
         (asset_id, variant_code, variant_name, variant_fingerprint,
+         has_expiry, expiry_date,
+         has_serial, serial_no,
+         has_warranty, warranty_mode, warranty_date, warranty_text,
          status, created_by, created_by_hris, created_by_name, created_at)
-      VALUES (?,?,?,?, 'PENDING', ?,?,?, NOW())
+      VALUES
+        (?,?,?,?, ?,?,
+              ?,?,
+              ?,?,?,?,
+         'PENDING', ?,?,?, NOW())
     ");
-    $stmt->bind_param("issssisss",
-      $asset_id, $variant_code, $variant_name, $fingerprint,
-      $uid, $hris, $name, $name
-    );
-    // NOTE: bind types above: we used a safe extra $name to keep parameter count stable on older PHP;
-    // It won't be used because query has only 8 placeholders after fingerprint + created_by... (see below)
-    // Fix bind correctly:
-    $stmt->close();
 
-    // Correct bind (8 placeholders total after fingerprint)
-    $stmt = $conn->prepare("
-      INSERT INTO tbl_admin_asset_variants
-        (asset_id, variant_code, variant_name, variant_fingerprint,
-         status, created_by, created_by_hris, created_by_name, created_at)
-      VALUES (?,?,?,?, 'PENDING', ?,?,?, NOW())
-    ");
-    $stmt->bind_param("isssisss",
+    $stmt->bind_param(
+      "isssisisisssiss",
       $asset_id, $variant_code, $variant_name, $fingerprint,
+      $has_expiry, $expiry_date,
+      $has_serial, $serial_no,
+      $has_warranty, $warranty_mode, $warranty_date, $warranty_text,
       $uid, $hris, $name
     );
 
     if (!$stmt->execute()){
-      if ($conn->errno == 1062) {
-        throw new Exception('Duplicate variant for this item (same attribute set or code).');
-      }
+      if ($conn->errno == 1062) throw new Exception('Duplicate variant for this item (same attribute set or code).');
       throw new Exception('Insert failed: '.$conn->error);
     }
     $variant_id = (int)$stmt->insert_id;
     $stmt->close();
 
-    // insert attributes
+    // attributes
     if (!empty($attrs)){
       $seen = [];
       $stmt = $conn->prepare("INSERT INTO tbl_admin_variant_attributes (variant_id, attr_key, attr_value) VALUES (?,?,?)");
@@ -196,7 +419,7 @@ if ($action === 'SUBMIT') {
       $stmt->close();
     }
 
-    // stock balance row
+    // stock balance
     $stmt = $conn->prepare("INSERT IGNORE INTO tbl_admin_stock_balances (variant_id,on_hand) VALUES (?,0)");
     $stmt->bind_param("i",$variant_id);
     $stmt->execute();
@@ -213,12 +436,17 @@ if ($action === 'SUBMIT') {
   }
 }
 
+//
+// ---------- LIST ----------
+//
 if ($action === 'LIST') {
   $sql = "
     SELECT
       v.id, v.asset_id, v.variant_name, v.variant_code, v.status,
+      v.has_expiry, v.expiry_date,
+      v.has_serial, v.serial_no,
+      v.has_warranty, v.warranty_mode, v.warranty_date, v.warranty_text,
       v.created_by_hris, v.created_by_name, v.created_at,
-      v.approved_by_hris, v.approved_by_name, v.approved_at,
       a.item_name, a.item_code,
       GROUP_CONCAT(CONCAT(va.attr_key,'=',va.attr_value) ORDER BY va.attr_key SEPARATOR ', ') AS attrs
     FROM tbl_admin_asset_variants v
@@ -253,6 +481,15 @@ if ($action === 'LIST') {
     $variantLine = htmlspecialchars($r['variant_name']);
     if ($attrsText !== '') $variantLine .= '<div class="small text-muted">'.htmlspecialchars($attrsText).'</div>';
 
+    $meta = [];
+    if ((int)$r['has_expiry'] === 1) $meta[] = 'Expiry: '.htmlspecialchars((string)($r['expiry_date'] ?? ''));
+    if ((int)$r['has_serial'] === 1) $meta[] = 'Serial: '.htmlspecialchars((string)($r['serial_no'] ?? ''));
+    if ((int)$r['has_warranty'] === 1) {
+      if (($r['warranty_mode'] ?? '') === 'DATE') $meta[] = 'Warranty: '.htmlspecialchars((string)($r['warranty_date'] ?? ''));
+      else $meta[] = 'Warranty: '.htmlspecialchars((string)($r['warranty_text'] ?? ''));
+    }
+    if ($meta) $variantLine .= '<div class="small text-muted">'.implode(' • ', $meta).'</div>';
+
     echo '<tr>
       <td>'.$id.'</td>
       <td>'.htmlspecialchars($r['item_name']).' ['.htmlspecialchars($r['item_code']).']</td>
@@ -281,6 +518,7 @@ if ($action === 'LIST') {
   exit;
 }
 
+// ---------- APPROVE / REJECT (unchanged) ----------
 $id = (int)($_POST['id'] ?? 0);
 if (!$id) { echo alert_html('danger','Missing ID'); exit; }
 
