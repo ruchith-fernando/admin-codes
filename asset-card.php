@@ -98,7 +98,6 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
               </option>
             <?php endforeach; ?>
           </select>
-          <div class="form-text">Select2 enabled.</div>
         </div>
 
         <div class="col-md-4">
@@ -111,7 +110,6 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
               </option>
             <?php endforeach; ?>
           </select>
-          <div class="form-text">Budget code is 2 letters.</div>
         </div>
 
         <div class="col-md-8">
