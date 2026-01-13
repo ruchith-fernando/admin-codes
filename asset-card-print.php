@@ -1,9 +1,20 @@
 <?php
 // asset-card-print.php
 require_once 'connections/connection.php';
+require_once 'includes/userlog.php';
 date_default_timezone_set('Asia/Colombo');
 
+// Shared-host safe session
 if (session_status() === PHP_SESSION_NONE) {
+  $cookie = session_get_cookie_params();
+  session_set_cookie_params([
+    'lifetime' => $cookie['lifetime'],
+    'path'     => '/',
+    'domain'   => $cookie['domain'],
+    'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+    'httponly' => true,
+    'samesite' => 'Lax'
+  ]);
   session_start();
 }
 
@@ -55,120 +66,123 @@ if ($id > 0) {
   $stmt->close();
 }
 
+$title = ($id > 0) ? "Sticker Print — Asset #{$id}" : "Sticker Print — {$status} (Top {$limit})";
 ?>
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Print Stickers</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    /* A4 page */
-    @page { size: A4; margin: 8mm; }
-    body { font-family: Arial, sans-serif; margin:0; padding:0; }
+<style>
+/* PRINT SETTINGS */
+@page { size: A4; margin: 8mm; }
 
-    /* Sticker grid */
-    .sheet{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 across */
-      gap: 6mm;
-    }
+/* STICKER GRID */
+.sheet{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 across */
+  gap: 6mm;
+}
 
-    /* Sticker size (adjust later to match your label paper) */
-    .sticker{
-      border: 1px dashed #bbb;
-      border-radius: 6px;
-      padding: 4mm;
-      height: 30mm;           /* sticker height */
-      overflow: hidden;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-    }
+/* STICKER SIZE (tune later for your label paper) */
+.sticker{
+  border: 1px dashed #bbb;
+  border-radius: 6px;
+  padding: 4mm;
+  height: 30mm;
+  overflow: hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:#fff;
+}
 
-    .top{
-      font-size: 10pt;
-      font-weight: 700;
-      line-height: 1.1;
-      max-height: 12mm;
-      overflow:hidden;
-    }
+.sticker .top{
+  font-size: 10pt;
+  font-weight: 700;
+  line-height: 1.1;
+  max-height: 12mm;
+  overflow:hidden;
+}
 
-    .meta{
-      font-size: 8pt;
-      color:#333;
-      margin-top: 1mm;
-      line-height:1.1;
-      max-height: 8mm;
-      overflow:hidden;
-    }
+.sticker .meta{
+  font-size: 8pt;
+  color:#333;
+  margin-top: 1mm;
+  line-height:1.1;
+  max-height: 8mm;
+  overflow:hidden;
+}
 
-    .barcode-wrap{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap: 4mm;
-      margin-top: 2mm;
-    }
+.barcode-wrap{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap: 4mm;
+  margin-top: 2mm;
+}
 
-    svg.barcode{
-      width: 70%;
-      height: 14mm;
-    }
+svg.barcode{
+  width: 70%;
+  height: 14mm;
+}
 
-    .code{
-      font-size: 9pt;
-      font-weight: 700;
-      white-space: nowrap;
-    }
+.code{
+  font-size: 9pt;
+  font-weight: 700;
+  white-space: nowrap;
+}
 
-    .controls{
-      position: fixed;
-      top: 8px;
-      right: 8px;
-      background:#fff;
-      border:1px solid #ddd;
-      padding:8px 10px;
-      border-radius:8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.1);
-      z-index:9999;
-    }
-    .controls button{ padding:6px 10px; cursor:pointer; }
-    @media print{
-      .controls{ display:none; }
-      .sticker{ border: none; } /* remove dashed borders when printing */
-    }
-  </style>
-</head>
-<body>
+/* MAKE PRINT CLEAN */
+@media print{
+  .no-print{ display:none !important; }
+  .sticker{ border:none; }
+  .card{ box-shadow:none !important; border:none !important; }
+  .container-fluid{ padding:0 !important; }
+  .content{ padding:0 !important; }
+}
+</style>
 
-<div class="controls">
-  <button onclick="window.print()">Print</button>
-</div>
+<div class="content font-size">
+  <div class="container-fluid">
 
-<?php if (empty($rows)): ?>
-  <div style="padding:20px;">No items found to print.</div>
-<?php else: ?>
-  <div class="sheet">
-    <?php foreach($rows as $i => $r): ?>
-      <div class="sticker">
-        <div>
-          <div class="top"><?= htmlspecialchars($r['item_name']) ?></div>
-          <div class="meta">
-            <?= htmlspecialchars($r['type_name']) ?> •
-            <?= htmlspecialchars($r['category_name']) ?> •
-            <?= htmlspecialchars($r['budget_name']) ?>
-          </div>
-        </div>
+    <div class="card shadow bg-white rounded p-4 mb-4">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <h5 class="mb-0 text-primary"><?= htmlspecialchars($title) ?></h5>
 
-        <div class="barcode-wrap">
-          <svg class="barcode" id="bc<?= (int)$r['id'] ?>"></svg>
-          <div class="code"><?= htmlspecialchars($r['item_code']) ?></div>
+        <div class="no-print d-flex gap-2">
+          <a href="main.php" class="btn btn-outline-secondary btn-sm">Back</a>
+          <button class="btn btn-primary btn-sm" onclick="window.print()">Print</button>
         </div>
       </div>
-    <?php endforeach; ?>
+
+      <div class="text-muted small mb-3">
+        Layout: A4 • 3 columns • Adjust sticker size later for label paper.
+      </div>
+
+      <?php if (empty($rows)): ?>
+        <div class="alert alert-warning">No items found to print.</div>
+      <?php else: ?>
+        <div class="sheet">
+          <?php foreach($rows as $r): ?>
+            <div class="sticker">
+              <div>
+                <div class="top"><?= htmlspecialchars($r['item_name']) ?></div>
+                <div class="meta">
+                  <?= htmlspecialchars($r['type_name']) ?> •
+                  <?= htmlspecialchars($r['category_name']) ?> •
+                  <?= htmlspecialchars($r['budget_name']) ?>
+                </div>
+              </div>
+
+              <div class="barcode-wrap">
+                <svg class="barcode" id="bc<?= (int)$r['id'] ?>"></svg>
+                <div class="code"><?= htmlspecialchars($r['item_code']) ?></div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+
+    </div>
+
   </div>
-<?php endif; ?>
+</div>
 
 <script src="assets/js/JsBarcode.all.min.js"></script>
 <script>
@@ -188,15 +202,10 @@ if ($id > 0) {
         displayValue:false,
         margin:0
       });
-    }catch(e){
-      // ignore
-    }
+    }catch(e){}
   });
 
   // Optional auto print:
   // window.onload = ()=> window.print();
 })();
 </script>
-
-</body>
-</html>
