@@ -4,7 +4,6 @@ require_once 'connections/connection.php';
 require_once 'includes/userlog.php';
 date_default_timezone_set('Asia/Colombo');
 
-// Shared-host safe session
 if (session_status() === PHP_SESSION_NONE) {
   $cookie = session_get_cookie_params();
   session_set_cookie_params([
@@ -97,11 +96,19 @@ if ($action === 'LIST') {
       <td>'.htmlspecialchars($r['approved_at'] ?? '').'</td>
       <td class="text-end">';
 
-    if ($isPending && !$isMaker) {
-      echo '<button type="button" class="btn btn-sm btn-success btn-approve" data-id="'.$id.'">Approve</button>
-            <button type="button" class="btn btn-sm btn-danger btn-reject" data-id="'.$id.'">Reject</button>';
+    // Actions column rules
+    if ($r['status'] === 'APPROVED') {
+      echo '<span class="badge bg-success">Approved</span>';
+    } elseif ($r['status'] === 'REJECTED') {
+      echo '<span class="badge bg-danger">Rejected</span>';
     } else {
-      echo '<span class="text-muted">—</span>';
+      // PENDING
+      if (!$isMaker) {
+        echo '<button type="button" class="btn btn-sm btn-success btn-approve" data-id="'.$id.'">Approve</button>
+              <button type="button" class="btn btn-sm btn-danger btn-reject" data-id="'.$id.'">Reject</button>';
+      } else {
+        echo '<span class="text-muted">Pending (Maker)</span>';
+      }
     }
 
     echo '</td></tr>';
