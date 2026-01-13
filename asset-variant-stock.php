@@ -101,56 +101,29 @@ if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
 
         <!-- EXPIRY / SERIAL / WARRANTY -->
         <div class="col-md-4">
-          <label class="form-label fw-bold">Expiry Date?</label>
+          <label class="form-label fw-bold">Expiry Applicable?</label>
           <select id="vHasExpiry" class="form-select">
             <option value="0" selected>No</option>
             <option value="1">Yes</option>
           </select>
         </div>
 
-        <div class="col-md-4" id="boxExpiryDate" style="display:none;">
-          <label class="form-label fw-bold">Expiry Date</label>
-          <input type="date" id="vExpiryDate" class="form-control">
-        </div>
-
         <div class="col-md-4">
-          <label class="form-label fw-bold">Serial Number?</label>
+          <label class="form-label fw-bold">Serial Number Applicable?</label>
           <select id="vHasSerial" class="form-select">
             <option value="0" selected>No</option>
             <option value="1">Yes</option>
           </select>
         </div>
 
-        <div class="col-md-6" id="boxSerialNo" style="display:none;">
-          <label class="form-label fw-bold">Serial Number (Manual)</label>
-          <input type="text" id="vSerialNo" class="form-control" placeholder="Enter serial number">
-        </div>
-
         <div class="col-md-4">
-          <label class="form-label fw-bold">Warranty?</label>
+          <label class="form-label fw-bold">Warranty Applicable?</label>
           <select id="vHasWarranty" class="form-select">
             <option value="0" selected>No</option>
             <option value="1">Yes</option>
           </select>
         </div>
 
-        <div class="col-md-4" id="boxWarrantyMode" style="display:none;">
-          <label class="form-label fw-bold">Warranty Type</label>
-          <select id="vWarrantyMode" class="form-select">
-            <option value="DATE" selected>Warranty Date</option>
-            <option value="TEXT">Warranty Text</option>
-          </select>
-        </div>
-
-        <div class="col-md-4" id="boxWarrantyDate" style="display:none;">
-          <label class="form-label fw-bold">Warranty Date</label>
-          <input type="date" id="vWarrantyDate" class="form-control">
-        </div>
-
-        <div class="col-md-6" id="boxWarrantyText" style="display:none;">
-          <label class="form-label fw-bold">Warranty Text</label>
-          <input type="text" id="vWarrantyText" class="form-control" placeholder="e.g. 1500 km warranty / 6 months">
-        </div>
 
         <!-- BARCODE -->
         <div class="col-md-12">
