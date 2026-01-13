@@ -676,8 +676,8 @@ $remainingMenus += [
         'title' => 'Gifts',
         'id' => 'collapseGifts',
         'items' => [
-            ['key'=>'stock-in',                    'file'=>'stock-in.php',                    'label'=>'Stocks In'],
-            
+            ['key'=>'asset-card',                    'file'=>'asset-card.php',                    'label'=>'Creating New Asset Card'],
+            // ['key'=>'stock-in',                    'file'=>'stock-in.php',                    'label'=>'Approve New Asset Card'],
         ]
     ],
 ];
