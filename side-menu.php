@@ -672,12 +672,12 @@ $remainingMenus += [
             ['key'=>'approval-orders',             'file'=>'approval-orders.php',             'label'=>'Store Keeper'],
         ]
     ],
-    'gifts' => [
-        'title' => 'Gifts',
-        'id' => 'collapseGifts',
+    'assets' => [
+        'title' => 'Assets',
+        'id' => 'collapseAssets',
         'items' => [
             ['key'=>'asset-card',                    'file'=>'asset-card.php',                    'label'=>'Creating New Asset Card'],
-            // ['key'=>'stock-in',                    'file'=>'stock-in.php',                    'label'=>'Approve New Asset Card'],
+            ['key'=>'asset-card-print',                    'file'=>'asset-card-print.php','label'=>'Print Bar Codes'],
         ]
     ],
 ];
