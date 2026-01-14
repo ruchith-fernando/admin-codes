@@ -13,8 +13,7 @@ if (!$logged || $uid <= 0) { die('<div class="alert alert-danger">Session expire
 $action = strtoupper(trim($_POST['action'] ?? ''));
 
 // ===== SLA SETTINGS (NO DB CHANGE) =====
-$SLA_HOURS_PER_STEP = 0.01; // for testing
-// $SLA_HOURS_PER_STEP = 24; // can change later
+$SLA_HOURS_PER_STEP = 24;
 
 function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 function bsAlert($type,$msg){
@@ -108,9 +107,56 @@ function getAttachments(mysqli $conn, int $reqId): array {
 }
 
 /* ===========================
-   LIST (Requester tracking list) — requested format (no dept, no req#)
+   LIST (Requester tracking list) — 3 cards per row + pagination + entered_date search
    =========================== */
 if ($action === 'LIST') {
+
+  $page = (int)($_POST['page'] ?? 1);
+  if ($page < 1) $page = 1;
+
+  $perPage = (int)($_POST['per_page'] ?? 9); // 3 per row * 3 rows
+  if ($perPage < 3) $perPage = 9;
+  if ($perPage > 60) $perPage = 60;
+
+  $enteredDate = trim((string)($_POST['entered_date'] ?? '')); // YYYY-MM-DD
+  $hasDate = false;
+  if ($enteredDate !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $enteredDate)) {
+    $hasDate = true;
+  } elseif ($enteredDate !== '') {
+    // invalid date string -> ignore filter
+    $enteredDate = '';
+  }
+
+  $where = " WHERE r.requester_user_id=? ";
+  $types = "i";
+  $params = [$uid];
+
+  if ($hasDate) {
+    $where .= " AND DATE(COALESCE(r.submitted_at, r.created_at)) = ? ";
+    $types .= "s";
+    $params[] = $enteredDate;
+  }
+
+  // total count
+  $total = 0;
+  $sqlCount = "SELECT COUNT(*) AS c FROM tbl_admin_requisitions r {$where}";
+  if ($st = $conn->prepare($sqlCount)) {
+    $st->bind_param($types, ...$params);
+    $st->execute();
+    $rs = $st->get_result();
+    if ($rw = $rs->fetch_assoc()) $total = (int)($rw['c'] ?? 0);
+    $st->close();
+  }
+
+  if ($total === 0) {
+    echo '<div class="text-muted">No requisitions found.</div>';
+    exit;
+  }
+
+  $pages = (int)ceil($total / $perPage);
+  if ($page > $pages) $page = $pages;
+
+  $offset = ($page - 1) * $perPage;
 
   $sql = "
     SELECT
@@ -138,14 +184,16 @@ if ($action === 'LIST') {
         ORDER BY s2.step_order ASC
         LIMIT 1) AS cur_approver_desig
     FROM tbl_admin_requisitions r
-    WHERE r.requester_user_id=?
+    {$where}
     ORDER BY COALESCE(r.submitted_at, r.created_at) DESC
-    LIMIT 200
+    LIMIT ? OFFSET ?
   ";
 
   $rows = [];
   if ($st = $conn->prepare($sql)) {
-    $st->bind_param("i", $uid);
+    $types2 = $types . "ii";
+    $params2 = array_merge($params, [$perPage, $offset]);
+    $st->bind_param($types2, ...$params2);
     $st->execute();
     $rs = $st->get_result();
     while($rw = $rs->fetch_assoc()) $rows[] = $rw;
@@ -158,11 +206,13 @@ if ($action === 'LIST') {
   }
 
   $now = time();
-  echo '<div class="d-flex flex-column gap-2">';
+
+  echo "<div class='row g-3'>";
 
   foreach($rows as $r){
     $reqId = (int)$r['req_id'];
     $status = (string)($r['status'] ?? '');
+
     $required = trim((string)($r['required_date'] ?? ''));
     $requiredText = $required !== '' ? h($required) : '-';
 
@@ -171,19 +221,13 @@ if ($action === 'LIST') {
     $curAppr = trim((string)($r['cur_approver'] ?? ''));
     $curApprDes = trim((string)($r['cur_approver_desig'] ?? ''));
 
-    // badge color by status
+    // Badge colors
     $badge = 'secondary';
     if ($status === 'IN_APPROVAL') $badge = 'warning text-dark';
     if ($status === 'APPROVED') $badge = 'success';
     if ($status === 'REJECTED') $badge = 'danger';
 
-    // Status line (as user requested)
-    $statusLabel = $status;
-    if ($statusLabel !== '') {
-      $statusLabel = ucwords(strtolower(str_replace('_',' ', $statusLabel)));
-    } else {
-      $statusLabel = '-';
-    }
+    $statusLabel = $status !== '' ? ucwords(strtolower(str_replace('_',' ', $status))) : '-';
 
     // Parked At / Duration / SLA
     $parkedAt = '-';
@@ -191,7 +235,6 @@ if ($action === 'LIST') {
     $slaInfo = "<span class='text-muted'>-</span>";
 
     if ($status === 'IN_APPROVAL' && $curStep > 0) {
-
       $parkedAt = h($curAppr !== '' ? $curAppr : '-') .
                   " <span class='text-muted'>—</span> " .
                   "<span class='text-muted'>".h($curApprDes !== '' ? $curApprDes : '-')."</span>";
@@ -201,21 +244,18 @@ if ($action === 'LIST') {
       $parkDuration = humanDuration($elapsed);
 
       $slaSec = $SLA_HOURS_PER_STEP * 3600;
-
       if ($elapsed <= $slaSec) {
         $slaInfo = "<span class='badge bg-success'>OK</span>";
       } else {
         $overBy = $elapsed - $slaSec;
         $slaInfo = "<span class='badge bg-danger'>PASSED</span> <span class='small text-muted'>by ".h(humanDuration($overBy))."</span>";
       }
-
     } else {
-      // not in approval -> SLA not applicable
       if ($status === 'APPROVED') $slaInfo = "<span class='badge bg-success'>COMPLETED</span>";
       if ($status === 'REJECTED') $slaInfo = "<span class='badge bg-danger'>COMPLETED</span>";
     }
 
-    // Items preview (top 3) — KEEP AS YOU HAD (no change)
+    // Items preview (top 3) — same behavior as your current code
     $itemsPreview = [];
     if ($itemsCount > 0) {
       if ($st2 = $conn->prepare("
@@ -239,25 +279,43 @@ if ($action === 'LIST') {
       }
     }
 
-    $itemsHtml = "<div class='text-muted small'>Items: {$itemsCount}</div>";
-    if (!empty($itemsPreview)) {
-      $more = ($itemsCount > count($itemsPreview)) ? " <span class='text-muted'>+ ".($itemsCount - count($itemsPreview))." more</span>" : "";
-      $itemsHtml = "
+    $itemsHtml = "
         <div class='small'>
-          <div class='text-muted'>Items ({$itemsCount}):</div>
-          <div class='text-truncate'>• ".implode(" &nbsp; • ", $itemsPreview).$more."</div>
+            <div class='text-muted'>Items ({$itemsCount})</div>
+            <div class='text-muted small'>-</div>
         </div>
-      ";
-    }
+        ";
+
+        if (!empty($itemsPreview)) {
+        $more = ($itemsCount > count($itemsPreview))
+            ? " <span class='text-muted'>+ ".($itemsCount - count($itemsPreview))." more</span>"
+            : "";
+
+        $itemsHtml = "
+            <div class='small'>
+            <div class='text-muted'>Items ({$itemsCount})</div>
+            <div style='
+                display:-webkit-box;
+                -webkit-line-clamp:2;
+                -webkit-box-orient:vertical;
+                overflow:hidden;
+                white-space:normal;
+                word-break:break-word;
+            '>
+                • ".implode(" &nbsp; • ", $itemsPreview).$more."
+            </div>
+            </div>
+        ";
+        }
+
 
     echo "
-      <div class='border rounded p-3 bg-white shadow-sm'>
-        <div class='d-flex align-items-start justify-content-between gap-2 flex-wrap'>
-
-          <div class='d-flex flex-column gap-2' style='min-width:280px;'>
+      <div class='col-12 col-md-4'>
+        <div class='border rounded p-3 bg-white shadow-sm h-100 d-flex flex-column justify-content-between'>
+          <div class='d-flex flex-column gap-2'>
 
             <div class='small'>
-              <span class='text-muted fw-bold'>Status</span> - 
+              <span class='text-muted fw-bold'>Status</span> -
               <span class='badge bg-{$badge}'>".h($statusLabel)."</span>
             </div>
 
@@ -266,12 +324,8 @@ if ($action === 'LIST') {
             </div>
 
             <div class='small d-flex flex-wrap gap-3'>
-              <div>
-                <span class='text-muted fw-bold'>Parked Duration</span> - <span class='fw-bold'>".h($parkDuration)."</span>
-              </div>
-              <div>
-                <span class='text-muted fw-bold'>Within SLA</span> - {$slaInfo}
-              </div>
+              <div><span class='text-muted fw-bold'>Parked Duration</span> - <span class='fw-bold'>".h($parkDuration)."</span></div>
+              <div><span class='text-muted fw-bold'>Within SLA</span> - {$slaInfo}</div>
             </div>
 
             <div class='small'>
@@ -281,21 +335,55 @@ if ($action === 'LIST') {
             {$itemsHtml}
           </div>
 
-          <div class='text-end'>
+          <div class='text-end mt-2'>
             <button type='button' class='btn btn-outline-primary btn-sm btn-track-view' data-id='{$reqId}'>View</button>
           </div>
-
         </div>
       </div>
     ";
   }
 
-  echo '</div>';
+  echo "</div>";
+
+  // Pagination
+  if ($pages > 1) {
+    $prev = max(1, $page - 1);
+    $next = min($pages, $page + 1);
+
+    $start = max(1, $page - 2);
+    $end   = min($pages, $page + 2);
+
+    echo "<div class='d-flex align-items-center justify-content-between mt-3 flex-wrap gap-2'>";
+    echo "<div class='small text-muted'>Showing page <b>".h($page)."</b> of <b>".h($pages)."</b> • Total <b>".h($total)."</b></div>";
+
+    echo "<nav><ul class='pagination pagination-sm mb-0'>";
+    echo "<li class='page-item ".($page<=1?'disabled':'')."'><a class='page-link myreq-page' href='#' data-page='{$prev}'>&laquo;</a></li>";
+
+    if ($start > 1) {
+      echo "<li class='page-item'><a class='page-link myreq-page' href='#' data-page='1'>1</a></li>";
+      if ($start > 2) echo "<li class='page-item disabled'><span class='page-link'>…</span></li>";
+    }
+
+    for ($p=$start; $p<=$end; $p++){
+      $act = ($p===$page) ? "active" : "";
+      echo "<li class='page-item {$act}'><a class='page-link myreq-page' href='#' data-page='{$p}'>".h($p)."</a></li>";
+    }
+
+    if ($end < $pages) {
+      if ($end < $pages-1) echo "<li class='page-item disabled'><span class='page-link'>…</span></li>";
+      echo "<li class='page-item'><a class='page-link myreq-page' href='#' data-page='{$pages}'>".h($pages)."</a></li>";
+    }
+
+    echo "<li class='page-item ".($page>=$pages?'disabled':'')."'><a class='page-link myreq-page' href='#' data-page='{$next}'>&raquo;</a></li>";
+    echo "</ul></nav>";
+    echo "</div>";
+  }
+
   exit;
 }
 
 /* ===========================
-   VIEW (Requester modal details)
+   VIEW (Requester modal details) — unchanged from your file
    =========================== */
 if ($action === 'VIEW') {
   $req_id = (int)($_POST['req_id'] ?? 0);
