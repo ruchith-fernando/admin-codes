@@ -9,6 +9,7 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 $uid = (int)($_SESSION['id'] ?? 0);
 $logged = !empty($_SESSION['loggedin']);
 if (!$logged || $uid <= 0) {
+  header('Content-Type: application/json; charset=utf-8');
   echo json_encode(['ok'=>false,'msg'=>'Session expired. Please login again.']);
   exit;
 }
@@ -28,15 +29,22 @@ function tmpReqNo(): string {
 
 if ($action !== 'SUBMIT') jfail('Invalid action.');
 
-$priority = trim($_POST['priority'] ?? 'NORMAL');
+// Inputs (priority/vendor removed)
 $required_date = trim($_POST['required_date'] ?? '');
 $overall_justification = trim($_POST['overall_justification'] ?? '');
 
 $lines_json = $_POST['lines_json'] ?? '';
 $lines = json_decode($lines_json, true);
-
-if (!in_array($priority, ['NORMAL','URGENT'], true)) $priority = 'NORMAL';
 if (!is_array($lines) || count($lines) === 0) jfail('Add at least 1 line item.');
+
+// Approval chain (required)
+$chain_id_in = (int)($_POST['chain_id'] ?? 0);
+if ($chain_id_in <= 0) jfail('Approval chain is required.');
+
+// Step overrides (required)
+$over_json = $_POST['steps_override_json'] ?? '[]';
+$overrides = json_decode($over_json, true);
+if (!is_array($overrides) || count($overrides) === 0) jfail('Approval steps not loaded. Please select chain again.');
 
 $required_date_sql = null;
 if ($required_date !== '') {
@@ -70,46 +78,68 @@ if ($stmt = $conn->prepare("SELECT department_id FROM tbl_admin_departments WHER
 }
 if ($department_id <= 0) jfail('Your department is not mapped in tbl_admin_departments. Please add it first.');
 
-$conn->begin_transaction();
+// Validate chain belongs to this department and active
+$chain_id = 0;
+if ($stmt = $conn->prepare("
+  SELECT chain_id
+  FROM tbl_admin_approval_chains
+  WHERE chain_id=? AND department_id=? AND is_active=1
+  LIMIT 1
+")) {
+  $stmt->bind_param("ii", $chain_id_in, $department_id);
+  $stmt->execute();
+  $res = $stmt->get_result();
+  $row = $res->fetch_assoc();
+  $stmt->close();
+  $chain_id = (int)($row['chain_id'] ?? 0);
+}
+if ($chain_id <= 0) jfail('Selected approval chain is invalid for your department (or inactive).');
 
+$conn->begin_transaction();
 $reqIdInt = 0;
 
 try {
-  // Insert requisition header as IN_APPROVAL (no draft)
+  // Insert requisition header as IN_APPROVAL
   $req_no = tmpReqNo();
   $status = 'IN_APPROVAL';
   $submitted_at = date('Y-m-d H:i:s');
+
+  // keep table unchanged; set removed fields to safe defaults
+  $priority = 'NORMAL';
+  $vendor_name = null;
+  $vendor_contact = null;
+  $vendor_note = null;
 
   if ($stmt = $conn->prepare("INSERT INTO tbl_admin_requisitions
     (req_no, requester_user_id, department_id, priority, required_date,
      overall_justification, recommended_vendor_name, recommended_vendor_contact, recommended_vendor_note,
      status, approval_chain_id, submitted_at)
     VALUES
-        (?, ?, ?, ?, ?,
-        ?, ?, ?, ?,
-        ?, NULL, ?)
-    ")) {
+    (?, ?, ?, ?, ?,
+     ?, ?, ?, ?,
+     ?, ?, ?)
+  ")) {
     $stmt->bind_param(
-        "siissssssss",
-        $req_no,
-        $uid,
-        $department_id,
-        $priority,
-        $required_date_sql,
-        $overall_justification,
-        $vendor_name,
-        $vendor_contact,
-        $vendor_note,
-        $status,
-        $submitted_at
+      "siissssssssis",
+      $req_no,
+      $uid,
+      $department_id,
+      $priority,
+      $required_date_sql,
+      $overall_justification,
+      $vendor_name,
+      $vendor_contact,
+      $vendor_note,
+      $status,
+      $chain_id,
+      $submitted_at
     );
     $stmt->execute();
     $reqIdInt = (int)$stmt->insert_id;
     $stmt->close();
-    } else {
+  } else {
     throw new Exception('DB error: cannot insert requisition.');
-    }
-
+  }
 
   // Insert lines (no unit price)
   $insLine = $conn->prepare("
@@ -132,7 +162,7 @@ try {
     $budget_id = (int)($ln['budget_id'] ?? 0);
     $just = trim($ln['line_justification'] ?? '');
 
-    // Convert budget_id -> store budget_code text in budget_code column (since your line table column is varchar)
+    // Convert budget_id -> store budget_code in budget_code column
     $budget_code_store = '';
     if ($budget_id > 0) {
       if ($bst = $conn->prepare("SELECT budget_code FROM tbl_admin_budgets WHERE id=? AND is_active=1 LIMIT 1")) {
@@ -144,14 +174,12 @@ try {
       }
     }
 
-    $qtyStr = number_format($qty, 3, '.', '');
-
     $insLine->bind_param(
       "issdsss",
       $reqIdInt,
       $item_name,
       $spec,
-      $qtyStr,
+      $qty,
       $uom,
       $budget_code_store,
       $just
@@ -160,39 +188,13 @@ try {
   }
   $insLine->close();
 
-  // Find active chain for this department
-  $chain_id = 0;
-  if ($stmt = $conn->prepare("
-    SELECT chain_id
-    FROM tbl_admin_approval_chains
-    WHERE department_id=? AND is_active=1
-    ORDER BY version_no DESC, chain_id DESC
-    LIMIT 1
-  ")) {
-    $stmt->bind_param("i", $department_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $row = $res->fetch_assoc();
-    $stmt->close();
-    $chain_id = (int)($row['chain_id'] ?? 0);
-  }
-  if ($chain_id <= 0) throw new Exception('No active approval chain found for your department.');
-
-  // Save chain_id on requisition
-  if ($stmt = $conn->prepare("UPDATE tbl_admin_requisitions SET approval_chain_id=? WHERE req_id=?")) {
-    $stmt->bind_param("ii", $chain_id, $reqIdInt);
-    $stmt->execute();
-    $stmt->close();
-  }
-
-  // Read chain steps + snapshot from users table (name + designation)
+  // Load chain steps (default)
   $steps = [];
   if ($stmt = $conn->prepare("
-    SELECT s.step_order, s.approver_user_id, u.name AS approver_name, u.designation AS approver_desig
-    FROM tbl_admin_approval_chain_steps s
-    INNER JOIN tbl_admin_users u ON u.id = s.approver_user_id
-    WHERE s.chain_id=? AND s.is_active=1
-    ORDER BY s.step_order ASC
+    SELECT step_order, approver_user_id
+    FROM tbl_admin_approval_chain_steps
+    WHERE chain_id=? AND is_active=1
+    ORDER BY step_order ASC
   ")) {
     $stmt->bind_param("i", $chain_id);
     $stmt->execute();
@@ -202,7 +204,15 @@ try {
   }
   if (count($steps) === 0) throw new Exception('Approval chain has no steps.');
 
-  // Insert runtime steps
+  // Overrides map: step_order => approver_user_id
+  $overrideMap = [];
+  foreach ($overrides as $ov) {
+    $so = (int)($ov['step_order'] ?? 0);
+    $au = (int)($ov['approver_user_id'] ?? 0);
+    if ($so > 0 && $au > 0) $overrideMap[$so] = $au;
+  }
+
+  // Insert runtime steps (snapshot)
   $ins = $conn->prepare("
     INSERT INTO tbl_admin_requisition_approval_steps
       (req_id, step_order, approver_user_id, approver_name_snapshot, approver_designation_snapshot, action)
@@ -211,16 +221,33 @@ try {
   ");
   if (!$ins) throw new Exception('DB error: cannot prepare approval step insert.');
 
+  $getUser = $conn->prepare("SELECT name, designation FROM tbl_admin_users WHERE id=? LIMIT 1");
+  if (!$getUser) throw new Exception('DB error: cannot prepare approver snapshot lookup.');
+
   foreach($steps as $s){
     $so = (int)$s['step_order'];
-    $au = (int)$s['approver_user_id'];
-    $an = (string)($s['approver_name'] ?? '');
-    $ad = (string)($s['approver_desig'] ?? '');
-    if ($ad === '') $ad = '-';
+    $defaultAu = (int)$s['approver_user_id'];
+    $au = $overrideMap[$so] ?? $defaultAu;
+
+    $an = '-';
+    $ad = '-';
+
+    $getUser->bind_param("i", $au);
+    $getUser->execute();
+    $ures = $getUser->get_result();
+    if ($urow = $ures->fetch_assoc()) {
+      $an = (string)($urow['name'] ?? '-');
+      $ad = (string)($urow['designation'] ?? '-');
+      if ($ad === '') $ad = '-';
+    } else {
+      throw new Exception("Invalid approver user for step {$so}.");
+    }
 
     $ins->bind_param("iiiss", $reqIdInt, $so, $au, $an, $ad);
     $ins->execute();
   }
+
+  $getUser->close();
   $ins->close();
 
   $conn->commit();
@@ -263,7 +290,6 @@ if (!empty($_FILES['pr_files']) && is_array($_FILES['pr_files']['name'])) {
     $orig = (string)$names[$i];
     $ext = strtolower(pathinfo($orig, PATHINFO_EXTENSION));
 
-    // allow: pdf + common images
     $allowed = ['pdf','jpg','jpeg','png','webp','gif'];
     if (!in_array($ext, $allowed, true)) { $uploadWarnings[] = "Not allowed: ".$orig; continue; }
 
