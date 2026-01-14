@@ -361,29 +361,66 @@ if ($action === 'VIEW') {
   if (!$lines) {
     echo "<div class='text-muted'>No line items found.</div>";
   } else {
-    echo "<div class='table-responsive'><table class='table table-sm table-bordered align-middle'>
-      <thead class='table-light'>
-        <tr>
-          <th style='width:20%'>Item</th>
-          <th style='width:30%'>Specifications</th>
-          <th style='width:8%'>Qty</th>
-          <th style='width:10%'>UOM</th>
-          <th style='width:12%'>Budget</th>
-          <th style='width:20%'>Justification</th>
-        </tr>
-      </thead><tbody>";
+
+    echo "<div class='d-flex flex-column gap-3'>";
+
+    $i = 0;
     foreach($lines as $ln){
-      echo "<tr>
-        <td><b>".h($ln['item_name'])."</b></td>
-        <td>".nl2br(h($ln['specifications'] ?? ''))."</td>
-        <td>".h($ln['qty'] ?? '')."</td>
-        <td>".h($ln['uom'] ?? '')."</td>
-        <td>".h($ln['budget_code'] ?? '')."</td>
-        <td>".nl2br(h($ln['line_justification'] ?? ''))."</td>
-      </tr>";
+      $i++;
+
+      $item = h($ln['item_name'] ?? '');
+      $spec = trim((string)($ln['specifications'] ?? ''));
+      $just = trim((string)($ln['line_justification'] ?? ''));
+      $qty  = h($ln['qty'] ?? '');
+      $uom  = h($ln['uom'] ?? '');
+      $bud  = h($ln['budget_code'] ?? '');
+
+      if ($spec === '') $spec = '-';
+      if ($just === '') $just = '-';
+
+      echo "
+        <div class='card border-0 shadow-sm'>
+          <div class='card-body'>
+            <div class='d-flex align-items-start justify-content-between flex-wrap gap-2'>
+              <div>
+                <div class='h6 mb-1'>
+                  <span class='badge bg-primary me-2'>#{$i}</span>
+                  <span class='fw-bold'>{$item}</span>
+                </div>
+                <div class='d-flex flex-wrap gap-2'>
+                  <span class='badge bg-light text-dark border'>Qty: <b>{$qty}</b></span>
+                  <span class='badge bg-light text-dark border'>UOM: <b>{$uom}</b></span>
+                  <span class='badge bg-light text-dark border'>Budget: <b>{$bud}</b></span>
+                </div>
+              </div>
+            </div>
+
+            <hr class='my-3'>
+
+            <div class='row g-3'>
+              <div class='col-md-6'>
+                <div class='small text-muted fw-bold mb-1'>Specifications</div>
+                <div class='p-2 bg-light border rounded' style='white-space:pre-wrap; word-break:break-word;'>
+                  ".h($spec)."
+                </div>
+              </div>
+
+              <div class='col-md-6'>
+                <div class='small text-muted fw-bold mb-1'>Justification</div>
+                <div class='p-2 bg-light border rounded' style='white-space:pre-wrap; word-break:break-word;'>
+                  ".h($just)."
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      ";
     }
-    echo "</tbody></table></div>";
+
+    echo "</div>";
   }
+
 
   echo "
     </div>
