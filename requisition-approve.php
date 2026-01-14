@@ -349,16 +349,15 @@ if ($action === 'VIEW') {
       <button class='nav-link active' data-bs-toggle='tab' data-bs-target='#tabItems' type='button' role='tab'>Items</button>
     </li>
     <li class='nav-item' role='presentation'>
-      <button class='nav-link' data-bs-toggle='tab' data-bs-target='#tabFlow' type='button' role='tab'>Approval Flow</button>
+      <button class='nav-link' data-bs-toggle='tab' data-bs-target='#tabDocs' type='button' role='tab'>Documents</button>
     </li>
     <li class='nav-item' role='presentation'>
-      <button class='nav-link' data-bs-toggle='tab' data-bs-target='#tabDocs' type='button' role='tab'>Documents</button>
+      <button class='nav-link' data-bs-toggle='tab' data-bs-target='#tabFlow' type='button' role='tab'>Approval Flow</button>
     </li>
   </ul>
 
   <div class='tab-content border border-top-0 rounded-bottom p-3 bg-white'>
-    <div class='tab-pane fade show active' id='tabItems' role='tabpanel'>
-  ";
+    <div class='tab-pane fade show active' id='tabItems' role='tabpanel'>";
 
   if (!$lines) {
     echo "<div class='text-muted'>No line items found.</div>";
