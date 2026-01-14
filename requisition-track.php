@@ -111,7 +111,7 @@ function getAttachments(mysqli $conn, int $reqId): array {
    =========================== */
 if ($action === 'LIST') {
 
-  // Pull requester’s requisitions + current pending step + approver + department + items count
+  // Header rows
   $sql = "
     SELECT
       r.req_id,
@@ -121,14 +121,13 @@ if ($action === 'LIST') {
       r.submitted_at,
       r.created_at,
       d.department_name,
+
       (SELECT COUNT(*) FROM tbl_admin_requisition_lines l WHERE l.req_id=r.req_id) AS item_count,
 
-      -- current pending step/order
       (SELECT MIN(s.step_order)
          FROM tbl_admin_requisition_approval_steps s
         WHERE s.req_id=r.req_id AND s.action='PENDING') AS cur_step,
 
-      -- current approver snapshot
       (SELECT s2.approver_name_snapshot
          FROM tbl_admin_requisition_approval_steps s2
         WHERE s2.req_id=r.req_id AND s2.action='PENDING'
@@ -161,49 +160,37 @@ if ($action === 'LIST') {
     exit;
   }
 
+  // Helpers
   $now = time();
-
-  echo '<div class="table-responsive"><table class="table table-sm table-bordered align-middle">
-    <thead class="table-light">
-      <tr>
-        <th>Req #</th>
-        <th>Status</th>
-        <th>Department</th>
-        <th>Required Date</th>
-        <th>Items</th>
-        <th>Current Step</th>
-        <th>Current Approver</th>
-        <th>Parked For</th>
-        <th>SLA</th>
-        <th>Submitted</th>
-        <th style="width:120px">Action</th>
-      </tr>
-    </thead><tbody>';
+  echo '<div class="d-flex flex-column gap-2">';
 
   foreach($rows as $r){
     $reqId = (int)$r['req_id'];
-    $reqNo = h($r['req_no'] ?? '');
+    $reqNo = trim((string)($r['req_no'] ?? ''));
     $status = (string)($r['status'] ?? '');
-    $dept = h($r['department_name'] ?? '-');
-    $rdate = h($r['required_date'] ?? '-');
+    $dept = trim((string)($r['department_name'] ?? ''));
+    $dept = $dept !== '' ? h($dept) : '-';
+
+    $required = trim((string)($r['required_date'] ?? ''));
+    $requiredText = $required !== '' ? h($required) : '-';
+
     $submitted = $r['submitted_at'] ?: $r['created_at'];
     $submittedText = $submitted ? h($submitted) : '-';
-    $items = (int)($r['item_count'] ?? 0);
 
+    $itemsCount = (int)($r['item_count'] ?? 0);
     $curStep = (int)($r['cur_step'] ?? 0);
     $curAppr = trim((string)($r['cur_approver'] ?? ''));
     $curApprDes = trim((string)($r['cur_approver_desig'] ?? ''));
 
-    // status badge
+    // Status badge
     $badge = 'secondary';
     if ($status === 'IN_APPROVAL') $badge = 'warning text-dark';
     if ($status === 'APPROVED') $badge = 'success';
     if ($status === 'REJECTED') $badge = 'danger';
-    if ($status === 'DRAFT') $badge = 'secondary';
 
-    // Parked/SLA only meaningful when IN_APPROVAL and has current step
-    $parkHtml = "<span class='text-muted'>-</span>";
-    $slaHtml  = "<span class='text-muted'>-</span>";
+    // Parked/SLA (only if in approval and step exists)
+    $parkLine = "<span class='text-muted'>Parked: -</span>";
+    $slaLine  = "<span class='text-muted'>SLA: -</span>";
 
     if ($status === 'IN_APPROVAL' && $curStep > 0) {
       $startTs = findStepStartTs($conn, $reqId, $curStep, $r['submitted_at'] ?? null, $r['created_at'] ?? null);
@@ -213,43 +200,99 @@ if ($action === 'LIST') {
       $slaSec = $SLA_HOURS_PER_STEP * 3600;
       $isOver = ($elapsed > $slaSec);
 
-      $parkHtml = $isOver
-        ? "<span class='badge bg-dark'>{$elapsedHuman}</span><div class='small text-danger'>since ".h(date('Y-m-d H:i', $startTs))."</div>"
-        : "<span class='badge bg-secondary'>{$elapsedHuman}</span><div class='small text-muted'>since ".h(date('Y-m-d H:i', $startTs))."</div>";
+      $parkLine = $isOver
+        ? "<span class='badge bg-dark'>Parked {$elapsedHuman}</span> <span class='small text-danger'>since ".h(date('Y-m-d H:i', $startTs))."</span>"
+        : "<span class='badge bg-secondary'>Parked {$elapsedHuman}</span> <span class='small text-muted'>since ".h(date('Y-m-d H:i', $startTs))."</span>";
 
-      $slaHtml = $isOver
-        ? "<span class='badge bg-danger'>OVERDUE</span><div class='small text-muted'>{$SLA_HOURS_PER_STEP}h/step</div>"
-        : "<span class='badge bg-success'>OK</span><div class='small text-muted'>{$SLA_HOURS_PER_STEP}h/step</div>";
+      $slaLine = $isOver
+        ? "<span class='badge bg-danger'>SLA OVERDUE</span> <span class='small text-muted'>({$SLA_HOURS_PER_STEP}h/step)</span>"
+        : "<span class='badge bg-success'>SLA OK</span> <span class='small text-muted'>({$SLA_HOURS_PER_STEP}h/step)</span>";
     }
 
-    $stepHtml = ($status === 'IN_APPROVAL' && $curStep > 0)
-      ? "<span class='badge bg-warning text-dark'>Step {$curStep}</span>"
-      : "<span class='text-muted'>-</span>";
+    // Current step/approver line
+    $whoLine = "<span class='text-muted'>Current: -</span>";
+    if ($status === 'IN_APPROVAL' && $curStep > 0) {
+      $whoLine = "<span class='badge bg-warning text-dark'>Step {$curStep}</span> "
+        ."<span class='ms-1 fw-bold'>".h($curAppr !== '' ? $curAppr : '-')."</span>"
+        ."<span class='small text-muted'> • ".h($curApprDes !== '' ? $curApprDes : '-')."</span>";
+    }
 
-    $apprHtml = ($status === 'IN_APPROVAL' && $curStep > 0)
-      ? "<div class='fw-bold'>".h($curAppr ?: '-')."</div><div class='small text-muted'>".h($curApprDes ?: '-')."</div>"
-      : "<span class='text-muted'>-</span>";
+    // Items preview (top 3)
+    $itemsPreview = [];
+    if ($itemsCount > 0) {
+      if ($st2 = $conn->prepare("
+        SELECT item_name, qty, uom
+        FROM tbl_admin_requisition_lines
+        WHERE req_id=?
+        ORDER BY line_id ASC
+        LIMIT 3
+      ")) {
+        $st2->bind_param("i", $reqId);
+        $st2->execute();
+        $rs2 = $st2->get_result();
+        while($ln = $rs2->fetch_assoc()){
+          $nm = trim((string)($ln['item_name'] ?? ''));
+          if ($nm === '') continue;
+          $qty = (string)($ln['qty'] ?? '');
+          $uom = trim((string)($ln['uom'] ?? ''));
+          $itemsPreview[] = h($nm) . " <span class='small text-muted'>( ".h($qty !== '' ? $qty : '-') ." ".h($uom !== '' ? $uom : '')." )</span>";
+        }
+        $st2->close();
+      }
+    }
 
-    echo "<tr>
-      <td><b>{$reqNo}</b></td>
-      <td><span class='badge bg-{$badge}'>".h($status)."</span></td>
-      <td>{$dept}</td>
-      <td>{$rdate}</td>
-      <td><span class='badge bg-info text-dark'>{$items}</span></td>
-      <td>{$stepHtml}</td>
-      <td>{$apprHtml}</td>
-      <td>{$parkHtml}</td>
-      <td>{$slaHtml}</td>
-      <td>{$submittedText}</td>
-      <td class='text-end'>
-        <button type='button' class='btn btn-outline-primary btn-sm btn-track-view' data-id='{$reqId}'>View</button>
-      </td>
-    </tr>";
+    $itemsHtml = "<div class='text-muted small'>Items: {$itemsCount}</div>";
+    if (!empty($itemsPreview)) {
+      $more = ($itemsCount > count($itemsPreview)) ? " <span class='text-muted'>+ ".($itemsCount - count($itemsPreview))." more</span>" : "";
+      $itemsHtml = "
+        <div class='small'>
+          <div class='text-muted'>Items ({$itemsCount}):</div>
+          <div class='text-truncate'>• ".implode(" &nbsp; • ", $itemsPreview).$more."</div>
+        </div>
+      ";
+    }
+
+    // Make req_no subtle (still available)
+    $reqNoSmall = ($reqNo !== '') ? "<div class='small text-muted'>Req: <b>".h($reqNo)."</b></div>" : "";
+
+    echo "
+      <div class='border rounded p-3 bg-white shadow-sm'>
+        <div class='d-flex align-items-start justify-content-between gap-2 flex-wrap'>
+          <div class='d-flex flex-column gap-1'>
+            <div class='d-flex align-items-center gap-2 flex-wrap'>
+              <span class='badge bg-{$badge}'>".h($status)."</span>
+              <span class='small text-muted'>Dept: <b>{$dept}</b></span>
+              {$reqNoSmall}
+            </div>
+
+            <div class='small'>
+              {$whoLine}
+            </div>
+
+            <div class='small d-flex flex-wrap gap-2'>
+              {$parkLine}
+              {$slaLine}
+            </div>
+
+            <div class='small text-muted'>
+              Submitted: <b>{$submittedText}</b> &nbsp; • &nbsp; Required: <b>{$requiredText}</b>
+            </div>
+
+            {$itemsHtml}
+          </div>
+
+          <div class='text-end'>
+            <button type='button' class='btn btn-outline-primary btn-sm btn-track-view' data-id='{$reqId}'>View</button>
+          </div>
+        </div>
+      </div>
+    ";
   }
 
-  echo '</tbody></table></div>';
+  echo '</div>';
   exit;
 }
+
 
 /* ===========================
    VIEW (Requester modal details)
