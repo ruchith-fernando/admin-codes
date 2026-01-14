@@ -13,7 +13,8 @@ if (!$logged || $uid <= 0) { die('<div class="alert alert-danger">Session expire
 $action = strtoupper(trim($_POST['action'] ?? ''));
 
 // ===== SLA SETTINGS (NO DB CHANGE) =====
-$SLA_HOURS_PER_STEP = 24;
+$SLA_HOURS_PER_STEP = 0.01; // for testing
+// $SLA_HOURS_PER_STEP = 24; // can change later
 
 function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 function bsAlert($type,$msg){
@@ -107,20 +108,17 @@ function getAttachments(mysqli $conn, int $reqId): array {
 }
 
 /* ===========================
-   LIST (Requester tracking list)
+   LIST (Requester tracking list) — requested format (no dept, no req#)
    =========================== */
 if ($action === 'LIST') {
 
-  // Header rows
   $sql = "
     SELECT
       r.req_id,
-      r.req_no,
       r.status,
       r.required_date,
       r.submitted_at,
       r.created_at,
-      d.department_name,
 
       (SELECT COUNT(*) FROM tbl_admin_requisition_lines l WHERE l.req_id=r.req_id) AS item_count,
 
@@ -140,7 +138,6 @@ if ($action === 'LIST') {
         ORDER BY s2.step_order ASC
         LIMIT 1) AS cur_approver_desig
     FROM tbl_admin_requisitions r
-    LEFT JOIN tbl_admin_departments d ON d.department_id = r.department_id
     WHERE r.requester_user_id=?
     ORDER BY COALESCE(r.submitted_at, r.created_at) DESC
     LIMIT 200
@@ -160,64 +157,65 @@ if ($action === 'LIST') {
     exit;
   }
 
-  // Helpers
   $now = time();
   echo '<div class="d-flex flex-column gap-2">';
 
   foreach($rows as $r){
     $reqId = (int)$r['req_id'];
-    $reqNo = trim((string)($r['req_no'] ?? ''));
     $status = (string)($r['status'] ?? '');
-    $dept = trim((string)($r['department_name'] ?? ''));
-    $dept = $dept !== '' ? h($dept) : '-';
-
     $required = trim((string)($r['required_date'] ?? ''));
     $requiredText = $required !== '' ? h($required) : '-';
-
-    $submitted = $r['submitted_at'] ?: $r['created_at'];
-    $submittedText = $submitted ? h($submitted) : '-';
 
     $itemsCount = (int)($r['item_count'] ?? 0);
     $curStep = (int)($r['cur_step'] ?? 0);
     $curAppr = trim((string)($r['cur_approver'] ?? ''));
     $curApprDes = trim((string)($r['cur_approver_desig'] ?? ''));
 
-    // Status badge
+    // badge color by status
     $badge = 'secondary';
     if ($status === 'IN_APPROVAL') $badge = 'warning text-dark';
     if ($status === 'APPROVED') $badge = 'success';
     if ($status === 'REJECTED') $badge = 'danger';
 
-    // Parked/SLA (only if in approval and step exists)
-    $parkLine = "<span class='text-muted'>Parked: -</span>";
-    $slaLine  = "<span class='text-muted'>SLA: -</span>";
+    // Status line (as user requested)
+    $statusLabel = $status;
+    if ($statusLabel !== '') {
+      $statusLabel = ucwords(strtolower(str_replace('_',' ', $statusLabel)));
+    } else {
+      $statusLabel = '-';
+    }
+
+    // Parked At / Duration / SLA
+    $parkedAt = '-';
+    $parkDuration = '-';
+    $slaInfo = "<span class='text-muted'>-</span>";
 
     if ($status === 'IN_APPROVAL' && $curStep > 0) {
+
+      $parkedAt = h($curAppr !== '' ? $curAppr : '-') .
+                  " <span class='text-muted'>—</span> " .
+                  "<span class='text-muted'>".h($curApprDes !== '' ? $curApprDes : '-')."</span>";
+
       $startTs = findStepStartTs($conn, $reqId, $curStep, $r['submitted_at'] ?? null, $r['created_at'] ?? null);
       $elapsed = $now - $startTs;
-      $elapsedHuman = humanDuration($elapsed);
+      $parkDuration = humanDuration($elapsed);
 
       $slaSec = $SLA_HOURS_PER_STEP * 3600;
-      $isOver = ($elapsed > $slaSec);
 
-      $parkLine = $isOver
-        ? "<span class='badge bg-dark'>Parked {$elapsedHuman}</span> <span class='small text-danger'>since ".h(date('Y-m-d H:i', $startTs))."</span>"
-        : "<span class='badge bg-secondary'>Parked {$elapsedHuman}</span> <span class='small text-muted'>since ".h(date('Y-m-d H:i', $startTs))."</span>";
+      if ($elapsed <= $slaSec) {
+        $slaInfo = "<span class='badge bg-success'>OK</span>";
+      } else {
+        $overBy = $elapsed - $slaSec;
+        $slaInfo = "<span class='badge bg-danger'>PASSED</span> <span class='small text-muted'>by ".h(humanDuration($overBy))."</span>";
+      }
 
-      $slaLine = $isOver
-        ? "<span class='badge bg-danger'>SLA OVERDUE</span> <span class='small text-muted'>({$SLA_HOURS_PER_STEP}h/step)</span>"
-        : "<span class='badge bg-success'>SLA OK</span> <span class='small text-muted'>({$SLA_HOURS_PER_STEP}h/step)</span>";
+    } else {
+      // not in approval -> SLA not applicable
+      if ($status === 'APPROVED') $slaInfo = "<span class='badge bg-success'>COMPLETED</span>";
+      if ($status === 'REJECTED') $slaInfo = "<span class='badge bg-danger'>COMPLETED</span>";
     }
 
-    // Current step/approver line
-    $whoLine = "<span class='text-muted'>Current: -</span>";
-    if ($status === 'IN_APPROVAL' && $curStep > 0) {
-      $whoLine = "<span class='badge bg-warning text-dark'>Step {$curStep}</span> "
-        ."<span class='ms-1 fw-bold'>".h($curAppr !== '' ? $curAppr : '-')."</span>"
-        ."<span class='small text-muted'> • ".h($curApprDes !== '' ? $curApprDes : '-')."</span>";
-    }
-
-    // Items preview (top 3)
+    // Items preview (top 3) — KEEP AS YOU HAD (no change)
     $itemsPreview = [];
     if ($itemsCount > 0) {
       if ($st2 = $conn->prepare("
@@ -252,29 +250,32 @@ if ($action === 'LIST') {
       ";
     }
 
-    // Make req_no subtle (still available)
-    // $reqNoSmall = ($reqNo !== '') ? "<div class='small text-muted'>Req: <b>".h($reqNo)."</b></div>" : "";
-
     echo "
       <div class='border rounded p-3 bg-white shadow-sm'>
         <div class='d-flex align-items-start justify-content-between gap-2 flex-wrap'>
-          <div class='d-flex flex-column gap-1'>
-            <div class='d-flex align-items-center gap-2 flex-wrap'>
-              <span class='badge bg-{$badge}'>".h($status)."</span>
-              <span class='small text-muted'>Dept: <b>{$dept}</b></span>
+
+          <div class='d-flex flex-column gap-2' style='min-width:280px;'>
+
+            <div class='small'>
+              <span class='text-muted fw-bold'>Status</span> - 
+              <span class='badge bg-{$badge}'>".h($statusLabel)."</span>
             </div>
 
             <div class='small'>
-              {$whoLine}
+              <span class='text-muted fw-bold'>Parked At for Approval</span> - {$parkedAt}
             </div>
 
-            <div class='small d-flex flex-wrap gap-2'>
-              {$parkLine}
-              {$slaLine}
+            <div class='small d-flex flex-wrap gap-3'>
+              <div>
+                <span class='text-muted fw-bold'>Parked Duration</span> - <span class='fw-bold'>".h($parkDuration)."</span>
+              </div>
+              <div>
+                <span class='text-muted fw-bold'>Within SLA</span> - {$slaInfo}
+              </div>
             </div>
 
-            <div class='small text-muted'>
-              Submitted: <b>{$submittedText}</b> &nbsp; • &nbsp; Required: <b>{$requiredText}</b>
+            <div class='small'>
+              <span class='text-muted fw-bold'>Required Date</span> - <span class='fw-bold'>".h($requiredText)."</span>
             </div>
 
             {$itemsHtml}
@@ -283,6 +284,7 @@ if ($action === 'LIST') {
           <div class='text-end'>
             <button type='button' class='btn btn-outline-primary btn-sm btn-track-view' data-id='{$reqId}'>View</button>
           </div>
+
         </div>
       </div>
     ";
@@ -291,7 +293,6 @@ if ($action === 'LIST') {
   echo '</div>';
   exit;
 }
-
 
 /* ===========================
    VIEW (Requester modal details)
