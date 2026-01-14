@@ -87,13 +87,29 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
   height: calc(2.375rem + 2px) !important;
 }
 .table td, .table th { vertical-align: middle; }
+
+/* ✅ Upload lock overlay (professional) */
+.pr-lock {
+  position: relative;
+}
+.pr-lock::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(1px);
+  display:none;
+  z-index: 5;
+  border-radius: 12px;
+}
+.pr-lock.locked::after{ display:block; }
 </style>
 
 <div class="content font-size">
   <div class="container-fluid">
 
     <!-- MAKER -->
-    <div class="card shadow bg-white rounded p-4 mb-4">
+    <div class="card shadow bg-white rounded p-4 mb-4 pr-lock" id="prMakerCard">
       <h5 class="mb-3 text-primary">Purchase Requisition — New</h5>
       <div id="prAlert"></div>
 
@@ -202,8 +218,9 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       </div>
       <div class="mt-3" id="myReqBox"></div>
     </div>
-    <!-- Approver View Modal (STATIC BACKDROP) -->
-    <div class="modal fade" id="approveViewModal" tabindex="-1" aria-hidden="true">
+
+    <!-- Approver View Modal (STATIC BACKDROP + NO ESC) -->
+    <div class="modal fade" id="approveViewModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
       <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
@@ -287,6 +304,9 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
   let APPROVER_USERS = []; // [{id,name,designation,branch_name}]
   let CURRENT_STEPS  = []; // [{step_order, approver_user_id}]
 
+  // ✅ prevent multiple submits (huge uploads issue)
+  let SUBMIT_LOCK = false;
+
   function escapeHtml(s){
     return String(s ?? '')
       .replace(/&/g,'&amp;')
@@ -294,6 +314,32 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       .replace(/>/g,'&gt;')
       .replace(/"/g,'&quot;')
       .replace(/'/g,'&#039;');
+  }
+
+  function setSubmitLocked(isLocked){
+    SUBMIT_LOCK = !!isLocked;
+
+    // lock main maker card visually + disable controls
+    $('#prMakerCard').toggleClass('locked', SUBMIT_LOCK);
+
+    $('#btnPrSubmit').prop('disabled', SUBMIT_LOCK);
+    $('#btnPrAddLine').prop('disabled', SUBMIT_LOCK);
+
+    $('#prChainId').prop('disabled', SUBMIT_LOCK);
+    $('#prRequiredDate').prop('disabled', SUBMIT_LOCK);
+    $('#prFiles').prop('disabled', SUBMIT_LOCK);
+    $('#prOverallJustification').prop('disabled', SUBMIT_LOCK);
+
+    // disable inputs inside tables
+    $('#prLinesTable :input').prop('disabled', SUBMIT_LOCK);
+    $('#prStepsTable :input').prop('disabled', SUBMIT_LOCK);
+
+    // if select2 exists, refresh
+    if ($.fn.select2) {
+      try { $('#prChainId').trigger('change.select2'); } catch(e){}
+      try { $('#prLinesTable select').trigger('change.select2'); } catch(e){}
+      try { $('#prStepsTable select').trigger('change.select2'); } catch(e){}
+    }
   }
 
   // ===== Line items =====
@@ -511,8 +557,10 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     loadStepsForChain(($(this).val()||'').trim());
   });
 
-  // ===== Submit =====
+  // ===== Submit (FIXED: progress + disable + no double submit) =====
   function submit(){
+    if (SUBMIT_LOCK) return;
+
     const department_id = ($('#prDepartmentId').val()||'').trim();
     if (!department_id || parseInt(department_id,10) <= 0) {
       $('#prResult').html(bsAlert('danger','Your department is not mapped in tbl_admin_departments. Please add it first.'));
@@ -556,14 +604,41 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       }
     }
 
-    $('#prResult').html('<div class="text-muted">Submitting for approval...</div>');
+    // ✅ UI lock + progress UI
+    setSubmitLocked(true);
+
+    const oldBtnText = $('#btnPrSubmit').html();
+    $('#btnPrSubmit').data('old', oldBtnText).html(`<span class="spinner-border spinner-border-sm me-2"></span>Uploading...`);
+
+    $('#prResult').html(`
+      <div class="mb-2 text-muted">Uploading files & submitting requisition… please wait.</div>
+      <div class="progress" style="height:18px;">
+        <div id="prUploadBar" class="progress-bar progress-bar-striped progress-bar-animated"
+             role="progressbar" style="width:0%">0%</div>
+      </div>
+      <div class="small text-muted mt-1" id="prUploadMeta"></div>
+    `);
 
     $.ajax({
       url: 'requisition-save.php',
       type: 'POST',
       data: fd,
       processData: false,
-      contentType: false
+      contentType: false,
+      timeout: 0,
+      xhr: function(){
+        const xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener("progress", function(evt){
+          if (evt.lengthComputable) {
+            const pct = Math.round((evt.loaded / evt.total) * 100);
+            $('#prUploadBar').css('width', pct + '%').text(pct + '%');
+            $('#prUploadMeta').text(`Uploaded ${(evt.loaded/1024/1024).toFixed(2)} MB of ${(evt.total/1024/1024).toFixed(2)} MB`);
+          } else {
+            $('#prUploadMeta').text('Uploading...');
+          }
+        }, false);
+        return xhr;
+      }
     }).done(function(resp){
       let r;
       try { r = (typeof resp === 'string') ? JSON.parse(resp) : resp; } catch(e){
@@ -593,6 +668,11 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
 
     }).fail(function(xhr){
       $('#prResult').html(bsAlert('danger','Server error: '+xhr.status));
+    }).always(function(){
+      // ✅ unlock UI always
+      setSubmitLocked(false);
+      const old = $('#btnPrSubmit').data('old') || 'Submit for Approval';
+      $('#btnPrSubmit').html(old);
     });
   }
 
@@ -651,6 +731,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
   // Add/Remove line
   $('#btnPrAddLine').on('click', addLine);
   $(document).on('click', '.btn-line-del', function(){
+    if (SUBMIT_LOCK) return;
     $(this).closest('tr').remove();
     if ($('#prLinesTable tbody tr').length === 0) addLine();
   });
@@ -664,20 +745,21 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       $('#myReqBox').html(bsAlert('danger','Server error: '+xhr.status));
     });
   }
-function openApproveView(req_id){
-  $('#approveViewBody').html('<div class="text-muted">Loading details...</div>');
 
-  const el = document.getElementById('approveViewModal');
-  const modal = new bootstrap.Modal(el, { backdrop: 'static', keyboard: false }); // ✅ disable outside click + ESC
-  modal.show();
+  function openApproveView(req_id){
+    $('#approveViewBody').html('<div class="text-muted">Loading details...</div>');
 
-  $.post('requisition-approve.php', { action:'VIEW', req_id:req_id }, function(html){
-    $('#approveViewBody').html(html);
-    initTooltips();
-  }).fail(function(xhr){
-    $('#approveViewBody').html(bsAlert('danger','Server error: '+xhr.status));
-  });
-}
+    const el = document.getElementById('approveViewModal');
+    const modal = new bootstrap.Modal(el, { backdrop: 'static', keyboard: false });
+    modal.show();
+
+    $.post('requisition-approve.php', { action:'VIEW', req_id:req_id }, function(html){
+      $('#approveViewBody').html(html);
+      initTooltips();
+    }).fail(function(xhr){
+      $('#approveViewBody').html(bsAlert('danger','Server error: '+xhr.status));
+    });
+  }
 
   // Click on View button
   $(document).on('click', '.btn-approve-view', function(e){
@@ -687,9 +769,8 @@ function openApproveView(req_id){
     openApproveView(req_id);
   });
 
-  // Click on row (anywhere)
+  // Click on row
   $(document).on('click', '.tr-approve-open', function(e){
-    // avoid double-fire when clicking buttons
     if ($(e.target).closest('button,a,input,select,textarea').length) return;
     const req_id = $(this).data('id');
     openApproveView(req_id);
