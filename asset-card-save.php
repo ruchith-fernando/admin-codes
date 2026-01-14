@@ -107,7 +107,7 @@ if ($action === 'RESERVE') {
     if (!$stmt->execute()) throw new Exception('Sequence update failed: '.$conn->error);
     $stmt->close();
 
-    $item_code = $cat . $bud . str_pad((string)$newNum, 4, '0', STR_PAD_LEFT);
+    $item_code = $cat . '-' . $bud . '-' . str_pad((string)$newNum, 4, '0', STR_PAD_LEFT);
 
     // Insert reservation
     $stmt = $conn->prepare("
