@@ -562,6 +562,19 @@ if ($action === 'APPROVE') {
       $stmt->close();
     }
 
+    // ✅ Force-close ALL remaining pending steps (no step_order logic)
+    $autoRemark = "Auto-closed due to rejection at earlier step.";
+    if ($stmt = $conn->prepare("UPDATE tbl_admin_requisition_approval_steps
+      SET action='REJECTED',
+          action_by_user_id=?,
+          action_at=?,
+          remarks=?
+      WHERE req_id=? AND action='PENDING'")) {
+      $stmt->bind_param("issi", $uid, $now, $autoRemark, $req_id);
+      $stmt->execute();
+      $stmt->close();
+    }
+
     // If no pending left => mark requisition APPROVED
     $pending = 0;
     if ($stmt = $conn->prepare("SELECT COUNT(*) AS c
