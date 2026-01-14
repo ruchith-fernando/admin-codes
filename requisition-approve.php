@@ -359,7 +359,7 @@ if ($action === 'VIEW') {
     <div class='tab-pane fade show active' id='tabItems' role='tabpanel'>";
 
   if (!$lines) {
-    echo "<div class='text-muted'>No line items found.</div>";
+  echo "<div class='text-muted'>No line items found.</div>";
   } else {
 
     echo "<div class='d-flex flex-column gap-3'>";
@@ -369,35 +369,38 @@ if ($action === 'VIEW') {
       $i++;
 
       $item = h($ln['item_name'] ?? '');
+
+      $qtyRaw = (string)($ln['qty'] ?? '');
+      $qty = h($qtyRaw === '' ? '-' : $qtyRaw);
+      $uom = h($ln['uom'] ?? '-');
+      $bud = h($ln['budget_code'] ?? '-');
+
       $spec = trim((string)($ln['specifications'] ?? ''));
       $just = trim((string)($ln['line_justification'] ?? ''));
-      $qty  = h($ln['qty'] ?? '');
-      $uom  = h($ln['uom'] ?? '');
-      $bud  = h($ln['budget_code'] ?? '');
-
       if ($spec === '') $spec = '-';
       if ($just === '') $just = '-';
 
       echo "
         <div class='card border-0 shadow-sm'>
           <div class='card-body'>
+
             <div class='d-flex align-items-start justify-content-between flex-wrap gap-2'>
               <div>
                 <div class='h6 mb-1'>
-                  <span class='badge bg-primary me-2'>#{$i}</span>
-                  <span class='fw-bold'>{$item}</span>
+                  <span class='text-primary fw-bold'>Item {$i}</span>
                 </div>
-                <div class='d-flex flex-wrap gap-2'>
-                  <span class='badge bg-light text-dark border'>Qty: <b>{$qty}</b></span>
-                  <span class='badge bg-light text-dark border'>UOM: <b>{$uom}</b></span>
-                  <span class='badge bg-light text-dark border'>Budget: <b>{$bud}</b></span>
-                </div>
+                <div class='fw-bold' style='font-size:1.05rem'>{$item}</div>
               </div>
             </div>
 
-            <hr class='my-3'>
+            <div class='border rounded bg-white p-2'>
+              <div class='py-1'><span class='text-muted fw-bold'>Quantity</span> - <span class='fw-bold'>{$qty}</span></div>
+              <div class='py-1'><span class='text-muted fw-bold'>UOM</span> - <span class='fw-bold'>{$uom}</span></div>
+              <div class='py-1'><span class='text-muted fw-bold'>Budget</span> - <span class='fw-bold'>{$bud}</span></div>
+            </div>
 
-            <div class='row g-3'>
+
+            <div class='row g-3 mt-2'>
               <div class='col-md-6'>
                 <div class='small text-muted fw-bold mb-1'>Specifications</div>
                 <div class='p-2 bg-light border rounded' style='white-space:pre-wrap; word-break:break-word;'>
@@ -420,6 +423,7 @@ if ($action === 'VIEW') {
 
     echo "</div>";
   }
+
 
 
   echo "
@@ -533,13 +537,11 @@ if ($action === 'APPROVE') {
     $curStepId = 0;
     $curApprover = 0;
 
-    if ($stmt = $conn->prepare("
-      SELECT req_approval_step_id, approver_user_id
+    if ($stmt = $conn->prepare("SELECT req_approval_step_id, approver_user_id
       FROM tbl_admin_requisition_approval_steps
       WHERE req_id=? AND action='PENDING'
       ORDER BY step_order ASC
-      LIMIT 1
-    ")) {
+      LIMIT 1")) {
       $stmt->bind_param("i", $req_id);
       $stmt->execute();
       $res = $stmt->get_result();
@@ -552,11 +554,9 @@ if ($action === 'APPROVE') {
     if ($curApprover !== $uid) throw new Exception('You are not the current approver for this requisition.');
 
     // Approve
-    if ($stmt = $conn->prepare("
-      UPDATE tbl_admin_requisition_approval_steps
+    if ($stmt = $conn->prepare("UPDATE tbl_admin_requisition_approval_steps
       SET action='APPROVED', action_by_user_id=?, action_at=?
-      WHERE req_approval_step_id=? AND action='PENDING'
-    ")) {
+      WHERE req_approval_step_id=? AND action='PENDING'")) {
       $stmt->bind_param("isi", $uid, $now, $curStepId);
       $stmt->execute();
       $stmt->close();
@@ -564,11 +564,9 @@ if ($action === 'APPROVE') {
 
     // If no pending left => mark requisition APPROVED
     $pending = 0;
-    if ($stmt = $conn->prepare("
-      SELECT COUNT(*) AS c
+    if ($stmt = $conn->prepare("SELECT COUNT(*) AS c
       FROM tbl_admin_requisition_approval_steps
-      WHERE req_id=? AND action='PENDING'
-    ")) {
+      WHERE req_id=? AND action='PENDING'")) {
       $stmt->bind_param("i", $req_id);
       $stmt->execute();
       $res = $stmt->get_result();
@@ -596,9 +594,6 @@ if ($action === 'APPROVE') {
   }
 }
 
-/* ===========================
-   REJECT
-   =========================== */
 if ($action === 'REJECT') {
   $req_id = (int)($_POST['req_id'] ?? 0);
   $reason = trim($_POST['reject_reason'] ?? '');
@@ -609,37 +604,51 @@ if ($action === 'REJECT') {
   try {
     $curStepId = 0;
     $curApprover = 0;
+    $curStepOrder = 0;
 
-    if ($stmt = $conn->prepare("
-      SELECT req_approval_step_id, approver_user_id
+    // Find current pending step (lowest step_order)
+    if ($stmt = $conn->prepare("SELECT req_approval_step_id, approver_user_id, step_order
       FROM tbl_admin_requisition_approval_steps
       WHERE req_id=? AND action='PENDING'
       ORDER BY step_order ASC
-      LIMIT 1
-    ")) {
+      LIMIT 1")) {
       $stmt->bind_param("i", $req_id);
       $stmt->execute();
       $res = $stmt->get_result();
       $row = $res->fetch_assoc();
       $stmt->close();
+
       $curStepId = (int)($row['req_approval_step_id'] ?? 0);
       $curApprover = (int)($row['approver_user_id'] ?? 0);
+      $curStepOrder = (int)($row['step_order'] ?? 0);
     }
+
     if ($curStepId <= 0) throw new Exception('No pending step found.');
     if ($curApprover !== $uid) throw new Exception('You are not the current approver for this requisition.');
 
     $now = date('Y-m-d H:i:s');
 
-    if ($stmt = $conn->prepare("
-      UPDATE tbl_admin_requisition_approval_steps
+    // 1) Mark current step rejected
+    if ($stmt = $conn->prepare("UPDATE tbl_admin_requisition_approval_steps
       SET action='REJECTED', action_by_user_id=?, action_at=?, remarks=?
-      WHERE req_approval_step_id=? AND action='PENDING'
-    ")) {
+      WHERE req_approval_step_id=? AND action='PENDING'")) {
       $stmt->bind_param("issi", $uid, $now, $reason, $curStepId);
       $stmt->execute();
       $stmt->close();
     }
 
+    // 2) Auto-close all later pending steps as REJECTED (so nothing stays pending)
+    // NOTE: This avoids needing CANCELLED/SKIPPED values (no table change).
+    $autoRemark = "Auto-closed due to rejection at Step {$curStepOrder}.";
+    if ($stmt = $conn->prepare("UPDATE tbl_admin_requisition_approval_steps
+      SET action='REJECTED', action_by_user_id=?, action_at=?, remarks=?
+      WHERE req_id=? AND action='PENDING' AND step_order > ?")) {
+      $stmt->bind_param("issii", $uid, $now, $autoRemark, $req_id, $curStepOrder);
+      $stmt->execute();
+      $stmt->close();
+    }
+
+    // 3) Mark requisition header rejected
     if ($stmt = $conn->prepare("UPDATE tbl_admin_requisitions SET status='REJECTED' WHERE req_id=?")) {
       $stmt->bind_param("i", $req_id);
       $stmt->execute();
@@ -656,5 +665,6 @@ if ($action === 'REJECT') {
     exit;
   }
 }
+
 
 echo bsAlert('danger','Invalid action.');
