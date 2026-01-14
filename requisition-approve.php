@@ -61,10 +61,8 @@ function findStepStartTs(mysqli $conn, int $reqId, int $curStep, ?string $submit
 }
 
 function getAttachments(mysqli $conn, int $reqId): array {
-  // Return: [ ['orig'=>'', 'path'=>'', 'ext'=>'pdf/jpg', 'source'=>'table|dir']... ]
   $atts = [];
 
-  // Check table exists
   $hasTbl = false;
   if ($st = $conn->prepare("SHOW TABLES LIKE 'tbl_admin_attachments'")) {
     $st->execute();
@@ -75,7 +73,7 @@ function getAttachments(mysqli $conn, int $reqId): array {
 
   if ($hasTbl) {
     if ($st = $conn->prepare("
-      SELECT file_name, file_path
+      SELECT id AS att_id, file_name, file_path
       FROM tbl_admin_attachments
       WHERE entity_type='REQ' AND entity_id=?
       ORDER BY id DESC
@@ -86,13 +84,13 @@ function getAttachments(mysqli $conn, int $reqId): array {
       while($rw = $rs->fetch_assoc()){
         $path = (string)($rw['file_path'] ?? '');
         $orig = (string)($rw['file_name'] ?? basename($path));
-        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-        if ($path !== '') $atts[] = ['orig'=>$orig, 'path'=>$path, 'ext'=>$ext, 'source'=>'table'];
+        $ext  = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $aid  = (int)($rw['att_id'] ?? 0);
+        if ($path !== '') $atts[] = ['att_id'=>$aid, 'orig'=>$orig, 'path'=>$path, 'ext'=>$ext, 'source'=>'table'];
       }
       $st->close();
     }
   } else {
-    // Fallback: scan directory
     $dir = __DIR__ . '/uploads/requisitions/' . $reqId;
     if (is_dir($dir)) {
       $files = @scandir($dir);
@@ -101,7 +99,7 @@ function getAttachments(mysqli $conn, int $reqId): array {
           if ($f === '.' || $f === '..') continue;
           $ext = strtolower(pathinfo($f, PATHINFO_EXTENSION));
           $rel = 'uploads/requisitions/' . $reqId . '/' . $f;
-          $atts[] = ['orig'=>$f, 'path'=>$rel, 'ext'=>$ext, 'source'=>'dir'];
+          $atts[] = ['att_id'=>0, 'orig'=>$f, 'path'=>$rel, 'ext'=>$ext, 'source'=>'dir'];
         }
       }
     }
@@ -109,6 +107,7 @@ function getAttachments(mysqli $conn, int $reqId): array {
 
   return $atts;
 }
+
 
 /* ===========================
    LIST (Approver pending list)
@@ -431,36 +430,46 @@ if ($action === 'VIEW') {
   } else {
     echo "<div class='row g-3'>";
     foreach($atts as $a){
-      $path = h($a['path']);
-      $orig = h($a['orig']);
-      $ext = strtolower((string)$a['ext']);
+
+      $orig = h($a['orig'] ?? 'Document');
+      $ext  = strtolower((string)($a['ext'] ?? ''));
 
       $isImg = in_array($ext, ['jpg','jpeg','png','webp','gif'], true);
       $isPdf = ($ext === 'pdf');
+
+      // ✅ Build secure URL via PHP proxy (avoids 403 on /uploads)
+      $openUrl = '';
+      if (($a['source'] ?? '') === 'table' && (int)($a['att_id'] ?? 0) > 0) {
+        $openUrl = 'requisition-file.php?att_id='.(int)$a['att_id'];
+      } else {
+        $fname = basename((string)($a['path'] ?? ''));
+        $openUrl = 'requisition-file.php?req_id='.(int)$req_id.'&file='.rawurlencode($fname);
+      }
+      $openUrlEsc = h($openUrl);
 
       echo "<div class='col-md-6'>
         <div class='border rounded p-2 h-100'>
           <div class='d-flex align-items-center justify-content-between'>
             <div class='fw-bold text-truncate' title='{$orig}'>{$orig}</div>
-            <a class='btn btn-sm btn-outline-primary' href='{$path}' target='_blank' rel='noopener'>Open</a>
+            <a class='btn btn-sm btn-outline-primary' href='{$openUrlEsc}' target='_blank' rel='noopener'>Open</a>
           </div>";
 
       if ($isImg) {
         echo "<div class='mt-2'>
-          <a href='{$path}' target='_blank' rel='noopener'>
-            <img src='{$path}' class='img-fluid rounded border' alt='{$orig}'>
+          <a href='{$openUrlEsc}' target='_blank' rel='noopener'>
+            <img src='{$openUrlEsc}' class='img-fluid rounded border' alt='{$orig}'>
           </a>
         </div>";
       } elseif ($isPdf) {
-        // lightweight preview (link + optional iframe)
         echo "<div class='mt-2 small text-muted'>PDF document</div>
-              <iframe src='{$path}' style='width:100%;height:260px;border:1px solid #eee;border-radius:8px'></iframe>";
+              <iframe src='{$openUrlEsc}' style='width:100%;height:260px;border:1px solid #eee;border-radius:8px'></iframe>";
       } else {
-        echo "<div class='mt-2 small text-muted'>File type: {$ext}</div>";
+        echo "<div class='mt-2 small text-muted'>File type: ".h($ext)."</div>";
       }
 
       echo "</div></div>";
     }
+
     echo "</div>";
   }
 
