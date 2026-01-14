@@ -19,11 +19,8 @@ function bsAlert($type,$msg){
 
 if ($action === 'LIST') {
 
-  // Show only requisitions where:
-  // - current (lowest) pending step belongs to this user
-  // - requisition status is IN_APPROVAL
   $sql = "
-    SELECT r.req_id, r.req_no, r.priority, r.required_date, r.total_estimated_amount, r.created_at,
+    SELECT r.req_id, r.req_no, r.required_date, r.total_estimated_amount, r.created_at,
            u.name AS requester_name,
            s.step_order
     FROM tbl_admin_requisitions r
@@ -59,7 +56,6 @@ if ($action === 'LIST') {
       <tr>
         <th>Req #</th>
         <th>Requester</th>
-        <th>Priority</th>
         <th>Required Date</th>
         <th>Est. Amount</th>
         <th>Step</th>
@@ -71,7 +67,6 @@ if ($action === 'LIST') {
     $reqId = (int)$r['req_id'];
     $reqNo = htmlspecialchars($r['req_no']);
     $reqBy = htmlspecialchars($r['requester_name']);
-    $prio  = htmlspecialchars($r['priority']);
     $rdate = htmlspecialchars($r['required_date'] ?? '');
     $amt   = htmlspecialchars($r['total_estimated_amount'] ?? '');
     $step  = (int)$r['step_order'];
@@ -79,7 +74,6 @@ if ($action === 'LIST') {
     echo "<tr>
       <td>{$reqNo}</td>
       <td>{$reqBy}</td>
-      <td><span class='badge bg-".($prio==='URGENT'?'danger':'secondary')."'>$prio</span></td>
       <td>{$rdate}</td>
       <td>{$amt}</td>
       <td>{$step}</td>
@@ -100,10 +94,9 @@ if ($action === 'APPROVE') {
 
   $conn->begin_transaction();
   try {
-    // Approve only the current pending step for this user
     $now = date('Y-m-d H:i:s');
 
-    // Find current pending step for this req
+    // Find current pending step for this req (lowest step_order)
     $curStepId = 0;
     if ($stmt = $conn->prepare("
       SELECT req_approval_step_id
@@ -121,7 +114,7 @@ if ($action === 'APPROVE') {
     }
     if ($curStepId <= 0) throw new Exception('No pending step found.');
 
-    // Ensure that step belongs to this user
+    // Ensure the current pending step belongs to this user
     if ($stmt = $conn->prepare("
       SELECT approver_user_id
       FROM tbl_admin_requisition_approval_steps
@@ -192,6 +185,8 @@ if ($action === 'REJECT') {
   try {
     // Find current pending step
     $curStepId = 0;
+    $curApprover = 0;
+
     if ($stmt = $conn->prepare("
       SELECT req_approval_step_id, approver_user_id
       FROM tbl_admin_requisition_approval_steps
@@ -207,6 +202,7 @@ if ($action === 'REJECT') {
       $curStepId = (int)($row['req_approval_step_id'] ?? 0);
       $curApprover = (int)($row['approver_user_id'] ?? 0);
     }
+
     if ($curStepId <= 0) throw new Exception('No pending step found.');
     if ($curApprover !== $uid) throw new Exception('You are not the current approver for this requisition.');
 
