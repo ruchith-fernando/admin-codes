@@ -148,19 +148,20 @@ $masterSubMenus = [
         ]
     ],
     [
-        'title' => 'GL - Master',
-        'id'    => 'collapseGiftsGL',
+        'title' => 'Gifts & Stationary',
+        'id'    => 'collapseGS',
         'items' => [
-            ['key'=>'gl-master-entry',   'file'=>'gl-master-entry.php',   'label'=>'GL Master'],
-            ['key'=>'category-master',   'file'=>'category-master.php',   'label'=>'Category Master'],
-            ['key'=>'attribute-master',   'file'=>'attribute-master.php',   'label'=>'Attribute Master'],
-            ['key'=>'item-master-entry',   'file'=>'item-master-entry.php',   'label'=>'Item Master'],
-            ['key'=>'item-variant-entry',  'file'=>'item-variant-entry.php',  'label'=>'Item Variants (SKU)'],
-            ['key'=>'item-type-entry',            'file'=>'item-type-entry.php',            'label'=>'Item Types'],
-            ['key'=>'attribute-master-entry',     'file'=>'attribute-master-entry.php',     'label'=>'Attributes'],
-            ['key'=>'attribute-option-entry',     'file'=>'attribute-option-entry.php',     'label'=>'Attribute Options'],
-            ['key'=>'type-attribute-map-entry',   'file'=>'type-attribute-map-entry.php',   'label'=>'Type → Attribute Mapping'],
-            ['key'=>'gifts-approvals',            'file'=>'gifts-approvals.php',            'label'=>'Approvals (Maker/Checker)'],
+            ['key'=>'approval-chain-admin',   'file'=>'approval-chain-admin.php',   'label'=>'Create Approval Chain'],
+            ['key'=>'approval-chain-list',   'file'=>'approval-chain-list.php',   'label'=>'View Approval Chain'],
+            // ['key'=>'category-master',   'file'=>'category-master.php',   'label'=>'Category Master'],
+            // ['key'=>'attribute-master',   'file'=>'attribute-master.php',   'label'=>'Attribute Master'],
+            // ['key'=>'item-master-entry',   'file'=>'item-master-entry.php',   'label'=>'Item Master'],
+            // ['key'=>'item-variant-entry',  'file'=>'item-variant-entry.php',  'label'=>'Item Variants (SKU)'],
+            // ['key'=>'item-type-entry',            'file'=>'item-type-entry.php',            'label'=>'Item Types'],
+            // ['key'=>'attribute-master-entry',     'file'=>'attribute-master-entry.php',     'label'=>'Attributes'],
+            // ['key'=>'attribute-option-entry',     'file'=>'attribute-option-entry.php',     'label'=>'Attribute Options'],
+            // ['key'=>'type-attribute-map-entry',   'file'=>'type-attribute-map-entry.php',   'label'=>'Type → Attribute Mapping'],
+            // ['key'=>'gifts-approvals',            'file'=>'gifts-approvals.php',            'label'=>'Approvals (Maker/Checker)'],
         ]
     ],
 ];
@@ -673,11 +674,13 @@ $remainingMenus += [
         ]
     ],
     'assets' => [
-        'title' => 'Assets',
+        'title' => 'Gifts & Stationary',
         'id' => 'collapseAssets',
         'items' => [
+            ['key'=>'requisition-card',                    'file'=>'requisition-card.php',                    'label'=>'Creating New Requisition'],
             ['key'=>'asset-card',                    'file'=>'asset-card.php',                    'label'=>'Creating New Asset Card'],
             ['key'=>'asset-card-print',                    'file'=>'asset-card-print.php','label'=>'Print Bar Codes'],
+            ['key'=>'asset-variant-stock',                    'file'=>'asset-variant-stock.php','label'=>'Map Asset to Variant'],
         ]
     ],
 ];
