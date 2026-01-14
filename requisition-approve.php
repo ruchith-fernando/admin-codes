@@ -13,7 +13,6 @@ if (!$logged || $uid <= 0) { die('<div class="alert alert-danger">Session expire
 $action = strtoupper(trim($_POST['action'] ?? ''));
 
 // ===== SLA SETTINGS (NO DB CHANGE) =====
-// Default SLA hours per approval step (change as you need)
 $SLA_HOURS_PER_STEP = 24;
 
 function bsAlert($type,$msg){
@@ -39,7 +38,6 @@ function findStepStartTs(mysqli $conn, int $reqId, int $curStep, ?string $submit
 
   if ($curStep <= 1) return $submittedTs;
 
-  // Start time for current step = time previous step got approved
   $prevAt = null;
   if ($st = $conn->prepare("
     SELECT action_at
@@ -108,21 +106,16 @@ function getAttachments(mysqli $conn, int $reqId): array {
   return $atts;
 }
 
-
 /* ===========================
    LIST (Approver pending list)
    =========================== */
 if ($action === 'LIST') {
 
-  // Show only requisitions where current pending step belongs to this user
   $sql = "
     SELECT
       r.req_id, r.req_no, r.status, r.required_date, r.submitted_at, r.created_at,
-      r.overall_justification,
       u.name AS requester_name,
-      s.step_order,
-      s.approver_name_snapshot,
-      s.approver_designation_snapshot
+      s.step_order
     FROM tbl_admin_requisitions r
     INNER JOIN tbl_admin_users u ON u.id = r.requester_user_id
     INNER JOIN tbl_admin_requisition_approval_steps s ON s.req_id = r.req_id
@@ -192,7 +185,6 @@ if ($action === 'LIST') {
       ? "<span class='badge bg-dark'>{$elapsedHuman}</span><div class='small text-danger'>since ".h(date('Y-m-d H:i', $startTs))."</div>"
       : "<span class='badge bg-secondary'>{$elapsedHuman}</span><div class='small text-muted'>since ".h(date('Y-m-d H:i', $startTs))."</div>";
 
-    // make row clickable + keep buttons too
     echo "<tr class='tr-approve-open' role='button' data-id='{$reqId}' style='cursor:pointer'>
       <td><b>{$reqNo}</b></td>
       <td>{$reqBy}</td>
@@ -220,7 +212,7 @@ if ($action === 'VIEW') {
   $req_id = (int)($_POST['req_id'] ?? 0);
   if ($req_id <= 0) { echo bsAlert('danger','Invalid requisition.'); exit; }
 
-  // Ensure this user is CURRENT approver for this req (same rule as approve)
+  // Ensure this user is CURRENT approver for this req
   $isMine = false;
   if ($st = $conn->prepare("
     SELECT s.req_approval_step_id
@@ -304,7 +296,7 @@ if ($action === 'VIEW') {
   // Parked/SLA
   $submitted = $hdr['submitted_at'] ?: $hdr['created_at'];
   $curStep = 0;
-  foreach($steps as $s){ if ($curStep===0 && $s['action']==='PENDING') $curStep = (int)$s['step_order']; }
+  foreach($steps as $s){ if ($curStep===0 && ($s['action'] ?? '')==='PENDING') $curStep = (int)$s['step_order']; }
   $startTs = findStepStartTs($conn, $req_id, max(1,$curStep), $hdr['submitted_at'] ?? null, $hdr['created_at'] ?? null);
   $elapsedSec = time() - $startTs;
   $slaSec = $SLA_HOURS_PER_STEP * 3600;
@@ -313,7 +305,6 @@ if ($action === 'VIEW') {
   $slaBadge = $over ? "<span class='badge bg-danger'>OVERDUE</span>" : "<span class='badge bg-success'>OK</span>";
   $parkBadge = $over ? "<span class='badge bg-dark'>".h(humanDuration($elapsedSec))."</span>" : "<span class='badge bg-secondary'>".h(humanDuration($elapsedSec))."</span>";
 
-  // UI
   echo "
   <div class='mb-2 d-flex align-items-center justify-content-between flex-wrap gap-2'>
     <div>
@@ -358,18 +349,16 @@ if ($action === 'VIEW') {
   <div class='tab-content border border-top-0 rounded-bottom p-3 bg-white'>
     <div class='tab-pane fade show active' id='tabItems' role='tabpanel'>";
 
+  // Items list style
   if (!$lines) {
-  echo "<div class='text-muted'>No line items found.</div>";
+    echo "<div class='text-muted'>No line items found.</div>";
   } else {
-
     echo "<div class='d-flex flex-column gap-3'>";
-
     $i = 0;
+
     foreach($lines as $ln){
       $i++;
-
       $item = h($ln['item_name'] ?? '');
-
       $qtyRaw = (string)($ln['qty'] ?? '');
       $qty = h($qtyRaw === '' ? '-' : $qtyRaw);
       $uom = h($ln['uom'] ?? '-');
@@ -383,39 +372,25 @@ if ($action === 'VIEW') {
       echo "
         <div class='card border-0 shadow-sm'>
           <div class='card-body'>
+            <div class='h6 mb-1'><span class='text-primary fw-bold'>Item {$i}</span></div>
+            <div class='fw-bold' style='font-size:1.05rem'>{$item}</div>
 
-            <div class='d-flex align-items-start justify-content-between flex-wrap gap-2'>
-              <div>
-                <div class='h6 mb-1'>
-                  <span class='text-primary fw-bold'>Item {$i}</span>
-                </div>
-                <div class='fw-bold' style='font-size:1.05rem'>{$item}</div>
-              </div>
-            </div>
-
-            <div class='border rounded bg-white p-2'>
+            <div class='border rounded bg-white p-2 mt-2'>
               <div class='py-1'><span class='text-muted fw-bold'>Quantity</span> - <span class='fw-bold'>{$qty}</span></div>
               <div class='py-1'><span class='text-muted fw-bold'>UOM</span> - <span class='fw-bold'>{$uom}</span></div>
               <div class='py-1'><span class='text-muted fw-bold'>Budget</span> - <span class='fw-bold'>{$bud}</span></div>
             </div>
 
-
             <div class='row g-3 mt-2'>
               <div class='col-md-6'>
                 <div class='small text-muted fw-bold mb-1'>Specifications</div>
-                <div class='p-2 bg-light border rounded' style='white-space:pre-wrap; word-break:break-word;'>
-                  ".h($spec)."
-                </div>
+                <div class='p-2 bg-light border rounded' style='white-space:pre-wrap; word-break:break-word;'>".h($spec)."</div>
               </div>
-
               <div class='col-md-6'>
                 <div class='small text-muted fw-bold mb-1'>Justification</div>
-                <div class='p-2 bg-light border rounded' style='white-space:pre-wrap; word-break:break-word;'>
-                  ".h($just)."
-                </div>
+                <div class='p-2 bg-light border rounded' style='white-space:pre-wrap; word-break:break-word;'>".h($just)."</div>
               </div>
             </div>
-
           </div>
         </div>
       ";
@@ -424,20 +399,67 @@ if ($action === 'VIEW') {
     echo "</div>";
   }
 
+  echo "</div>
 
+    <div class='tab-pane fade' id='tabDocs' role='tabpanel'>";
 
-  echo "
-    </div>
+  // Documents
+  if (!$atts) {
+    echo "<div class='text-muted'>No documents uploaded.</div>";
+  } else {
+    echo "<div class='row g-3'>";
+    foreach($atts as $a){
+      $orig = h($a['orig'] ?? 'Document');
+      $ext  = strtolower((string)($a['ext'] ?? ''));
+      $isImg = in_array($ext, ['jpg','jpeg','png','webp','gif'], true);
+      $isPdf = ($ext === 'pdf');
+
+      // IMPORTANT: use your secure proxy (avoid 403)
+      $openUrl = '';
+      if (($a['source'] ?? '') === 'table' && (int)($a['att_id'] ?? 0) > 0) {
+        $openUrl = 'requisition-file.php?att_id='.(int)$a['att_id'];
+      } else {
+        $fname = basename((string)($a['path'] ?? ''));
+        $openUrl = 'requisition-file.php?req_id='.(int)$req_id.'&file='.rawurlencode($fname);
+      }
+      $u = h($openUrl);
+
+      echo "<div class='col-md-6'>
+        <div class='border rounded p-2 h-100'>
+          <div class='d-flex align-items-center justify-content-between'>
+            <div class='fw-bold text-truncate' title='{$orig}'>{$orig}</div>
+            <a class='btn btn-sm btn-outline-primary' href='{$u}' target='_blank' rel='noopener'>Open</a>
+          </div>";
+
+      if ($isImg) {
+        echo "<div class='mt-2'>
+          <a href='{$u}' target='_blank' rel='noopener'>
+            <img src='{$u}' class='img-fluid rounded border' alt='{$orig}'>
+          </a>
+        </div>";
+      } elseif ($isPdf) {
+        echo "<div class='mt-2 small text-muted'>PDF document</div>
+              <iframe src='{$u}' style='width:100%;height:260px;border:1px solid #eee;border-radius:8px'></iframe>";
+      } else {
+        echo "<div class='mt-2 small text-muted'>File type: ".h($ext)."</div>";
+      }
+
+      echo "</div></div>";
+    }
+    echo "</div>";
+  }
+
+  echo "</div>
+
     <div class='tab-pane fade' id='tabFlow' role='tabpanel'>
       <div class='table-responsive'>
         <table class='table table-sm table-bordered align-middle'>
           <thead class='table-light'>
             <tr><th style='width:8%'>Step</th><th>Approver</th><th style='width:18%'>Action</th><th style='width:22%'>Action Time</th></tr>
-          </thead><tbody>
-  ";
+          </thead><tbody>";
 
   foreach($steps as $s){
-    $act = (string)$s['action'];
+    $act = (string)($s['action'] ?? '');
     $badge = 'secondary';
     if ($act==='APPROVED') $badge='success';
     if ($act==='PENDING') $badge='warning';
@@ -447,7 +469,7 @@ if ($action === 'VIEW') {
     $remarksHtml = $remarks!=='' ? "<div class='small text-muted mt-1'><b>Remarks:</b> ".nl2br(h($remarks))."</div>" : "";
 
     echo "<tr>
-      <td>".(int)$s['step_order']."</td>
+      <td>".(int)($s['step_order'] ?? 0)."</td>
       <td>
         <b>".h($s['approver_name_snapshot'] ?? 'Approver')."</b>
         <div class='small text-muted'>".h($s['approver_designation_snapshot'] ?? '-')."</div>
@@ -458,72 +480,12 @@ if ($action === 'VIEW') {
     </tr>";
   }
 
-  echo "
-          </tbody></table>
-      </div>
-    </div>
-
-    <div class='tab-pane fade' id='tabDocs' role='tabpanel'>
-  ";
-
-  if (!$atts) {
-    echo "<div class='text-muted'>No documents uploaded.</div>";
-  } else {
-    echo "<div class='row g-3'>";
-    foreach($atts as $a){
-
-      $orig = h($a['orig'] ?? 'Document');
-      $ext  = strtolower((string)($a['ext'] ?? ''));
-
-      $isImg = in_array($ext, ['jpg','jpeg','png','webp','gif'], true);
-      $isPdf = ($ext === 'pdf');
-
-      // ✅ Build secure URL via PHP proxy (avoids 403 on /uploads)
-      $openUrl = '';
-      if (($a['source'] ?? '') === 'table' && (int)($a['att_id'] ?? 0) > 0) {
-        $openUrl = 'requisition-file.php?att_id='.(int)$a['att_id'];
-      } else {
-        $fname = basename((string)($a['path'] ?? ''));
-        $openUrl = 'requisition-file.php?req_id='.(int)$req_id.'&file='.rawurlencode($fname);
-      }
-      $openUrlEsc = h($openUrl);
-
-      echo "<div class='col-md-6'>
-        <div class='border rounded p-2 h-100'>
-          <div class='d-flex align-items-center justify-content-between'>
-            <div class='fw-bold text-truncate' title='{$orig}'>{$orig}</div>
-            <a class='btn btn-sm btn-outline-primary' href='{$openUrlEsc}' target='_blank' rel='noopener'>Open</a>
-          </div>";
-
-      if ($isImg) {
-        echo "<div class='mt-2'>
-          <a href='{$openUrlEsc}' target='_blank' rel='noopener'>
-            <img src='{$openUrlEsc}' class='img-fluid rounded border' alt='{$orig}'>
-          </a>
-        </div>";
-      } elseif ($isPdf) {
-        echo "<div class='mt-2 small text-muted'>PDF document</div>
-              <iframe src='{$openUrlEsc}' style='width:100%;height:260px;border:1px solid #eee;border-radius:8px'></iframe>";
-      } else {
-        echo "<div class='mt-2 small text-muted'>File type: ".h($ext)."</div>";
-      }
-
-      echo "</div></div>";
-    }
-
-    echo "</div>";
-  }
-
-  echo "
-    </div>
-  </div>
-  ";
-
+  echo "</tbody></table></div></div></div>";
   exit;
 }
 
 /* ===========================
-   APPROVE
+   APPROVE  (ONLY current step, DO NOT close others)
    =========================== */
 if ($action === 'APPROVE') {
   $req_id = (int)($_POST['req_id'] ?? 0);
@@ -533,15 +495,17 @@ if ($action === 'APPROVE') {
   try {
     $now = date('Y-m-d H:i:s');
 
-    // Find current pending step for this req
+    // Find current pending step for this req (lowest step_order)
     $curStepId = 0;
     $curApprover = 0;
 
-    if ($stmt = $conn->prepare("SELECT req_approval_step_id, approver_user_id
+    if ($stmt = $conn->prepare("
+      SELECT req_approval_step_id, approver_user_id
       FROM tbl_admin_requisition_approval_steps
       WHERE req_id=? AND action='PENDING'
       ORDER BY step_order ASC
-      LIMIT 1")) {
+      LIMIT 1
+    ")) {
       $stmt->bind_param("i", $req_id);
       $stmt->execute();
       $res = $stmt->get_result();
@@ -550,36 +514,28 @@ if ($action === 'APPROVE') {
       $curStepId = (int)($row['req_approval_step_id'] ?? 0);
       $curApprover = (int)($row['approver_user_id'] ?? 0);
     }
+
     if ($curStepId <= 0) throw new Exception('No pending step found.');
     if ($curApprover !== $uid) throw new Exception('You are not the current approver for this requisition.');
 
-    // Approve
-    if ($stmt = $conn->prepare("UPDATE tbl_admin_requisition_approval_steps
+    // Approve ONLY current step
+    if ($stmt = $conn->prepare("
+      UPDATE tbl_admin_requisition_approval_steps
       SET action='APPROVED', action_by_user_id=?, action_at=?
-      WHERE req_approval_step_id=? AND action='PENDING'")) {
+      WHERE req_approval_step_id=? AND action='PENDING'
+    ")) {
       $stmt->bind_param("isi", $uid, $now, $curStepId);
       $stmt->execute();
       $stmt->close();
     }
 
-    // ✅ Force-close ALL remaining pending steps (no step_order logic)
-    $autoRemark = "Auto-closed due to rejection at earlier step.";
-    if ($stmt = $conn->prepare("UPDATE tbl_admin_requisition_approval_steps
-      SET action='REJECTED',
-          action_by_user_id=?,
-          action_at=?,
-          remarks=?
-      WHERE req_id=? AND action='PENDING'")) {
-      $stmt->bind_param("issi", $uid, $now, $autoRemark, $req_id);
-      $stmt->execute();
-      $stmt->close();
-    }
-
-    // If no pending left => mark requisition APPROVED
+    // If no pending left => mark requisition APPROVED (otherwise it stays IN_APPROVAL and moves to next)
     $pending = 0;
-    if ($stmt = $conn->prepare("SELECT COUNT(*) AS c
+    if ($stmt = $conn->prepare("
+      SELECT COUNT(*) AS c
       FROM tbl_admin_requisition_approval_steps
-      WHERE req_id=? AND action='PENDING'")) {
+      WHERE req_id=? AND action='PENDING'
+    ")) {
       $stmt->bind_param("i", $req_id);
       $stmt->execute();
       $res = $stmt->get_result();
@@ -607,6 +563,9 @@ if ($action === 'APPROVE') {
   }
 }
 
+/* ===========================
+   REJECT (STOP FLOW: close ALL remaining pending)
+   =========================== */
 if ($action === 'REJECT') {
   $req_id = (int)($_POST['req_id'] ?? 0);
   $reason = trim($_POST['reject_reason'] ?? '');
@@ -617,14 +576,14 @@ if ($action === 'REJECT') {
   try {
     $curStepId = 0;
     $curApprover = 0;
-    $curStepOrder = 0;
 
-    // Find current pending step (lowest step_order)
-    if ($stmt = $conn->prepare("SELECT req_approval_step_id, approver_user_id, step_order
+    if ($stmt = $conn->prepare("
+      SELECT req_approval_step_id, approver_user_id
       FROM tbl_admin_requisition_approval_steps
       WHERE req_id=? AND action='PENDING'
       ORDER BY step_order ASC
-      LIMIT 1")) {
+      LIMIT 1
+    ")) {
       $stmt->bind_param("i", $req_id);
       $stmt->execute();
       $res = $stmt->get_result();
@@ -633,7 +592,6 @@ if ($action === 'REJECT') {
 
       $curStepId = (int)($row['req_approval_step_id'] ?? 0);
       $curApprover = (int)($row['approver_user_id'] ?? 0);
-      $curStepOrder = (int)($row['step_order'] ?? 0);
     }
 
     if ($curStepId <= 0) throw new Exception('No pending step found.');
@@ -641,27 +599,30 @@ if ($action === 'REJECT') {
 
     $now = date('Y-m-d H:i:s');
 
-    // 1) Mark current step rejected
-    if ($stmt = $conn->prepare("UPDATE tbl_admin_requisition_approval_steps
+    // 1) Reject current step
+    if ($stmt = $conn->prepare("
+      UPDATE tbl_admin_requisition_approval_steps
       SET action='REJECTED', action_by_user_id=?, action_at=?, remarks=?
-      WHERE req_approval_step_id=? AND action='PENDING'")) {
+      WHERE req_approval_step_id=? AND action='PENDING'
+    ")) {
       $stmt->bind_param("issi", $uid, $now, $reason, $curStepId);
       $stmt->execute();
       $stmt->close();
     }
 
-    // 2) Auto-close all later pending steps as REJECTED (so nothing stays pending)
-    // NOTE: This avoids needing CANCELLED/SKIPPED values (no table change).
-    $autoRemark = "Auto-closed due to rejection at Step {$curStepOrder}.";
-    if ($stmt = $conn->prepare("UPDATE tbl_admin_requisition_approval_steps
+    // 2) STOP FLOW: close ALL remaining PENDING steps (no step_order dependency)
+    $autoRemark = "Auto-closed due to rejection at earlier step.";
+    if ($stmt = $conn->prepare("
+      UPDATE tbl_admin_requisition_approval_steps
       SET action='REJECTED', action_by_user_id=?, action_at=?, remarks=?
-      WHERE req_id=? AND action='PENDING' AND step_order > ?")) {
-      $stmt->bind_param("issii", $uid, $now, $autoRemark, $req_id, $curStepOrder);
+      WHERE req_id=? AND action='PENDING'
+    ")) {
+      $stmt->bind_param("issi", $uid, $now, $autoRemark, $req_id);
       $stmt->execute();
       $stmt->close();
     }
 
-    // 3) Mark requisition header rejected
+    // 3) Header rejected
     if ($stmt = $conn->prepare("UPDATE tbl_admin_requisitions SET status='REJECTED' WHERE req_id=?")) {
       $stmt->bind_param("i", $req_id);
       $stmt->execute();
@@ -678,6 +639,5 @@ if ($action === 'REJECT') {
     exit;
   }
 }
-
 
 echo bsAlert('danger','Invalid action.');
