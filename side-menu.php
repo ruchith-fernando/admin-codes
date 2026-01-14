@@ -34,9 +34,9 @@ $completedModules = [
 //   'vehicle',
 //   'securityvpn',
 //   'printing',
-    'courier',
-    'staff-transport',
-    'electricity',
+    // // // 'courier', for demo 
+    // // // 'staff-transport', for demo 
+    // // // 'electricity',for demo 
   // If you want to mark these completed too, just uncomment:
   // 'electricity',
   // 'printing',
