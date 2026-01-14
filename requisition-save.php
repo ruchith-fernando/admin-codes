@@ -112,15 +112,14 @@ try {
 
   if ($stmt = $conn->prepare("INSERT INTO tbl_admin_requisitions
     (req_no, requester_user_id, department_id, priority, required_date,
-     overall_justification, recommended_vendor_name, recommended_vendor_contact, recommended_vendor_note,
-     status, approval_chain_id, submitted_at)
+    overall_justification, recommended_vendor_name, recommended_vendor_contact, recommended_vendor_note,
+    status, approval_chain_id, submitted_at)
     VALUES
     (?, ?, ?, ?, ?,
-     ?, ?, ?, ?,
-     ?, ?, ?)
-  ")) {
+    ?, ?, ?, ?,
+    ?, ?, ?)")) {
     $stmt->bind_param(
-      "siissssssssis",
+      "siisssssssis",   // ✅ 12 chars (matches 12 variables)
       $req_no,
       $uid,
       $department_id,
@@ -140,6 +139,7 @@ try {
   } else {
     throw new Exception('DB error: cannot insert requisition.');
   }
+
 
   // Insert lines (no unit price)
   $insLine = $conn->prepare("
