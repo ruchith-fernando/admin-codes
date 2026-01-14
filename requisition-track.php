@@ -253,7 +253,7 @@ if ($action === 'LIST') {
     }
 
     // Make req_no subtle (still available)
-    $reqNoSmall = ($reqNo !== '') ? "<div class='small text-muted'>Req: <b>".h($reqNo)."</b></div>" : "";
+    // $reqNoSmall = ($reqNo !== '') ? "<div class='small text-muted'>Req: <b>".h($reqNo)."</b></div>" : "";
 
     echo "
       <div class='border rounded p-3 bg-white shadow-sm'>
@@ -262,7 +262,6 @@ if ($action === 'LIST') {
             <div class='d-flex align-items-center gap-2 flex-wrap'>
               <span class='badge bg-{$badge}'>".h($status)."</span>
               <span class='small text-muted'>Dept: <b>{$dept}</b></span>
-              {$reqNoSmall}
             </div>
 
             <div class='small'>
