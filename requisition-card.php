@@ -64,8 +64,7 @@ if ($stmt = $conn->prepare("SELECT uom, uom_name FROM tbl_admin_uom WHERE is_act
   $stmt->close();
 }
 
-// Budgets list (NOTE: your tbl_admin_budgets has no branch column; showing active budgets.
-// If later you add mapping to branch, we can filter by $branch_code here.)
+// Budgets list
 if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_budgets WHERE is_active=1 ORDER BY budget_name")) {
   $stmt->execute(); $res = $stmt->get_result();
   while($row = $res->fetch_assoc()) $buds[] = $row;
@@ -120,43 +119,47 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
           </div>
         </div>
 
-        <div class="col-md-4">
-          <label class="form-label fw-bold">Priority</label>
-          <select id="prPriority" class="form-select">
-            <option value="NORMAL">Normal</option>
-            <option value="URGENT">Urgent</option>
-          </select>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Approval Chain</label>
+          <select id="prChainId" class="form-select"></select>
+          <div class="form-text">Select approval chain/version for this requisition.</div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-6">
           <label class="form-label fw-bold">Required Date</label>
           <input type="date" id="prRequiredDate" class="form-control" value="">
         </div>
 
         <div class="col-md-4">
           <label class="form-label fw-bold">Attachments (PDF / Images)</label>
-          <input type="file" id="prFiles" class="form-control" multiple
-                 accept=".pdf,image/*">
+          <input type="file" id="prFiles" class="form-control" multiple accept=".pdf,image/*">
           <div class="form-text">You can upload multiple files.</div>
         </div>
 
-        <div class="col-md-12">
+        <div class="col-md-8">
           <label class="form-label fw-bold">Overall Justification (Optional)</label>
           <textarea id="prOverallJustification" class="form-control" rows="2" placeholder="Reason for requesting..."></textarea>
         </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Recommended Vendor (Optional)</label>
-            <input type="text" id="prVendorName" class="form-control" placeholder="Vendor name">
-        </div>
 
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Vendor Contact (Optional)</label>
-            <input type="text" id="prVendorContact" class="form-control" placeholder="Phone / Email / Person">
-        </div>
-
-        <div class="col-md-4">
-            <label class="form-label fw-bold">Vendor Note (Optional)</label>
-            <input type="text" id="prVendorNote" class="form-control" placeholder="e.g. Best price / Fast delivery">
+        <div class="col-md-12">
+          <label class="form-label fw-bold">Approval Steps (Change approver per step only for this requisition)</label>
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm" id="prStepsTable">
+              <thead class="table-light">
+                <tr>
+                  <th style="width:10%">Step</th>
+                  <th style="width:55%">Approver</th>
+                  <th style="width:35%">Designation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="3" class="text-muted">Select an approval chain to load steps.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-text">
+            This does <b>NOT</b> change the master chain. It only applies to this requisition.
+          </div>
         </div>
 
         <div class="col-md-12">
@@ -242,10 +245,23 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
   const UOMS = <?php echo json_encode($uoms, JSON_UNESCAPED_UNICODE); ?>;
   const BUDS = <?php echo json_encode($buds, JSON_UNESCAPED_UNICODE); ?>;
 
+  // Approval chain runtime data
+  let APPROVER_USERS = []; // [{id,name,designation,branch_name}]
+  let CURRENT_STEPS  = []; // [{step_order, approver_user_id}]
+
+  function escapeHtml(s){
+    return String(s ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#039;');
+  }
+
   function uomOptions(){
     let html = `<option value="">-- Select --</option>`;
     UOMS.forEach(u => {
-      html += `<option value="${String(u.uom).replace(/"/g,'&quot;')}">${String(u.uom_name)} (${String(u.uom)})</option>`;
+      html += `<option value="${String(u.uom).replace(/"/g,'&quot;')}">${escapeHtml(u.uom_name)} (${escapeHtml(u.uom)})</option>`;
     });
     return html;
   }
@@ -253,7 +269,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
   function budOptions(){
     let html = `<option value="">-- Select --</option>`;
     BUDS.forEach(b => {
-      html += `<option value="${b.id}">${String(b.budget_name)} (${String(b.budget_code)})</option>`;
+      html += `<option value="${b.id}">${escapeHtml(b.budget_name)} (${escapeHtml(b.budget_code)})</option>`;
     });
     return html;
   }
@@ -286,7 +302,6 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
 
   function addLine(){
     $('#prLinesTable tbody').append(lineRowHtml());
-    // Select2 inside rows (optional)
     if ($.fn.select2) {
       $('#prLinesTable tbody tr:last .pr-uom').select2({ width:'100%' });
       $('#prLinesTable tbody tr:last .pr-budget-id').select2({ width:'100%' });
@@ -310,6 +325,149 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     return lines;
   }
 
+  // ===== Approval chain UI =====
+  function userById(id){
+    id = parseInt(id||0,10);
+    return APPROVER_USERS.find(u => parseInt(u.id,10) === id) || null;
+  }
+
+  function userOptions(selectedId){
+    let html = `<option value="">-- Select Approver --</option>`;
+    APPROVER_USERS.forEach(u => {
+      const sel = (String(u.id) === String(selectedId)) ? 'selected' : '';
+      const label = `${u.name} — ${(u.designation||'-')} (${u.branch_name||''})`;
+      html += `<option value="${u.id}" ${sel}>${escapeHtml(label)}</option>`;
+    });
+    return html;
+  }
+
+  function renderStepsTable(steps){
+    const $tb = $('#prStepsTable tbody');
+    $tb.empty();
+
+    if (!steps || steps.length === 0) {
+      $tb.append(`<tr><td colspan="3" class="text-muted">No steps found.</td></tr>`);
+      return;
+    }
+
+    steps.forEach(st => {
+      const u = userById(st.approver_user_id);
+      const desig = u ? (u.designation || '-') : '-';
+
+      $tb.append(`
+        <tr data-step="${st.step_order}">
+          <td>${st.step_order}</td>
+          <td>
+            <select class="form-select form-select-sm pr-step-approver">
+              ${userOptions(st.approver_user_id)}
+            </select>
+          </td>
+          <td class="pr-step-desig">${escapeHtml(desig)}</td>
+        </tr>
+      `);
+    });
+
+    if ($.fn.select2) {
+      $('#prStepsTable .pr-step-approver').select2({ width:'100%' });
+    }
+  }
+
+  function loadChains(){
+    const deptId = ($('#prDepartmentId').val()||'').trim();
+    if (!deptId || parseInt(deptId,10) <= 0) {
+      $('#prAlert').html(bsAlert('danger','Your department is not mapped in tbl_admin_departments. Cannot load approval chains.'));
+      return;
+    }
+
+    $('#prChainId').html(`<option value="">Loading...</option>`);
+
+    $.post('requisition-chain.php', { action:'CHAINS', department_id: deptId }, function(resp){
+      let r;
+      try { r = (typeof resp === 'string') ? JSON.parse(resp) : resp; } catch(e){
+        $('#prAlert').html(bsAlert('danger','Invalid response (chains).'));
+        return;
+      }
+
+      if (!r.ok) {
+        $('#prAlert').html(bsAlert('danger', r.msg || 'Cannot load approval chains.'));
+        return;
+      }
+
+      const $sel = $('#prChainId');
+      $sel.empty();
+
+      if (!r.chains || r.chains.length === 0) {
+        $sel.append(`<option value="">No active chains</option>`);
+        $('#prAlert').html(bsAlert('danger','No active approval chains found for your department.'));
+        renderStepsTable([]);
+        return;
+      }
+
+      $sel.append(`<option value="">-- Select Chain --</option>`);
+      r.chains.forEach(c => {
+        const txt = `${c.chain_name} (v${c.version_no})`;
+        $sel.append(`<option value="${c.chain_id}">${escapeHtml(txt)}</option>`);
+      });
+
+      renderStepsTable([]);
+    }).fail(function(xhr){
+      $('#prAlert').html(bsAlert('danger','Server error: '+xhr.status));
+    });
+  }
+
+  function loadStepsForChain(chainId){
+    if (!chainId) {
+      APPROVER_USERS = [];
+      CURRENT_STEPS = [];
+      renderStepsTable([]);
+      return;
+    }
+
+    $('#prStepsTable tbody').html(`<tr><td colspan="3" class="text-muted">Loading steps...</td></tr>`);
+
+    $.post('requisition-chain.php', { action:'STEPS', chain_id: chainId }, function(resp){
+      let r;
+      try { r = (typeof resp === 'string') ? JSON.parse(resp) : resp; } catch(e){
+        $('#prAlert').html(bsAlert('danger','Invalid response (steps).'));
+        return;
+      }
+
+      if (!r.ok) {
+        $('#prAlert').html(bsAlert('danger', r.msg || 'Cannot load chain steps.'));
+        renderStepsTable([]);
+        return;
+      }
+
+      APPROVER_USERS = r.users || [];
+      CURRENT_STEPS  = r.steps || [];
+      renderStepsTable(CURRENT_STEPS);
+
+    }).fail(function(xhr){
+      $('#prAlert').html(bsAlert('danger','Server error: '+xhr.status));
+    });
+  }
+
+  function collectStepOverrides(){
+    const overrides = [];
+    $('#prStepsTable tbody tr').each(function(){
+      const step_order = parseInt($(this).attr('data-step')||'0', 10);
+      const approver_user_id = parseInt($(this).find('.pr-step-approver').val()||'0', 10);
+      if (step_order > 0 && approver_user_id > 0) {
+        overrides.push({ step_order, approver_user_id });
+      }
+    });
+    return overrides;
+  }
+
+  // update designation when user changes approver dropdown
+  $(document).on('change', '.pr-step-approver', function(){
+    const uid = parseInt($(this).val()||'0',10);
+    const u = userById(uid);
+    const desig = u ? (u.designation || '-') : '-';
+    $(this).closest('tr').find('.pr-step-desig').text(desig);
+  });
+
+  // ===== Submit =====
   function submit(){
     const department_id = ($('#prDepartmentId').val()||'').trim();
     if (!department_id || parseInt(department_id,10) <= 0) {
@@ -317,32 +475,37 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       return;
     }
 
-    const priority = ($('#prPriority').val()||'NORMAL').trim();
+    const chain_id = ($('#prChainId').val()||'').trim();
+    if (!chain_id) {
+      $('#prResult').html(bsAlert('danger','Please select an Approval Chain.'));
+      return;
+    }
+
     const required_date = ($('#prRequiredDate').val()||'').trim();
     const overall_justification = ($('#prOverallJustification').val()||'').trim();
     const lines = collectLines();
-
-    const vendor_name = ($('#prVendorName').val()||'').trim();
-    const vendor_contact = ($('#prVendorContact').val()||'').trim();
-    const vendor_note = ($('#prVendorNote').val()||'').trim();
-
-
 
     if (lines.length === 0) {
       $('#prResult').html(bsAlert('danger','Add at least 1 line item (Item Name).'));
       return;
     }
 
-    // Build multipart form-data (for file upload)
+    const step_overrides = collectStepOverrides();
+    if (!step_overrides || step_overrides.length === 0) {
+      $('#prResult').html(bsAlert('danger','Approval steps are not loaded. Please select a chain again.'));
+      return;
+    }
+
     const fd = new FormData();
     fd.append('action', 'SUBMIT');
-    fd.append('priority', priority);
     fd.append('required_date', required_date);
     fd.append('overall_justification', overall_justification);
     fd.append('lines_json', JSON.stringify(lines));
-    fd.append('recommended_vendor_name', vendor_name);
-    fd.append('recommended_vendor_contact', vendor_contact);
-    fd.append('recommended_vendor_note', vendor_note);
+
+    // chain + per-requisition approver edits
+    fd.append('chain_id', chain_id);
+    fd.append('steps_override_json', JSON.stringify(step_overrides));
+
     // attachments
     const files = document.getElementById('prFiles').files;
     if (files && files.length) {
@@ -373,15 +536,14 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       $('#prResult').html(bsAlert('success', r.msg || 'Submitted.'));
 
       // reset
-      $('#prPriority').val('NORMAL');
       $('#prRequiredDate').val('');
       $('#prOverallJustification').val('');
       $('#prFiles').val('');
       $('#prLinesTable tbody').empty();
-      $('#prVendorName').val('');
-        $('#prVendorContact').val('');
-        $('#prVendorNote').val('');
       addLine();
+
+      // keep chain selected (better UX) and reload steps to ensure latest users
+      loadStepsForChain($('#prChainId').val());
 
       loadList();
     }).fail(function(xhr){
@@ -389,6 +551,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     });
   }
 
+  // ===== Approvals list =====
   function loadList(){
     $('#pendingBox').html('<div class="text-muted">Loading approvals...</div>');
     $.post('requisition-approve.php', { action:'LIST' }, function(html){
@@ -442,14 +605,20 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     if ($('#prLinesTable tbody tr').length === 0) addLine();
   });
 
-  // Select2
+  // Chain change
+  $('#prChainId').on('change', function(){
+    loadStepsForChain(($(this).val()||'').trim());
+  });
+
+  // Select2 warning (optional)
   if (!$.fn.select2) {
-    $('#prAlert').html(bsAlert('warning','Select2 not loaded. Please include Select2 JS/CSS.'));
+    $('#prAlert').html(bsAlert('warning','Select2 not loaded. Please include Select2 JS/CSS (optional).'));
   }
 
   // init
   addLine();
   loadList();
+  loadChains();
 
   // Submit
   $('#btnPrSubmit').on('click', submit);
