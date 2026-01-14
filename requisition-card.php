@@ -22,7 +22,7 @@ $uid = (int)($_SESSION['id'] ?? 0);
 $logged = !empty($_SESSION['loggedin']);
 if (!$logged || $uid <= 0) { die('Session expired. Please login again.'); }
 
-// Load logged user's branch + department label (we will lock to this)
+// Load logged user's branch + department label (locked)
 $user = null;
 if ($stmt = $conn->prepare("SELECT id, name, branch_code, branch_name, category, category_auto FROM tbl_admin_users WHERE id=? LIMIT 1")) {
   $stmt->bind_param("i", $uid);
@@ -39,7 +39,7 @@ $dept_label  = trim((string)($user['category'] ?? ''));
 if ($dept_label === '') $dept_label = trim((string)($user['category_auto'] ?? ''));
 if ($dept_label === '') $dept_label = 'UNKNOWN';
 
-// Resolve department_id from tbl_admin_departments by name (must exist for approvals)
+// Resolve department_id from tbl_admin_departments by name
 $department_id = 0;
 $department_name = $dept_label;
 
@@ -194,6 +194,29 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       <div class="mt-3" id="prResult"></div>
     </div>
 
+    <!-- TRACKING (REQUESTER) -->
+    <div class="card shadow bg-white rounded p-4 mb-4">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h5 class="mb-0 text-primary">My Requisitions — Tracking</h5>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="btnMyReqRefresh">Refresh</button>
+      </div>
+      <div class="mt-3" id="myReqBox"></div>
+    </div>
+    <!-- Approver View Modal (STATIC BACKDROP) -->
+    <div class="modal fade" id="approveViewModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Requisition Details (Approval)</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="approveViewBody">
+            <div class="text-muted">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- APPROVALS -->
     <div class="card shadow bg-white rounded p-4">
       <h5 class="mb-3 text-primary">Purchase Requisition — Approvals</h5>
@@ -201,6 +224,21 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       <div id="pendingBox" class="mt-2"></div>
     </div>
 
+  </div>
+</div>
+
+<!-- Tracking Modal -->
+<div class="modal fade" id="trackModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Requisition Tracking</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="trackModalBody">
+        <div class="text-muted">Loading...</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -258,6 +296,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
       .replace(/'/g,'&#039;');
   }
 
+  // ===== Line items =====
   function uomOptions(){
     let html = `<option value="">-- Select --</option>`;
     UOMS.forEach(u => {
@@ -467,6 +506,11 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     $(this).closest('tr').find('.pr-step-desig').text(desig);
   });
 
+  // Chain change
+  $('#prChainId').on('change', function(){
+    loadStepsForChain(($(this).val()||'').trim());
+  });
+
   // ===== Submit =====
   function submit(){
     const department_id = ($('#prDepartmentId').val()||'').trim();
@@ -501,8 +545,6 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     fd.append('required_date', required_date);
     fd.append('overall_justification', overall_justification);
     fd.append('lines_json', JSON.stringify(lines));
-
-    // chain + per-requisition approver edits
     fd.append('chain_id', chain_id);
     fd.append('steps_override_json', JSON.stringify(step_overrides));
 
@@ -535,21 +577,27 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
 
       $('#prResult').html(bsAlert('success', r.msg || 'Submitted.'));
 
-      // reset
+      // reset maker
       $('#prRequiredDate').val('');
       $('#prOverallJustification').val('');
       $('#prFiles').val('');
       $('#prLinesTable tbody').empty();
       addLine();
 
-      // keep chain selected (better UX) and reload steps to ensure latest users
+      // reload steps for current chain
       loadStepsForChain($('#prChainId').val());
 
+      // refresh lists
       loadList();
+      loadMyTracking();
+
     }).fail(function(xhr){
       $('#prResult').html(bsAlert('danger','Server error: '+xhr.status));
     });
   }
+
+  // Submit click
+  $('#btnPrSubmit').on('click', submit);
 
   // ===== Approvals list =====
   function loadList(){
@@ -569,6 +617,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     $.post('requisition-approve.php', { action:'APPROVE', req_id:req_id }, function(html){
       $('#apAlert').html(html);
       loadList();
+      loadMyTracking();
     }).fail(function(xhr){
       $('#apAlert').html(bsAlert('danger','Server error: '+xhr.status));
     });
@@ -592,6 +641,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     $.post('requisition-approve.php', { action:'REJECT', req_id:req_id, reject_reason: reason }, function(html){
       $('#apAlert').html(html);
       loadList();
+      loadMyTracking();
       bootstrap.Modal.getInstance(document.getElementById('rejectModal')).hide();
     }).fail(function(xhr){
       $('#apAlert').html(bsAlert('danger','Server error: '+xhr.status));
@@ -605,12 +655,61 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
     if ($('#prLinesTable tbody tr').length === 0) addLine();
   });
 
-  // Chain change
-  $('#prChainId').on('change', function(){
-    loadStepsForChain(($(this).val()||'').trim());
+  // ===== Tracking (Requester) =====
+  function loadMyTracking(){
+    $('#myReqBox').html('<div class="text-muted">Loading your requisitions...</div>');
+    $.post('requisition-track.php', { action:'LIST' }, function(html){
+      $('#myReqBox').html(html);
+    }).fail(function(xhr){
+      $('#myReqBox').html(bsAlert('danger','Server error: '+xhr.status));
+    });
+  }
+function openApproveView(req_id){
+  $('#approveViewBody').html('<div class="text-muted">Loading details...</div>');
+
+  const el = document.getElementById('approveViewModal');
+  const modal = new bootstrap.Modal(el, { backdrop: 'static', keyboard: false }); // ✅ disable outside click + ESC
+  modal.show();
+
+  $.post('requisition-approve.php', { action:'VIEW', req_id:req_id }, function(html){
+    $('#approveViewBody').html(html);
+    initTooltips();
+  }).fail(function(xhr){
+    $('#approveViewBody').html(bsAlert('danger','Server error: '+xhr.status));
+  });
+}
+
+  // Click on View button
+  $(document).on('click', '.btn-approve-view', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    const req_id = $(this).data('id');
+    openApproveView(req_id);
   });
 
-  // Select2 warning (optional)
+  // Click on row (anywhere)
+  $(document).on('click', '.tr-approve-open', function(e){
+    // avoid double-fire when clicking buttons
+    if ($(e.target).closest('button,a,input,select,textarea').length) return;
+    const req_id = $(this).data('id');
+    openApproveView(req_id);
+  });
+
+  $(document).on('click', '.btn-track-view', function(){
+    const req_id = $(this).data('id');
+    $('#trackModalBody').html('<div class="text-muted">Loading tracking...</div>');
+    new bootstrap.Modal(document.getElementById('trackModal')).show();
+
+    $.post('requisition-track.php', { action:'VIEW', req_id:req_id }, function(html){
+      $('#trackModalBody').html(html);
+    }).fail(function(xhr){
+      $('#trackModalBody').html(bsAlert('danger','Server error: '+xhr.status));
+    });
+  });
+
+  $('#btnMyReqRefresh').on('click', loadMyTracking);
+
+  // Select2 warning
   if (!$.fn.select2) {
     $('#prAlert').html(bsAlert('warning','Select2 not loaded. Please include Select2 JS/CSS (optional).'));
   }
@@ -619,9 +718,7 @@ if ($stmt = $conn->prepare("SELECT id, budget_name, budget_code FROM tbl_admin_b
   addLine();
   loadList();
   loadChains();
-
-  // Submit
-  $('#btnPrSubmit').on('click', submit);
+  loadMyTracking();
 
 })(jQuery);
 </script>
